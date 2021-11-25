@@ -194,6 +194,7 @@ paths:
         the Alcméon user interface.
       responses:
         '200':
+          description: Returned upon succes
           content:
             application/json:
               schema:
