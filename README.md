@@ -1,2 +1,2 @@
 # openapi
-Alcméon Open API specifications
+Alcméon Open API Subbot specifications
