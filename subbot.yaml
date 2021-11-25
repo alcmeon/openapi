@@ -1,0 +1,1255 @@
+openapi: 3.0.0
+servers:
+  - url: https://your.server/path
+    description: Your webhook server
+
+info:
+  title: Subbot API
+  version: '1.0'
+  description: >
+      The intent of this API is to allow third-parties to build 
+      complex bot interactions on Messenger, Twitter, ABC, etc. 
+      that can be integrated in the Alcméon bot editor. 
+
+
+      A set of third-party bot interactions are represented within 
+      the Alcméon bot editor as a single “box” with a single input 
+      connector and multiple output connectors. This is represented 
+      graphically via a box with input connectors on the left and
+      output connectors on the right.
+
+
+      Alcméon will trigger the third party bot when a user follows 
+      a graph edge into the third party input connector. All user 
+      messages will be forwarded to the third party bot until it 
+      decides to handover control back to the brand scenario by 
+      exiting through one of its output connectors. In case of 
+      bot failure (failure to reply successfully to API calls 
+      within a reasonable delay), Alcméon will force exit 
+      through the mandatory “Exit failure” output connector.
+
+
+      Each third-party bot should expose 4 HTTPS endpoints which 
+      share a common bot-specific url prefix, denoted URL in this document:
+        * [Describe](#get-URL/describe)
+        * [Start](#post-URL/start)
+        * [Handle event](#post-URL/handle-event)
+        * [End](#post-URL/end)
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+  schemas:
+
+    HandleEventRequest:
+      allOf:
+        - $ref: '#/components/schemas/EventRequest'
+        - type: object
+          properties:
+            variables:
+              type: object
+              description: >
+                The variables which were returned from the last call to
+                the /handle-event or /start endpoint
+
+    StartEventRequest:
+      allOf:
+        - $ref: '#/components/schemas/EventRequest'
+        - type: object
+          properties:
+            global_variables:
+              type: object
+              description: >
+                A set of conversation variables that the bot box can read. 
+                Only variables specified in Description.input_variables are available.
+
+    BotResponse:
+      type: object
+      properties:
+        variables:
+          type: object
+          description: The per-box/per-conversation variables that the bot wishes to store until a later call to URL/start or URL/event
+        messages:
+          description: A list of MessageResponse Alcméon needs to handle
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageResponse'
+        exit:
+          description: A description of the output connector Alcméon should take to exit this bot box.
+          $ref: '#/components/schemas/ExitResponse'
+
+    ExitResponse:
+      type: object
+      properties:
+        delay_ms:
+          type: integer
+          description: >
+            The number of milliseconds until Alcméon executes this response.
+            A convenient way to insert a delay before exiting the box.
+        global_variables:
+          type: object
+          description: >
+            A set of variables that Alcméon should copy in the per/user 
+            conversation variables. Only variables specified in 
+            Description.output_variables will be taken into account. 
+            All other variables will be ignored.
+        reason:
+          description: The name of the output connector to exit through. This field should match Description.exits.name
+          type: string
+
+    Exit:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The unique name of the output connector.
+        description:
+          type: string
+          description: >
+            A human-readable description of what it means to exit 
+            the bot box via this output connector. Displayed in the Alcméon editor GUI.
+
+    Variable:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The unique name of the user conversation variable
+        description:
+          type: string
+          description: >
+            A human-readable description of the meaning of 
+            the content of this variable. Displayed in the Alcméon editor GUI.
+
+    IntegerParameterSpecification:
+      type: object
+      properties:
+        min:
+          description: All parameter values should be such that value >= min
+          type: integer
+        max:
+          description: All parameter values should be such that value < max
+          type: integer
+
+    FloatParameterSpecification:
+      type: object
+      properties:
+        min:
+          description: All parameter values should be such that value >= min
+          type: number
+        max:
+          description: All parameter values should be such that value < max
+          type: number
+
+    StringParameterSpecification:
+      type: object
+      properties:
+        regexp:
+          type: string
+          description: >
+            A regular expression that constrains the values allowed. 
+            This regular expression should match the [Javascript syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
+
+    FileParameterSpecification:
+      type: object
+      properties:
+        mime_types:
+          description: The list of mime types allowed for this file
+          type: array
+          items:
+            type: string
+
+    EnumParameterSpecification:
+      type: object
+      properties:
+        values:
+          description: >
+            The list of values that can be chosen for this parameter. 
+            The bot editor GUI will display this list in a dropdown for selection.
+          type: array
+          items:
+            type: string
+
+    Parameter:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [integer, float, boolean, string, url, enum, file]
+          description: The type of the parameter
+        name:
+          type: string
+          description: The unique name of the box parameter
+        description:
+          type: string
+          description: >
+            A human-readable description of the meaning of the content of 
+            this parameter. Displayed in the Alcméon editor GUI.
+        default:
+          description: >
+            The default value for this parameter. 
+            This field can be null if no default value is needed. 
+            The type of this field depends on the content of the type field:
+              * if type=integer: json type=integer
+              * if type=float: json type=number
+              * type=boolean: json type=boolean
+              * type=string, url, enum: json type=string
+          nullable: true
+          anyOf:
+            - type: integer
+            - type: number
+            - type: boolean
+            - type: string
+        specification:
+          description: >
+            This field contains a type-specific dictionary that describes 
+            the set of values allowed for this parameter.
+
+
+            This field can be set to null or an empty dictionary to indicate 
+            that no specific constraints exist for this parameter.
+          nullable: true            
+          oneOf:
+            - $ref: '#/components/schemas/IntegerParameterSpecification'
+            - $ref: '#/components/schemas/FloatParameterSpecification'
+            - $ref: '#/components/schemas/StringParameterSpecification'
+            - $ref: '#/components/schemas/FileParameterSpecification'
+            - $ref: '#/components/schemas/EnumParameterSpecification'
+
+    Description:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the bot. It will be displayed in the Alcméon editor GUI
+        description:
+          type: string
+          description: A human-readable description of what the bot does. Displayed in the Alcméon editor GUI
+        exits:
+          description: A list of Exit objects, each of which describes an output connector for the bot.
+          type: array
+          items:
+            $ref: '#/components/schemas/Exit'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+          description: >
+            A list of Parameter objects, each of which describes an attribute that can be 
+            configured within the Alcméon editor GUI for a box instance.
+        input_variables:
+          description: >
+            A list of Variable objects, each of which describes a user conversation 
+            variable that can be read by the bot when a user enters a box via the 
+            input connector.
+          type: array
+          items:
+            $ref: '#/components/schemas/Variable'
+        output_variables:
+          description: >
+            A list of Variable objects, each of which describes a user conversation 
+            variable that can be written to by the bot when a user exits a box via 
+            one of the bot-specific output connector.
+          type: array
+          items:
+            $ref: '#/components/schemas/Variable'
+        backends:
+          description: >
+            A list of backend names that this bot supports. If no value is specified, 
+            this bot supports them all.
+          type: array
+          items:
+            $ref: '#/components/schemas/Backend'
+        companies:
+          description: >
+            A list of Alcméon customer names that this bot supports. 
+            If no value is specified, this box will be made available to all customers.
+          type: array
+          items:
+            type: string
+
+    ##################################################
+    # The core API objects where you need to add new
+    # items if you add a new type of backend
+    ##################################################
+
+    Backend:
+      type: string
+      enum:
+        - facebook
+        - twitter
+        - whatsapp
+        - gbm
+        - webchat
+
+    EventRequest:
+      type: object
+      properties:
+        backend:
+          $ref: '#/components/schemas/Backend'
+          description: The name of the backend this event is generated for
+        parameters:
+          type: object
+          description: The set of key/value pairs associated with the per-box description parameters.
+        user_external_id:
+          type: string
+          description: The raw id of the user in the underlying social network API
+        user_name:
+          type: string
+          description: A user name associated with the underlying social network API
+        event:
+          oneOf:
+            - $ref: '#/components/schemas/MessengerEvent'
+            - $ref: '#/components/schemas/TwitterEvent'
+            - $ref: '#/components/schemas/WhatsappEvent'
+            - $ref: '#/components/schemas/GbmEvent'
+            - $ref: '#/components/schemas/WebChatEvent'
+
+    MessageResponse:
+      type: object
+      properties:
+        delay_ms:
+          type: integer
+          description: >
+            The number of milliseconds until Alcméon executes this response.
+            A convenient way to insert a delay before exiting the box.
+        body:
+          description: >
+            An object that matches the structure of the underlying social media message format.
+          oneOf:
+            - $ref: '#/components/schemas/MessengerMessageResponse'
+            - $ref: '#/components/schemas/TwitterMessageResponse'
+            - $ref: '#/components/schemas/WhatsappMessageResponse'
+            - $ref: '#/components/schemas/GbmMessageResponse'
+            - $ref: '#/components/schemas/WebChatMessageResponse'
+
+    ##################################################
+    # Messenger objects
+    ##################################################
+
+    MessengerUrlButton:
+      description: >
+        A [UrlButton](https://developers.facebook.com/docs/messenger-platform/reference/buttons/url)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [web_url]
+        title:
+          type: string
+          maxLength: 20
+        url:
+          type: string
+          format: uri
+        webview_height_ratio:
+          type: string
+          enum: [compact, tall, full]
+        messenger_extensions:
+          type: boolean
+        fallback_url:
+          type: string
+          format: uri
+        webview_share_button:
+          type: string
+          enum: [hide]
+          nullable: true
+
+    MessengerPostbackButton:
+      description: >
+        A [Postback button](https://developers.facebook.com/docs/messenger-platform/reference/buttons/postback)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [postback]
+        title:
+          type: string
+          maxLength: 20
+        payload:
+          description: The Messenger Length limit for this field is 1000 but we restrict it to 900.
+          type: string
+          maxLength: 900
+
+    MessengerCallButton:
+      description: >
+        A [Call button](https://developers.facebook.com/docs/messenger-platform/reference/buttons/call)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [phone_number]
+        title:
+          type: string
+          maxLength: 20
+        payload:
+          type: string
+
+    MessengerLoginButton:
+      description: >
+        A [Login button](https://developers.facebook.com/docs/messenger-platform/reference/buttons/login)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [account_link]
+        url:
+          type: string
+          format: uri
+
+    MessengerLogoutButton:
+      description: >
+        A [Logout button](https://developers.facebook.com/docs/messenger-platform/reference/buttons/logout)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [account_unlink]
+
+    MessengerGamePlayButton:
+      description: >
+        A [Game play button](https://developers.facebook.com/docs/messenger-platform/reference/buttons/game-play)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [game_play]
+        title:
+          type: string
+        payload:
+          type: string
+        game_metadata:
+          type: object
+          properties:
+            player_id:
+              type: string
+            context_id:
+              type: string
+      
+
+    MessengerButton:
+      description: >
+        A [Button](https://developers.facebook.com/docs/messenger-platform/send-messages/buttons)
+      oneOf:
+        - $ref: '#/components/schemas/MessengerUrlButton'
+        - $ref: '#/components/schemas/MessengerPostbackButton'
+        - $ref: '#/components/schemas/MessengerCallButton'
+        - $ref: '#/components/schemas/MessengerLoginButton'
+        - $ref: '#/components/schemas/MessengerLogoutButton'
+        - $ref: '#/components/schemas/MessengerGamePlayButton'
+      
+    MessengerButtonPayload:
+      description: >
+        A [payload field](https://developers.facebook.com/docs/messenger-platform/reference/templates/button#payload)
+        of a Button template.
+      type: object
+      properties:
+        template_type:
+          type: string
+          enum: [button]
+        text:
+          type: string
+          maxLength: 640
+        buttons:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessengerButton'
+
+    MessengerMessageResponse:
+      description: >
+        On Messenger, a trimmed down version of the 
+        [message](https://developers.facebook.com/docs/messenger-platform/reference/send-api#message) object.
+      type: object
+      properties:
+        text:
+          description: Message text.
+          type: string
+          maxLength: 2000
+        attachment:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [template]
+            payload:
+              oneOf:
+                - $ref: '#/components/schemas/MessengerButtonPayload'
+        quick_replies:
+          type: array
+          items:
+            description: >
+              A [quick_reply](https://developers.facebook.com/docs/messenger-platform/reference/buttons/quick-replies#quick_reply) object
+            type: object
+            properties:
+              content_type:
+                type: string
+                enum: [text, user_phone_number, user_email]
+              title:
+                type: string
+                maxLength: 20
+              payload:
+                description: The Messenger Length limit for this field is 1000 but we restrict it to 900.
+                type: string
+                maxLength: 900
+              image_url:
+                type: string
+                format: url
+            
+    MessengerEvent:
+      description: >
+        On Messenger, a trimmed down version of the
+        [message](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messages),
+        [messaging_postback](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_postbacks), and,
+        [messaging_account_linking](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_account_linking)
+        webhook events. Only the fields described below will be sent to the application.
+      type: object
+      properties:
+        message:
+          description: >
+            A trimmed down version of the [messaging](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messages#messaging) field of the `message` webhook event.
+          type: object
+          properties:
+            text:
+              type: string
+              description: Text of message
+            quick_reply:
+              description: Optional custom data provided by the sending app
+              type: object
+              properties:
+                payload:
+                  type: string
+                  description: Custom data provided by the app
+        postback:
+          description: >
+            A trimmed version of the [postback](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_postbacks#postback) field of the `messaging_postback` webhook.
+          type: object
+          properties:
+            payload:
+              description: payload parameter that was defined with the button.
+              type: string
+        account_linking:
+          description: >
+            A trimmed down version of the [account_linking](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_account_linking#account_linking) field of the `messaging_account_linking` webhook
+          type: object
+          properties:
+            status:
+              type: string
+              enum: [linked]
+            authorization_code:
+              type: string
+              description: >
+                Value of pass-through authorization_code provided in the
+                [Account Linking](https://developers.facebook.com/docs/messenger-platform/account-linking/link-account) flow
+  
+    ##################################################
+    # Twitter objects
+    ##################################################
+
+    TwitterMessageResponse:
+      description: >
+        On Twitter, a [MessageDataObject](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/new-event#message-data-object) object
+      type: object
+      properties:
+        text:
+          type: string
+        quick_reply:
+          description: >
+            [QuickReply](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/quick-replies/api-reference/options) object
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [options]
+            options:
+              type: array
+              items:
+                type: object
+                properties:
+                  label:
+                    type: string
+                    maxLength: 36
+                  description:
+                    type: string
+                    maxLength: 72
+                  metadata:
+                    type: string
+                    maxLength: 1000
+        attachment:
+          $ref: '#/components/schemas/TwitterAttachment'
+
+    TwitterHashtag:
+      type: array
+      items:
+        type: object
+        properties:
+          indices:
+            type: array
+            items:
+              type: integer
+          text:
+            type: string
+
+    TwitterUrl:
+      type: object
+      properties:
+        display_url:
+          type: string
+        expanded_url:
+          type: string
+        indices:
+          type: array
+          items:
+            type: integer
+        url:
+          type: string
+
+    TwitterUserMention:
+      type: object
+      properties:
+        id:
+          type: integer
+        id_str:
+          type: string
+        indices:
+          type: array
+          items:
+            type: integer
+        name:
+          type: string
+        screen_name:
+          type: string
+
+    TwitterSymbol:
+      type: object
+      properties:
+        indices:
+          type: array
+          items:
+            type: integer
+        text:
+          type: string
+
+    TwitterSize:
+      type: object
+      properties:
+        w:
+          type: integer
+        h:
+          type: integer
+        resize:
+          type: string
+          enum: [fit, crop]
+
+    TwitterMedia:
+      type: object
+      properties:
+        display_url:
+          type: string
+        expanded_url:
+          type: string
+        id:
+          type: integer
+        id_str:
+          type: string
+        indices:
+          type: array
+          items:
+            type: integer
+        media_url:
+          type: string
+        media_url_https:
+          type: string
+        sizes:
+          type: object
+          properties:
+            thumb:
+              $ref: '#/components/schemas/TwitterSize'
+            large:
+              $ref: '#/components/schemas/TwitterSize'
+            medium:
+              $ref: '#/components/schemas/TwitterSize'
+            small:
+              $ref: '#/components/schemas/TwitterSize'
+        source_status_id:
+          type: integer
+        source_status_id_str:
+          type: string
+        type:
+          type: string
+          enum: [photo, video, animated_gif]
+        url:
+          type: string
+
+    TwitterEntities:
+      description: >
+        An [Entities](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#hashtags)
+        object as
+      type: object
+      properties:
+        hashtags:
+          description: >
+            A list of [HashTag](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#hashtags) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterHashtag'
+        media:
+          description: >
+            A list of [Media](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#media) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterMedia'
+        urls:
+          description: >
+            A list of [Url](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#urls) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterUrl'
+        user_mentions:
+          description: >
+            A list of [User Mention](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#user_mentions) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterUserMention'
+        symbols:
+          description: >
+            A list of [Symbol](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#symbols) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterSymbol'
+
+    TwitterEvent:
+      description: >
+        On Twitter, a subset of the [message_data](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/guides/message-create-object) object. The list of supported fields is documented below.
+      type: object
+      properties:
+        text:
+          type: string
+          description: >
+            The Direct Message text.
+#        entities:
+#          $ref: '#/components/schemas/TwitterEntities'
+        quick_reply_response:
+          description: >
+            A [quick_reply_response](https://developer.twitter.com/en/docs/direct-messages/quick-replies/overview) object  
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [options]
+            metadata:
+              type: string
+#        attachment:
+#          $ref: '#/components/schemas/TwitterAttachment'
+
+    TwitterAttachment:
+      description: >
+        An [attachment](https://developer.twitter.com/en/docs/direct-messages/message-attachments/overview) object
+
+
+        Note: this field can be set but will be ignored for now
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [media]
+        media:
+          type: object
+          properties:
+            id:
+              type: string
+
+
+    ##################################################
+    # Whatsapp objects
+    ##################################################
+
+    WhatsappReplyButtons:
+      description: A subset of the [Reply Buttons](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages#reply-buttons) object
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the interactive message
+          enum: [button]
+        body:
+          type: object
+          properties:
+            text:
+              description: An text displayed before the buttons
+              type: string
+        action:
+          type: object
+          properties:
+            buttons:
+              type: array
+              description: >
+                A list of buttons
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: >
+                      The type of the button object
+                    enum: [reply]
+                  reply:
+                    type: object
+                    description: >
+                      A clickable reply button
+                    properties:
+                      title:
+                        type: string
+                        description: >
+                          The label displayed in the button
+                      id:
+                        type: string
+                        description: >
+                          An unique postback id associated with the button
+
+    WhatsappListMessages:
+      description: A subset of the [List message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages#list-messages) object
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the interactive message
+          enum: [list]
+        body:
+          type: object
+          properties:
+            text:
+              description: The text of the message
+              type: string
+        action:
+          type: object
+          properties:
+            sections:
+              type: array
+              description: >
+                A list of rows containing a title with one or more buttons
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: >
+                      The title associated with the section
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          description: >
+                            The title associated with the button
+                        id:
+                          type: string
+                          description: >
+                            An unique id associated with the button
+                        description:
+                          type: string
+                          description: >
+                            A simple text describing what button does (optional)
+            button:
+              type: string
+              description: A simple text to describe the content of the list of buttons to display below
+
+    WhatsappMediaObject:
+      description: A subset of the [Media object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) object
+      type: object
+      properties:
+        link:
+          type: string
+          description: The URL of the media to be sent
+        caption:
+          type: string
+          description: Media description
+
+    WhatsappMessageResponse:
+      description: >
+        On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
+      type: object
+      properties:
+        type:
+          description: >
+            A `text` or `interactive` or `document` or `image` or `video` object
+          type: string
+          enum: [text, interactive, document, image, video]
+        text:
+          description: >
+            A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
+          type: object
+          properties:
+            body:
+              description: The text of the message
+              type: string
+        interactive:
+          description: A subset of an [interactive message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages) object.
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/WhatsappListMessages'
+            - $ref: '#/components/schemas/WhatsappReplyButtons'
+        image:
+          description: >
+            A [media_object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) containing an image
+          type: object
+          allOf:
+           - $ref: '#/components/schemas/WhatsappMediaObject'
+        video:
+          description: >
+            A [media_object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) containing a video
+          type: object
+          allOf:
+           - $ref: '#/components/schemas/WhatsappMediaObject'
+        document:
+          description: >
+            A [media_object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) containing a document
+          type: object
+          allOf:
+           - $ref: '#/components/schemas/WhatsappMediaObject'
+
+    WhatsappEvent:
+      description: >
+        On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
+      type: object
+      properties:
+        text:
+          description: >
+            A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
+          type: object
+          properties:
+            body:
+              description: The text of the message
+              type: string
+        interactive:
+          description: >
+            A [interactive object](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages)
+          type: object
+          properties:
+            button_reply:
+              description: A [Reply Buttons object](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages)
+              type: object
+              properties:
+                title:
+                  description: The button label
+                  type: string
+                  example: Button-1
+                payload:
+                  description: An unique id associated with the button
+                  type: string
+                  example: 123
+            list_reply:
+              description: A [List Messages object](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages)
+              type: object
+              properties:
+                title:
+                  description: The button label
+                  type: string
+                  example: Button-1
+                description:
+                  description: A text describing what the button represents
+                  type: string
+                  example: This is my answer
+                payload:
+                  description: An unique id associated with the button
+                  type: string
+                  example: 123
+
+
+    ##################################################
+    # Google Business Messages objects
+    ##################################################
+
+    GbmMessageResponse:
+      description: >
+        On Google Business Messages, a subset of the 
+        [Message](https://developers.google.com/business-communications/business-messages/reference/rest/v1/conversations.messages#resource:-message) object
+      type: object
+      properties:
+        text:
+          description: Text message.
+          type: string
+        containsRichText:
+          description:  >
+            If true, indicates that the message contains 
+            [rich text](https://developers.google.com/business-communications/business-messages/guides/build/send#rich_text).
+          type: boolean
+
+    GbmEvent:
+      description: >
+        On Google Business Messages, a subset of 
+        [Text](https://developers.google.com/business-communications/business-messages/guides/build/receive#text) objects
+      type: object
+      properties:
+        message:
+          description: >
+            A subset of
+            [Message](https://developers.google.com/business-communications/business-messages/reference/rest/v1/Message) objects
+          type: object
+          properties:
+            text:
+              type: string
+
+    ##################################################
+    # Webchat Messages objects
+    ##################################################
+
+    WebchatText:
+      type: object
+      description: Text message
+      properties:
+        type:
+          type: string
+          enum: [text]
+        datetime:
+          type: string
+          description: Datetime of the message
+        text:
+          type: object
+          properties:
+            content:
+              description: Content of message
+              type: string
+              example: Hello
+
+    WebchatImage:
+      type: object
+      description: Image message
+      properties:
+        type:
+          type: string
+          enum: [image]
+        datetime:
+            type: string
+            description: Datetime of the message
+        image:
+          type: object
+          properties:
+            width:
+              description: The width of the image
+              type: integer
+              example: 600
+            height:
+              description: The height of the image
+              type: integer
+              example: 326
+            url:
+              description: >
+                A url which is valid only for a short amount of time (less than 60 seconds).
+                If the callee wishes to access the content of the image, he should download
+                the body of this url right away.
+              type: string
+              format: uri
+              example: https://admin.alcmeon.com/2/temporary-public-files/55edf7a6-65c2-4c45-9aa2-ee206044e5ee?jwt=XXX
+
+    WebchatButton:
+      type: object
+      description: Button clicked event
+      properties:
+        type:
+          type: string
+          enum: [ button ]
+        datetime:
+          type: string
+          description: Datetime of the message
+        button:
+          type: object
+          properties:
+            name:
+              description: Label that is displayed on the button
+              type: string
+              example: This is my store!
+            payload:
+              description: The payload associated with the button
+              type: string
+              example: 3917
+
+    WebchatTextInputResponse:
+      type: object
+      description: User phone or email input
+      properties:
+        type:
+          type: string
+          enum: [ text_input_response ]
+        datetime:
+            type: string
+            description: Datetime of the message
+        text_input_response:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [ phone, email ]
+              description: The type field from the matching TextInput object
+            content:
+              type: string
+              description: input value
+              example: aaa@gmail.com
+            payload:
+              type: string
+              description: Payload field from the matching TextInput object
+              example: 3497
+
+    WebchatPostback:
+      type: object
+      description: User clicked on a postback button
+      properties:
+        type:
+          type: string
+          enum: [ postback ]
+        datetime:
+          type: string
+          description: Datetime of the message
+        postback:
+          type: object
+          properties:
+            payload:
+              type: string
+              description: The payload associated with the postback button displayed in the persistent menu
+
+    WebChatMessageResponse:
+      description: >
+        On WebChat, a subset of the
+        [Message](https://docs.google.com/document/d/1cLUiM00Yd4Vw_EWkBmyMlmSfxAeKRJj1_1nRUJirgL0/edit?usp=sharing) object
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        text:
+          type: object
+          description: Send a text message back to the user.
+          properties:
+            type:
+              type: string
+              enum: [ text ]
+            text:
+              type: object
+              properties:
+                content:
+                  description: Content of message
+                  type: string
+                  example: Hello
+        buttons:
+          type: array
+          description: List of buttons displayed under message
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: label of button, displayed on screen
+              payload:
+                type: string
+                description: arbitrary string hidden from the user, associated with button
+
+    WebChatEvent:
+      description: >
+        On WebChat, a Message object
+      oneOf:
+        - $ref: '#/components/schemas/WebchatText'
+        - $ref: '#/components/schemas/WebchatImage'
+        - $ref: '#/components/schemas/WebchatButton'
+        - $ref: '#/components/schemas/WebchatTextInputResponse'
+        - $ref: '#/components/schemas/WebchatPostback'
+
+security:
+  - basic_auth: []
+
+paths:
+
+  /description:
+    get:
+      tags:
+        - Subbots
+      summary: Describe
+      description: >
+        Whenever a new bot box is added to a scenario, we `GET /description`
+        to obtain a description of the bot output connectors, parameters, etc. 
+
+
+        This endpoint can also be invoked at other times during the bot lifecycle. 
+
+      responses:
+        "200":
+          description: >
+            Return a 200 status to indicate that the data was received successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Description'
+
+  /start:
+    post:
+      tags: 
+        - Subbots
+      summary: Start
+      description: >
+        Whenever a user enters a box via its input connector, this endpoint will 
+        be invoked via `POST URL/start`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartEventRequest'
+      responses:
+        "200":
+          description: >
+            Return a 200 status to indicate that the data was received successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BotResponse'
+
+  /handle-event:
+    post:
+      tags: 
+        - Subbots
+      summary: Handle event
+      description: >
+        Whenever a user interacts with a bot box after entering via input 
+        connector, this endpoint will be invoked via `POST URL/handle-event`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HandleEventRequest'
+      responses:
+        "200":
+          description: >
+            Return a 200 status to indicate that the data was received successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BotResponse'
+
+  /end:
+    post:
+      tags: 
+        - Subbots
+      summary: End
+      description: >
+        `POST URL/end` is invoked whenever Alcméon thinks the bot box did something 
+        wrong and took the “failed” output connector. It is not an error if it is 
+        not implemented. Its return value is ignored.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_external_id:
+                  type: string
+                  description: The raw id of the user in the underlying social network API
+      responses:
+        "200":
+          description: >
+            Return a 200 status to indicate that the data was received successfully.
