@@ -1,2 +1,1 @@
-# Subbot API
-Alcméon Open API Subbot specifications
+# Alcméon OpenAPI Specifications
