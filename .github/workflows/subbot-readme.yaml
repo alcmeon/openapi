@@ -13,7 +13,3 @@ jobs:
         with:
           readme-oas-key: ${{ secrets.README_OAS_SUBBOT_KEY }}
           oas-file-path: '../../subbot.yaml'
-      - uses: readmeio/github-readme-sync@v2
-        with:
-          readme-oas-key: ${{ secrets.README_OAS_USER_KEY }}
-          oas-file-path: '../../user.yaml'
