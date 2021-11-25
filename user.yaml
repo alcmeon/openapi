@@ -6,20 +6,6 @@ servers:
 info:
   title: Alcméon User Provisionning API
   version: '1.0'
-  description: >
-      The purpose of this API is to allow third-parties to create
-      and disable user accounts from within their internal user management
-      systems. 
-
-
-      Usually, this is done by configuring SAML or OpenID but sometimes,
-      it is not possible to deploy such setups. This API complements the
-      Alcméon user interface to:
-
-        - [List roles](#get-/roles)
-        - [Create user accounts](#post-/accounts)
-        - [Assign roles to user accounts](#post-/accounts/-account_id-)
-        - [Disable user accounts](#post-/accounts/-account_id-)
 
 components:
 
@@ -197,3 +183,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /roles:
+    get:
+      tags: 
+        - User Account Provisioning
+      summary: List roles
+      description: >
+        Return the list of roles that exist. Roles should be created, edited and named within
+        the Alcméon user interface.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+
