@@ -7,6 +7,7 @@ info:
   title: Subbot API
   version: '1.0'
   description: >
+
       The intent of this API is to allow third-parties to build 
       complex bot interactions on Messenger, Twitter, ABC, etc. 
       that can be integrated in the Alcméon bot editor. 
