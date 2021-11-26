@@ -2,10 +2,11 @@ openapi: 3.0.0
 servers:
   - url: https://inmessage.alcmeon.com/
     description: Production api server
+
 info:
-  title: Alcméon Beta API
-  version: 'Beta'
-  description: >
+  title: Webchat
+  version: '1.0'
+
 components:
   schemas:
     AuthenticatedPage:

@@ -4,7 +4,7 @@ servers:
     description: Production api server
 
 info:
-  title: Alcméon User Provisionning API
+  title: User Provisionning
   version: '1.0'
 
 components:
