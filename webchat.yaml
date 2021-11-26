@@ -411,6 +411,7 @@ components:
         [Authenticate](#get-/-page_id-/authenticate) endpoint
       type: http
       scheme: bearer
+
     inmessage_authentication:
       description: >
         This is the authentication mecanism to authenticate most calls to the
