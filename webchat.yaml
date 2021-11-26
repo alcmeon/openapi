@@ -405,6 +405,7 @@ components:
         - $ref: '#/components/schemas/TextInputResponseMessagePayload'
 
   securitySchemes:
+
     inmessage_authentication_jwt:
       description: >
         This is the authentication mecanism to authenticate calls to the 
