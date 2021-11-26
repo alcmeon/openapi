@@ -68,6 +68,25 @@ security:
   - basic_auth: []
 
 paths:
+
+  /roles:
+    get:
+      tags: 
+        - User Account Provisioning
+      summary: List roles
+      description: >
+        Return the list of roles that exist. Roles should be created, edited and named within
+        the Alcméon user interface.
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+
   /accounts:
     post:
       tags:
@@ -183,22 +202,3 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-
-  /roles:
-    get:
-      tags: 
-        - User Account Provisioning
-      summary: List roles
-      description: >
-        Return the list of roles that exist. Roles should be created, edited and named within
-        the Alcméon user interface.
-      responses:
-        '200':
-          description: Returned upon succes
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Role'
-

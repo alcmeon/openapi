@@ -1,0 +1,635 @@
+openapi: 3.0.0
+servers:
+  - url: https://inmessage.alcmeon.com/
+    description: Production api server
+info:
+  title: Alcméon Beta API
+  version: 'Beta'
+  description: >
+components:
+  schemas:
+    AuthenticatedPage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The `page_id`
+        name:
+          type: string
+          description: A human-friendly name associated with the `page_id`
+        icon_url:
+          type: string
+          format: uri
+          description: Brand icon url associated with the `page_id`
+        chat_window_css:
+          type: string
+          description: Css for styling the chat window.
+        privacy_link:
+          type: string
+          format: uri
+          description: The url for the privacy notice
+        lang_code:
+          type: string
+          description: >
+            Default lang code for page, eg "en", "fr". Used by webchat client to 
+            localize messages if it does not know any better default.
+        persistent_menu:
+          $ref: '#/components/schemas/PersistentMenu'
+        jwt:
+          type: string
+          description: >
+            A JSON Web Token which can be used to identify the user in further 
+            http requests in the Authorization header
+
+    PersistentMenu:
+      description: A list of menu items
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum:
+              - alcmeon_restart_conversation
+              - web_url
+              - postback
+          title:
+            type: string
+            description: The label of the menu item
+          urlOrPayload:
+            type: string
+            description: >
+              if type is `web_url`, the URL to open in a new tab when 
+              the user clicks on this item; if type is `postback`, the 
+              metadata to post in a postback message when the user clicks
+              on this item.
+
+    Button:
+      type: object
+      properties:
+        name:
+          type: string
+          description: label of button, displayed on screen
+        payload:
+          type: string
+          description: arbitrary string hidden from the user, associated with button
+
+    User:
+      description: >
+        The sender or recipient of a message. If message.is_from_brand == false then authenticated is null.
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique id associated with the user
+        name:
+          type: string
+          description: a human-readable name associated with the user
+        authenticated:
+          $ref: '#/components/schemas/Authenticated'
+
+    Authenticated:
+      type: object
+      properties:
+        customer_id:
+          type: string
+          description: a stage unique id for the customer.
+        sms_notification_phone_number:
+          type: string
+          description: >
+            If specified, the phone number to send SMS notifications to when
+            an agent sends a reply in Alcméon.
+        notification_id:
+          type: string
+          description: >
+            If specified, the notification id to use in the associated [webhook](#post-/notify)
+        attributes:
+          description: >
+            the list of attributes to display to customer support agents in the Alcméon console.
+          type: array
+          items:
+            description: a pair of key/value items to display on screen
+            type: array
+            items:
+              type: string
+
+    MessageBase:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: unique id for message
+        is_from_brand:
+          type: boolean
+          description: true if message was sent by brand
+        datetime:
+          type: string
+        from_user:
+          $ref: '#/components/schemas/User'
+        to_user:
+          $ref: '#/components/schemas/User'
+        disable_input:
+          type: boolean
+          description: >
+            If true, input is disabled. 
+            This field can be set to true only when `is_from_brand` is true too.
+
+    Start:
+      description: >
+        Start data. (Optional)
+      type: object
+      properties:
+        ref:
+          type: string
+          description: >
+            Optional. Ref value of a "Link with ref" scenario box.
+            This is used to start conversation from a specific entry box.
+
+    StartMessagePayload:
+      description: >
+        This is the equivalent of a `Get Started` button on Messenger. i.e.,
+        the expectation is that this is triggered only upon a user interaction with
+        a button that clearly indicates an intent to start a conversation with the brand.
+
+
+        This payload should also be triggered upon a click on a `RESTART` button from the
+        persistent menu.
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [start-conversation]
+        start-conversation:
+          $ref: '#/components/schemas/Start'
+
+    StartMessage:
+      description: >
+        When `type = start-conversation`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/StartMessagePayload'
+
+    Postback:
+      description: >
+        Postback data.
+      type: object
+      properties:
+        title:
+          type: string
+          description: >
+            The label of the button displayed to the user
+        payload:
+          type: string
+          description: >
+            The payload associated with the postback button displayed to the user
+
+    PostbackMessage:
+      description: >
+        When `type = postback`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/PostbackMessagePayload'
+
+    PostbackMessagePayload:
+      description: >
+        The user clicked on a `postback` item from
+        the persistent menu.
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [postback]
+        postback:
+          $ref: '#/components/schemas/Postback'
+
+    Text:
+      description: The text object
+      type: object
+      properties:
+        content:
+          type: string
+          description: text to send to the user
+
+    TextMessage:
+      description: >
+        When `type = text`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/TextMessagePayload'
+        - type: object
+          properties:
+            text:
+              type: object
+              properties:
+                buttons:
+                  description: The list of buttons permanently displayed with the text
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        description: The type of the button. For now, only url buttons are supported. They will be rendered as a clickable link
+                        type: string
+                        enum: [url_button]
+                      url_button:
+                        type: object
+                        properties:
+                          title:
+                            description: The label displayed on the button
+                            type: string
+                          web_url:
+                            description: The url which should be opened upon a click on this button
+                            type: string
+                            format: uri
+                          open_link_in_new_tab:
+                            description: Should the url associated with this button be opened in a new tab or not ?
+                            type: boolean
+            buttons:
+              description: If specified, the list of buttons to display below the text
+              type: array
+              items:
+                $ref: '#/components/schemas/Button'
+
+    TextMessagePayload:
+      description: >
+        The user typed something in the text input field
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        text:
+          $ref: '#/components/schemas/Text'
+
+    ButtonMessage:
+      description: >
+        When `type = button`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/ButtonMessagePayload'
+
+    ButtonMessagePayload:
+      description: >
+        The user clicked on a button
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [button]
+        button:
+          $ref: '#/components/schemas/Button'
+
+    Image:
+      type: object
+      properties:
+        width:
+          description: Width (pixels) of image
+          type: integer
+        height:
+            description: Height (pixels) of image
+            type: integer
+        media_uuid:
+          description: Id of media associated with this image
+          type: integer
+
+    ImageMessage:
+      description: >
+        When `type = image`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/ImageMessagePayload'
+
+    ImageMessagePayload:
+      description: >
+        The user uploaded an image
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [image]
+        image:
+          $ref: '#/components/schemas/Image'
+
+    TextInputResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          description: value input by the user
+        type: 
+          type: string
+          description: type field from the matching TextInput object
+        payload:
+          type: string
+          description: payload field from the matching TextInput object
+
+    TextInputResponseMessage:
+      description: >
+        When `type = text_input_response`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/TextInputResponseMessagePayload'
+
+    TextInputResponseMessagePayload:
+      description: >
+        User entered a response in the text input field
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text_input_response]
+        text_input_response:
+          $ref: '#/components/schemas/TextInputResponse'
+
+    TextInputRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - password
+            - email
+            - text
+            - phone
+        title:
+          type: string
+          description: Prompt to display next to the text input field
+        regular_expression:
+          type: string
+          description: Regular expression which must be validated client-side before the TextInputResponse is sent back
+        payload:
+          type: string
+          description: value to pass back to the server in TextInputResponse
+
+    TextInputRequestMessage:
+      description: >
+        When `type = text_input`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/TextInputRequestMessagePayload'
+
+    TextInputRequestMessagePayload:
+      description: >
+        Brand is asking user to enter some text matching specific constraints
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text_input]
+        text_input:
+          $ref: '#/components/schemas/TextInputRequest'
+
+    Message:
+      oneOf:
+        - $ref: '#/components/schemas/StartMessage'
+        - $ref: '#/components/schemas/PostbackMessage'
+        - $ref: '#/components/schemas/TextMessage'
+        - $ref: '#/components/schemas/ButtonMessage'
+        - $ref: '#/components/schemas/ImageMessage'
+        - $ref: '#/components/schemas/TextInputResponseMessage'
+        - $ref: '#/components/schemas/TextInputRequestMessage'
+
+    BrandMessage:
+      oneOf:
+        - $ref: '#/components/schemas/TextMessage'
+        - $ref: '#/components/schemas/ImageMessage'
+        - $ref: '#/components/schemas/TextInputRequestMessage'
+
+    SendMessage:
+      oneOf:
+        - $ref: '#/components/schemas/StartMessagePayload'
+        - $ref: '#/components/schemas/PostbackMessagePayload'
+        - $ref: '#/components/schemas/TextMessagePayload'
+        - $ref: '#/components/schemas/ButtonMessagePayload'
+        - $ref: '#/components/schemas/ImageMessagePayload'
+        - $ref: '#/components/schemas/TextInputResponseMessagePayload'
+
+  securitySchemes:
+    inmessage_authentication_jwt:
+      description: >
+        This is the authentication mecanism to authenticate calls to the 
+        [Authenticate](#get-/-page_id-/authenticate) endpoint
+      type: http
+      scheme: bearer
+    inmessage_authentication:
+      description: >
+        This is the authentication mecanism to authenticate most calls to the
+        [Online webchat](#tag--Live-chat) endpoints.
+      type: http
+      scheme: bearer
+
+security:
+  - inmessage_authentication: []
+
+paths:
+  /webhook/notify:
+    post:
+      security: []
+      servers:
+        - url: https://your.server/your/path
+          description: Your webhook server
+      summary: Webhook notify
+      description:
+        Whenever a new brand message is sent on an existing conversation,
+        we POST /notify this webhook.
+
+
+        The url to this webhook should be provided to support@alcmeon.com 
+        upon setup of this environment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandMessage'
+      responses:
+        "200":
+          description: >
+            Return a 200 status to indicate that the data was received successfully.
+
+
+  /{page_id}/authenticate:
+    get:
+      security:
+        - inmessage_authentication_jwt: []
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+      summary: Authenticate user
+      description: >
+        Exchange a jwt token that contains secret per-user authentication information
+        with a jwt that can be used for all other API endpoint invocations.
+
+
+        The input jwt token should be encrypted with the HS256 JWT algorithm and the secret
+        key obtained from support@alcmeon.com. This JWT token should contain the following custom claims:
+
+          - `customer_id` - A string that uniquely identifies the underlying customer account.
+          - `sms_notification_phone_number` - If specified, a string that contains a phone 
+            number (with +XXX international prefix) to which sms notifications should be 
+            sent whenever a human sends a reply to this customer
+          - `name` - A string which contains the customer's name to display in the Alcméon user profile
+          - `attributes` - A list of key/value string pairs: If specified, a set of key/value metadata 
+            fields which will be associated with the customer and displayed on the user profile page 
+            in Alcméon. Example: [["age", "24"], ["City", "Paris"]]
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatedPage'
+
+  /{page_id}/self:
+    get:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+      summary: Authenticate anonymous user
+      description: >
+        If the client does not have an authentication JWT to call
+        [Authenticate](#get-/-page_id-/authenticate), it can retrieve an
+        anonymous authentication JWT by calling this endpoint.
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatedPage'
+
+  /{page_id}/conversation:
+    post:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+      summary: Send a message to a brand
+      description: >
+        Invoke this endpoint to send a message from a user to a brand.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessage'
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+    get:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+        - in: query
+          name: max_message_id
+          schema:
+            type: integer
+          description: If specified, return only messages which verify the condition `message.id < max_message_id`
+        - in: query
+          name: min_message_id
+          schema:
+            type: integer
+          description: >
+            If specified, return only messages which verify the condition `message.id > min_message_id`.
+      summary: Return list of messages for a conversation
+      description: >
+        Return up to 10 messages for the specified conversation, ordered by increasing message id.
+        Paging can be performed by using the `min_message_id` parameter, initialized to zero and
+        updated after each successful call to the max of the returned message ids + 1.
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                description: list of matching messages
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Conversation ID
+                  last_seen_message_id:
+                    type: integer
+                    description: Max of all message IDs GETed by http client
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+
+  /{page_id}/media:
+    post:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+      summary: Upload media
+      description: >
+        Upload media first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
+      requestBody:
+        description: The media bytes
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  media_uuid:
+                    description: a unique id which identifies the media uploaded
+                    type: integer
+
+  /{page_id}/media/{media_uuid}:
+    get:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+        - in: path
+          name: media_uuid
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the media
+      summary: Download media
+      description: >
+        Download media uploaded previously
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
