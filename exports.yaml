@@ -1,0 +1,76 @@
+openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
+    description: Production api server
+info:
+  title: Exports
+  version: 'Beta'
+
+components:
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+
+security:
+  - basic_auth: []
+
+paths:
+  /exports:
+    get:
+      tags:
+        - REST API
+      summary: List exports
+      description:
+        This endpoint will return the list of all exports configured in the Alcméon User Interface
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    description: >
+                      A unique id which can be used to download the zip file associated
+                      with this export
+                    type: integer
+                  last_attempt:
+                    description: Information about the last attempt to generate the export
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [successfull, failed]
+                      when:
+                        type: string
+                        format: date-time
+                  name:
+                    type: string
+                    description: The name of the export, as set in the Alcméon User Interface
+
+  /exports/{export_id}:
+    get:
+      tags:
+        - REST API
+      summary: Get export zip
+      description:
+        This endpoint returns a binary zip file which contains the last generated version of
+        the export.
+      parameters:
+        - in: path
+          name: export_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the export
+      responses:
+        "200":
+          description: Success
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+
