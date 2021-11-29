@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: https://your.server/path
+  - url: https://your.server/
     description: Your webhook server
 
 info:

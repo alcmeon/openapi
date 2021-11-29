@@ -1,7 +1,4 @@
 openapi: 3.0.0
-servers:
-  - url: https://api.alcmeon.com/
-    description: Production api server
 
 info:
   title: Synchronize
@@ -492,6 +489,8 @@ paths:
       tags:
         - REST API
       summary: List Action events
+      servers:
+        - url: https://api.alcmeon.com/
       description: >
         The cost of this endpoint is high. It is proportional to the number of actions returned.
         As such, this endpoint will return at most 10 events
@@ -526,6 +525,8 @@ paths:
       tags:
         - Webhooks
       summary: Notify event
+      servers:
+        - url: https://your.server/
       description: >
         This webhook can be configured via the Alcméon administration UI when a new API application
         is created.

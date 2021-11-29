@@ -1,7 +1,6 @@
 openapi: 3.0.0
 servers:
   - url: https://inmessage.alcmeon.com/
-    description: Production api server
 
 info:
   title: Webchat
@@ -390,12 +389,6 @@ components:
         - $ref: '#/components/schemas/TextInputResponseMessage'
         - $ref: '#/components/schemas/TextInputRequestMessage'
 
-    BrandMessage:
-      oneOf:
-        - $ref: '#/components/schemas/TextMessage'
-        - $ref: '#/components/schemas/ImageMessage'
-        - $ref: '#/components/schemas/TextInputRequestMessage'
-
     SendMessage:
       oneOf:
         - $ref: '#/components/schemas/StartMessagePayload'
@@ -425,32 +418,6 @@ security:
   - inmessage_authentication: []
 
 paths:
-
-  /webhook/notify:
-    post:
-      security: []
-      servers:
-        - url: https://your.server/your/path
-          description: Your webhook server
-      tags: [Webhooks]
-      summary: Notify upon Brand response
-      description:
-        Whenever a new brand message is sent on an existing conversation,
-        we POST /notify this webhook.
-
-
-        The url to this webhook should be provided to support@alcmeon.com 
-        upon setup of this environment.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BrandMessage'
-      responses:
-        "200":
-          description: >
-            Return a 200 status to indicate that the data was received successfully.
-
 
   /{page_id}/authenticate:
     get:
