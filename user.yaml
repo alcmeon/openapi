@@ -72,7 +72,7 @@ paths:
   /roles:
     get:
       tags: 
-        - User Account Provisioning
+        - REST API
       summary: List roles
       description: >
         Return the list of roles that exist. Roles should be created, edited and named within
@@ -90,7 +90,7 @@ paths:
   /accounts:
     post:
       tags:
-        - User Account Provisioning
+        - REST API
       summary: Create a user account
       description: >
         Create a new user account if it does not exist. Return an error otherwise.
@@ -126,7 +126,7 @@ paths:
 
     get:
       tags:
-        - User Account Provisioning
+        - REST API
       summary: List user accounts
       description: >
         Return the list of either active or inactive users.
@@ -156,7 +156,7 @@ paths:
   /accounts/{account_id}:
     post:
       tags:
-        - User Account Provisioning
+        - REST API
       summary: Update a user account
       description: >
         This endpoint makes it possible to:

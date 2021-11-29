@@ -557,7 +557,7 @@ paths:
             type: integer
           description: >
             If specified, return only messages which verify the condition `message.id > min_message_id`.
-      summary: Return list of messages for a conversation
+      summary: List messages in conversation
       tags: [REST API]
       description: >
         Return up to 10 messages for the specified conversation, ordered by increasing message id.

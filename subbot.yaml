@@ -6,36 +6,6 @@ servers:
 info:
   title: Subbot API
   version: '1.0'
-  description: >
-
-      The intent of this API is to allow third-parties to build 
-      complex bot interactions on Messenger, Twitter, ABC, etc. 
-      that can be integrated in the Alcméon bot editor. 
-
-
-      A set of third-party bot interactions are represented within 
-      the Alcméon bot editor as a single “box” with a single input 
-      connector and multiple output connectors. This is represented 
-      graphically via a box with input connectors on the left and
-      output connectors on the right.
-
-
-      Alcméon will trigger the third party bot when a user follows 
-      a graph edge into the third party input connector. All user 
-      messages will be forwarded to the third party bot until it 
-      decides to handover control back to the brand scenario by 
-      exiting through one of its output connectors. In case of 
-      bot failure (failure to reply successfully to API calls 
-      within a reasonable delay), Alcméon will force exit 
-      through the mandatory “Exit failure” output connector.
-
-
-      Each third-party bot should expose 4 HTTPS endpoints which 
-      share a common bot-specific url prefix, denoted URL in this document:
-        * [Describe](#get-URL/describe)
-        * [Start](#post-URL/start)
-        * [Handle event](#post-URL/handle-event)
-        * [End](#post-URL/end)
 
 components:
 
@@ -1170,7 +1140,7 @@ paths:
   /description:
     get:
       tags:
-        - Subbots
+        - Webhooks
       summary: Describe
       description: >
         Whenever a new bot box is added to a scenario, we `GET /description`
@@ -1191,7 +1161,7 @@ paths:
   /start:
     post:
       tags: 
-        - Subbots
+        - Webhooks
       summary: Start
       description: >
         Whenever a user enters a box via its input connector, this endpoint will 
@@ -1213,7 +1183,7 @@ paths:
   /handle-event:
     post:
       tags: 
-        - Subbots
+        - Webhooks
       summary: Handle event
       description: >
         Whenever a user interacts with a bot box after entering via input 
@@ -1235,7 +1205,7 @@ paths:
   /end:
     post:
       tags: 
-        - Subbots
+        - Webhooks
       summary: End
       description: >
         `POST URL/end` is invoked whenever Alcméon thinks the bot box did something 
