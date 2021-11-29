@@ -72,8 +72,8 @@ paths:
   /roles:
     get:
       tags: 
-        - REST API
-      summary: List roles
+        - Roles
+      summary: List
       description: >
         Return the list of roles that exist. Roles should be created, edited and named within
         the Alcméon user interface.
@@ -90,8 +90,8 @@ paths:
   /accounts:
     post:
       tags:
-        - REST API
-      summary: Create a user account
+        - Accounts
+      summary: Create
       description: >
         Create a new user account if it does not exist. Return an error otherwise.
         This user account is created with no roles assigned, and no password assigned:
@@ -126,8 +126,8 @@ paths:
 
     get:
       tags:
-        - REST API
-      summary: List user accounts
+        - Accounts
+      summary: List
       description: >
         Return the list of either active or inactive users.
       parameters:
@@ -156,8 +156,8 @@ paths:
   /accounts/{account_id}:
     post:
       tags:
-        - REST API
-      summary: Update a user account
+        - Accounts
+      summary: Update
       description: >
         This endpoint makes it possible to:
 
