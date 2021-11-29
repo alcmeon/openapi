@@ -1140,8 +1140,8 @@ paths:
   /description:
     get:
       tags:
-        - Webhooks
-      summary: Describe
+        - Configuration
+      summary: Describe configuration
       description: >
         Whenever a new bot box is added to a scenario, we `GET /description`
         to obtain a description of the bot output connectors, parameters, etc. 
@@ -1161,8 +1161,8 @@ paths:
   /start:
     post:
       tags: 
-        - Webhooks
-      summary: Start
+        - Events
+      summary: Handle first event
       description: >
         Whenever a user enters a box via its input connector, this endpoint will 
         be invoked via `POST URL/start`.
@@ -1183,8 +1183,8 @@ paths:
   /handle-event:
     post:
       tags: 
-        - Webhooks
-      summary: Handle event
+        - Events
+      summary: Handle other events
       description: >
         Whenever a user interacts with a bot box after entering via input 
         connector, this endpoint will be invoked via `POST URL/handle-event`.
@@ -1205,8 +1205,8 @@ paths:
   /end:
     post:
       tags: 
-        - Webhooks
-      summary: End
+        - Events
+      summary: Handle errors
       description: >
         `POST URL/end` is invoked whenever Alcméon thinks the bot box did something 
         wrong and took the “failed” output connector. It is not an error if it is 
