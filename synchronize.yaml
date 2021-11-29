@@ -1,0 +1,558 @@
+openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
+    description: Production api server
+
+info:
+  title: Synchronize
+  version: '1.0'
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+  schemas:
+    Action:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: An id unique to this Action.
+        type:
+          type: string
+          enum:
+            - task-create
+            - archive
+            - answer
+            - execute-answer
+            - auto-archive
+            - comment
+            - help-request
+            - help-answer
+            - acquire
+            - release
+            - steal
+            - assign-to
+            - first-seen
+            - tag
+            - on-hold
+            - tag-vip
+            - untag-vip
+            - anonymize-gdpr
+            - twitter-favorite
+            - twitter-unfavorite
+            - twitter-retweet
+            - twitter-unretweet
+            - twitter-follow
+            - twitter-unfollow
+            - twitter-block
+            - twitter-unblock
+            - twitter-delete
+            - facebook-like
+            - facebook-unlike
+            - facebook-hide
+            - facebook-unhide
+            - facebook-ban
+            - facebook-unban
+            - instagram-follow
+            - instagram-unfollow
+            - instagram-block
+            - instagram-unblock
+            - instagram-delete
+            - instagram-like
+            - instagram-unlike
+          description: >
+            The most important values are documented below:
+              * `task-create` - a Message was received
+              * `archive` - a Message was archived by an agent or a bot
+              * `answer` - a Message was answered by an agent
+              * `execute-answer` - the answer previously recorded has now been sent on the outbound channel
+              * `auto-archive` - a Message was archived by a bot. Note: for historical reasons,
+                 we have both the `archive` action type with `user.isbot = true` and the `auto-archive` type
+              * `comment` - an agent added a comment to a Message
+              * `help-request` - an agent requested help on a Message
+              * `help-answer` - an agent answered a help request
+              * `acquire` - an agent clicked on the processing arrow in the UI to process a Message
+              * `release` - an agent clicked on the release button in the UI to stop processing a Message
+              * `steal` - an agent clicked on the steal button in the UI to acquire a Message already assigned
+                 to another agent
+              * `assign-to` - an agent (or a bot) assigned a message to another agent
+              * `first-seen` - the UI of the processing page displayed a message to process to the agent
+                 who is assigned the message
+              * `tag` - an agent assigned a tag value to a message
+              * `on-hold` - an agent moved a message in the on hold inbox
+              * `tag-vip` - an agent added the VIP flag to a user
+              * `untag-vip` - an agent removed the VIP flag from a user
+              * `anonymize-gdpr` - a bot anonymized the task because its retention delay expired
+        date:
+          type: string
+          format: date
+          description: UTC+0
+        time:
+          type: string
+          format: time
+          description: UTC+0
+        status:
+          type: string
+          enum:
+            - ok
+            - fail
+            - pending
+        user:
+          $ref: '#/components/schemas/AdminUser'
+        task:
+          $ref: '#/components/schemas/Task'
+        account:
+          $ref: '#/components/schemas/Account'
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/CommentData'
+            - $ref: '#/components/schemas/HelpRequestData'
+            - $ref: '#/components/schemas/HelpAnswerData'
+            - $ref: '#/components/schemas/StealData'
+            - $ref: '#/components/schemas/AssignToData'
+            - $ref: '#/components/schemas/TagData'
+            - $ref: '#/components/schemas/AnswerData'
+            - $ref: '#/components/schemas/ExecuteAnswerData'
+
+    CommentData:
+      type: object
+      description: when `action.type = comment`
+      properties:
+        comment:
+          type: string
+          description: the comment entered by the agent
+
+    HelpRequestData:
+      type: object
+      description: when `action.type = help-request`
+      properties:
+        comment:
+          type: string
+          description: the comment entered by the agent
+
+    HelpAnswerData:
+      type: object
+      description: when `action.type = help-answer`
+      properties:
+        comment:
+          type: string
+          description: the reply entered by the agent
+
+    StealData:
+      type: object
+      description: when `action.type = steal`
+      properties:
+        from:
+          description: agent that the task was stolen from
+          $ref: '#/components/schemas/AdminUser'
+
+    AssignToData:
+      type: object
+      description: when `action.type = assign-to`
+      properties:
+        to:
+          description: agent that the task was assigned to
+          $ref: '#/components/schemas/AdminUser'
+
+    TagData:
+      type: object
+      description: when `action.type = tag`
+      properties:
+        previous:
+          description: previous value of the tag
+          $ref: '#/components/schemas/Tag'
+        next:
+          $ref: '#/components/schemas/Tag'
+          description: new value of the tag
+
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique internal id associated with the account
+        name:
+          type: string
+          description: the name displayed in the UI associated with this account
+        type:
+          type: string
+          enum:
+            - twitter
+            - facebook
+            - instagram
+            - critizr
+            - wechat
+            - gmb
+            - whatsapp
+            - bzc
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique internal id associated with a task
+        tags:
+          description: the list of tags associated with a task
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        url:
+          type: string
+          format: url
+          description: >
+            An internal url where this task can be viewed within Alcméon.
+            Users will need to authenticate against https://alcmeon.com/
+        conversation_id:
+          type: integer
+          description: an unique id associated with the conversation that contains this task.
+        state:
+          type: string
+          enum:
+            - pending
+            - assigned
+            - answered
+            - archived
+            - archived-auto
+            - help-requested
+            - help-answered
+            - on-hold
+          description: >
+            The semantics of these values are described below:
+              * `pending` - when a new message is received, the associated task is always
+                 created in this state
+              * `assigned` - the last action associated with this task is `action.type = assign-to` or `action.type = acquire`
+              * `answered` - the last action associated with this task is `action.type = answer`
+              * `archived` - the last action associated with this task is `action.type = archive`
+              * `archived-auto` - the last action associated with this task is `action.type = archive-auto`
+              * `help-requested` - the last action associated with this task is `action.type = help-request`
+              * `help-answered` - the last action associated with this task is `action.type = help-answer`
+              * `on-hold` - the last action associated with this task is `action.type = on-hold`
+        message:
+          $ref: '#/components/schemas/Message'
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique id associated with this message
+        is_private:
+          type: boolean
+          description: Is this message a sent privately ?
+        content:
+          type: string
+          description: content of message
+        discussion_id:
+          type: integer
+          description: DO NOT USE
+          deprecated: true
+        external_id:
+          type: string
+          description: a channel-specific id, unique to this message
+        date:
+          type: string
+          format: date
+          description: UTC+0, date when the message was authored
+        time:
+          type: string
+          format: time
+          description: UTC+0, time when the message was authored
+        attachments:
+          description: The list of attachments associated with this message
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        author:
+          $ref: '#/components/schemas/Author'
+
+    TwitterAuthor:
+      description: If defined, this field contains twitter-specific data
+      type: object
+      properties:
+        screen_name:
+          type: string
+          description: the Screen name. Does not include the starting @.
+        name:
+          type: string
+
+    InstagramAuthor:
+      description: If defined, this field contains instagram-specific data
+      type: object
+      properties:
+        username:
+          type: string
+        full_name:
+          type: string
+
+    InmessageAuthor:
+      description: If defined, this field contains inmessage-specific data
+      type: object
+      properties:
+        customer_id:
+          type: string
+          description: if authenticated, ID of the customer.
+        sms_notification_phone_number:
+          type: string
+          description: >
+            If specified, the phone number to send SMS notifications to when
+            an agent sends a reply in Alcméon.
+        attributes:
+          type: array
+          description: >
+            the list of attributes to display to customer support agents in the Alcméon console.
+          items:
+            description: a pair of key/value items to display on screen
+            type: array
+            items:
+              type: string
+
+    FacebookAuthor:
+      description: If defined, this field contains facebook-specific data
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        name:
+          type: string
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique id associated with this author
+        name:
+          type: string
+          description: >
+            The name of the author of a message. For example, in Twitter, 
+            this field contains the @screen_name. In Facebook, this field 
+            contains the firstname+lastname
+        facebook_author:
+          $ref: '#/components/schemas/FacebookAuthor'
+        twitter_author:
+          $ref: '#/components/schemas/TwitterAuthor'
+        instagram_author:
+          $ref: '#/components/schemas/InstagramAuthor'
+        inmessage_author:
+          $ref: '#/components/schemas/InmessageAuthor'
+
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique internal id associated with this attachment
+        mime_type:
+          type: string
+          description: the mime type of the attachment payload
+        data:
+          type: string
+          format: byte
+          description: the attachment payload, encoded as base64
+        size:
+          type: integer
+          description: the number of bytes of the decoded attachment payload
+
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: an internal user id
+        email:
+          type: string
+          format: email
+          description: the email associated with this agent
+        name:
+          type: string
+          description: the name of the human associated with this agent account
+        is_bot:
+          type: boolean
+          description: >
+            Is this agent account a virtual account associated with
+            an automated process ?
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: an internal id associated with this tag
+        name:
+          $ref: '#/components/schemas/TranslatedString'
+          description: a human-readable string which represents the name of this tag
+        value:
+          $ref: '#/components/schemas/TagValue'
+          description: the tag associated with the tag
+
+    TagValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: a unique id that identifies the value of the tag
+        value:
+          $ref: '#/components/schemas/TranslatedString'
+
+    TranslatedString:
+      type: object
+      properties:
+        value:
+          type: string
+          description: the human-readable value displayed on screen
+        fr:
+          type: string
+          deprecated: true
+        en:
+          type: string
+          deprecated: true
+        nl:
+          type: string
+          deprecated: true
+        es:
+          type: string
+          deprecated: true
+
+    Picture:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: an internal picture id
+        data:
+          type: string
+          format: byte
+          description: the picture data, inline, encoded as base64
+        mime_type:
+          type: string
+          description: the mime type of the picture data
+        size:
+          type: integer
+          description: number of bytes of the picture
+
+    Answer:
+      type: object
+      properties:
+        content:
+          type: string
+          description: the textual content of the answer
+        pictures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Picture'
+
+    AnswerData:
+      type: object
+      description: when `action.type = answer`
+      properties:
+        is_private:
+          type: boolean
+          description: is this answer sent privately ?
+        answers:
+          description: list of answers sent by the agent
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    ExecuteAnswerData:
+      type: object
+      description: when `action.type = execute-answer`
+      properties:
+        answer_action_id:
+          type: integer
+          description: Internal action id of the corresponding "answer" action
+        answer_status:
+          type: string
+          enum:
+            - ok
+            - fail
+          description: >
+            The final status of the answer action associated with `answer_action_id`:
+              * `ok` - The answer was successfully sent on the underlying social channel
+              * `fail` - The answer was not sent successfully
+
+
+security:
+  - basic_auth: []
+
+paths:
+  /actions:
+    get:
+      tags:
+        - REST API
+      summary: List Action events
+      description: >
+        The cost of this endpoint is high. It is proportional to the number of actions returned.
+        As such, this endpoint will return at most 10 events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                min_action_id:
+                  type: integer
+                  description: >
+                    Do not return actions whose id <= min_action_id.
+                    Set min_action_id = 0 to retrieve all actions.
+                max_action_id:
+                  type: integer
+                  description: Do not return actions whose id > max_action_id.
+              required:
+                - min_action_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Action'
+
+  /notify:
+    post:
+      tags:
+        - Webhooks
+      summary: Notify event
+      description: >
+        This webhook can be configured via the Alcméon administration UI when a new API application
+        is created.
+
+
+        If you receive consecutive notifications with non-consecutive notification ids (there is
+        a gap in the notification id sequence), one or more than one notifications have been lost.
+        The exact gap detection condition to use is the following: `current_notification_id != previous_notification + 1`.
+        If this condition is true, you should use the [/actions](#post-/actions) endpoint to collect missing actions
+        before processing the newly-received notification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: a unique monitonically increasing notification id
+                action:
+                  $ref: '#/components/schemas/Action'
+                  description: The action associated with this notification.
+      responses:
+        "200":
+          description: >
+            Return a 200 status to indicate that the data was received successfully.
+
+
+            If you do not return a 200 status, we will attempt 3 delivery retries at 1 minute intervals
+            for each consecutive event

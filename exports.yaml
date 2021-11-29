@@ -3,7 +3,7 @@ servers:
   - url: https://api.alcmeon.com/
     description: Production api server
 info:
-  title: Exports
+  title: (Beta) Exports
   version: 'Beta'
 
 components:
