@@ -19,8 +19,8 @@ paths:
   /exports:
     get:
       tags:
-        - REST API
-      summary: List exports
+        - Exports
+      summary: List all
       description:
         This endpoint will return the list of all exports configured in the Alcméon User Interface
       responses:
@@ -53,8 +53,8 @@ paths:
   /exports/{export_id}:
     get:
       tags:
-        - REST API
-      summary: Get export zip
+        - Exports
+      summary: Download one
       description:
         This endpoint returns a binary zip file which contains the last generated version of
         the export.
