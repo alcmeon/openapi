@@ -1,7 +1,9 @@
 openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
 
 info:
-  title: Synchronize
+  title: Actions
   version: '1.0'
 
 components:
@@ -486,11 +488,7 @@ security:
 paths:
   /actions:
     get:
-      tags:
-        - REST API
-      summary: List Action events
-      servers:
-        - url: https://api.alcmeon.com/
+      summary: List actions
       description: >
         The cost of this endpoint is high. It is proportional to the number of actions returned.
         As such, this endpoint will return at most 10 events
@@ -522,9 +520,7 @@ paths:
 
   /notify:
     post:
-      tags:
-        - Webhooks
-      summary: Notify event
+      summary: Notify new actions
       servers:
         - url: https://your.server/
       description: >
