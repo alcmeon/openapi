@@ -488,7 +488,7 @@ security:
 paths:
   /actions:
     get:
-      summary: List actions
+      tags: [List]
       description: >
         The cost of this endpoint is high. It is proportional to the number of actions returned.
         As such, this endpoint will return at most 10 events
@@ -520,7 +520,7 @@ paths:
 
   /notify:
     post:
-      summary: Notify new actions
+      tags: [Notify]
       servers:
         - url: https://your.server/
       description: >
