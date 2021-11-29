@@ -4,7 +4,7 @@ servers:
     description: Production api server
 info:
   title: (Beta) Exports
-  version: 'Beta'
+  version: '1.0'
 
 components:
   securitySchemes:
