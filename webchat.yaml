@@ -430,8 +430,8 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the page
-      tags: [REST API]
-      summary: Authenticate user
+      tags: [Authenticate]
+      summary: Custom identification
       description: >
         Exchange a jwt token that contains secret per-user authentication information
         with a jwt that can be used for all other API endpoint invocations.
@@ -465,8 +465,8 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the page
-      tags: [REST API]
-      summary: Authenticate anonymous user
+      tags: [Authenticate]
+      summary: Anonymously
       description: >
         If the client does not have an authentication JWT to call
         [Authenticate](#get-/-page_id-/authenticate), it can retrieve an
@@ -488,8 +488,8 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the page
-      tags: [REST API]
-      summary: Send a message to a brand
+      tags: [Conversation]
+      summary: Send a message
       description: >
         Invoke this endpoint to send a message from a user to a brand.
       requestBody:
@@ -524,8 +524,8 @@ paths:
             type: integer
           description: >
             If specified, return only messages which verify the condition `message.id > min_message_id`.
-      summary: List messages in conversation
-      tags: [REST API]
+      summary: List messages
+      tags: [Conversation]
       description: >
         Return up to 10 messages for the specified conversation, ordered by increasing message id.
         Paging can be performed by using the `min_message_id` parameter, initialized to zero and
@@ -559,8 +559,8 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the page
-      tags: [REST API]
-      summary: Upload media
+      tags: [Media]
+      summary: Upload
       description: >
         Upload media first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
       requestBody:
@@ -598,8 +598,8 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the media
-      tags: [REST API]
-      summary: Download media
+      tags: [Media]
+      summary: Download
       description: >
         Download media uploaded previously
       responses:
