@@ -1,5 +1,5 @@
 #/bin/sh
-npm install @apidevtools/swagger-cli
+npm install --prefix ./ @apidevtools/swagger-cli
 for f in user subbot webchat exports synchronize
 do
   echo "Validating $f";
