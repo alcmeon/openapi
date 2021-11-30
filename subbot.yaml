@@ -1161,7 +1161,7 @@ paths:
   /start:
     post:
       tags: 
-        - Events
+        - Runtime
       summary: Handle first event
       description: >
         Whenever a user enters a box via its input connector, this endpoint will 
@@ -1183,7 +1183,7 @@ paths:
   /handle-event:
     post:
       tags: 
-        - Events
+        - Runtime
       summary: Handle other events
       description: >
         Whenever a user interacts with a bot box after entering via input 
@@ -1205,7 +1205,7 @@ paths:
   /end:
     post:
       tags: 
-        - Events
+        - Runtime
       summary: Handle errors
       description: >
         `POST URL/end` is invoked whenever Alcméon thinks the bot box did something 
