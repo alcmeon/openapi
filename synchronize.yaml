@@ -492,22 +492,20 @@ paths:
       description: >
         The cost of this endpoint is high. It is proportional to the number of actions returned.
         As such, this endpoint will return at most 10 events
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                min_action_id:
-                  type: integer
-                  description: >
-                    Do not return actions whose id <= min_action_id.
-                    Set min_action_id = 0 to retrieve all actions.
-                max_action_id:
-                  type: integer
-                  description: Do not return actions whose id > max_action_id.
-              required:
-                - min_action_id
+      parameters:
+        - in: query
+          name: min_action_id
+          required: true
+          schema:
+            type: integer
+            description: >
+              Do not return actions whose id <= min_action_id.
+              Set min_action_id = 0 to retrieve all actions.
+        - in: query
+          name: max_action_id
+          schema:
+            type: integer
+            description: Do not return actions whose id > max_action_id.
       responses:
         '200':
           description: Success
