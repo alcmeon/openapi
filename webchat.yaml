@@ -3,7 +3,7 @@ servers:
   - url: https://inmessage.alcmeon.com/
 
 info:
-  title: Webchat
+  title: InMessage
   version: '1.0'
 
 components:
@@ -31,7 +31,7 @@ components:
         lang_code:
           type: string
           description: >
-            Default lang code for page, eg "en", "fr". Used by webchat client to 
+            Default lang code for page, eg "en", "fr". Used by InMessage client to 
             localize messages if it does not know any better default.
         persistent_menu:
           $ref: '#/components/schemas/PersistentMenu'
@@ -410,7 +410,7 @@ components:
     inmessage_authentication:
       description: >
         This is the authentication mecanism to authenticate most calls to the
-        [Online webchat](#tag--Live-chat) endpoints.
+        [InMessage API]() endpoints.
       type: http
       scheme: bearer
 

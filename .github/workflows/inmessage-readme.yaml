@@ -12,6 +12,6 @@ jobs:
       - uses: readmeio/github-readme-sync@v2
         with:
           readme-oas-key: ${{ secrets.README_OAS_WEBCHAT_KEY }}
-          oas-file-path: './webchat.yaml'
+          oas-file-path: './inmessage.yaml'
 
 
