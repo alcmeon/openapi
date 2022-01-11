@@ -67,10 +67,12 @@ paths:
           description: Numeric ID of the export
       responses:
         "200":
-          description: Success
+          description: The binary zip file
           content:
             application/zip:
               schema:
                 type: string
                 format: binary
+        "400":
+          description: No export is ready for download
 
