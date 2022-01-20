@@ -68,6 +68,11 @@ paths:
       responses:
         "200":
           description: The binary zip file
+          headers:
+            Last-Modified:
+              schema:
+                type: string
+              description: The date and time when the last export was successfully generated. RFC 7232 and 7231 document its [format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified).
           content:
             application/zip:
               schema:
