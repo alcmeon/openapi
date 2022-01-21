@@ -192,6 +192,7 @@ components:
             - gmb
             - whatsapp
             - bzc
+            - inmessage
 
     Task:
       type: object
