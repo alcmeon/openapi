@@ -611,3 +611,35 @@ paths:
                 type: string
                 format: binary
 
+  /{page_id}/file:
+    post:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+      tags: [File]
+      summary: Upload
+      description: >
+        Upload media first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
+      requestBody:
+        description: The media bytes
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  media_uuid:
+                    description: a unique id which identifies the media uploaded
+                    type: integer
