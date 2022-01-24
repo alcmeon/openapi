@@ -279,27 +279,33 @@ components:
         button:
           $ref: '#/components/schemas/Button'
 
-    Image:
+    ImageUuid:
       type: object
       properties:
-        width:
-          description: Width (pixels) of image
-          type: integer
-        height:
-            description: Height (pixels) of image
-            type: integer
         media_uuid:
           description: Id of media associated with this image
-          type: integer
+          type: string
 
-    ImageMessage:
+    GetImage:
+      allOf:
+        - $ref: '#/components/schemas/ImageUuid'
+        - type: object
+          properties:
+            width:
+              description: Width (pixels) of image
+              type: integer
+            height:
+                description: Height (pixels) of image
+                type: integer
+
+    GetImageMessage:
       description: >
         When `type = image`
       allOf:
         - $ref: '#/components/schemas/MessageBase'
-        - $ref: '#/components/schemas/ImageMessagePayload'
+        - $ref: '#/components/schemas/GetImageMessagePayload'
 
-    ImageMessagePayload:
+    GetImageMessagePayload:
       description: >
         The user uploaded an image
       type: object
@@ -308,7 +314,66 @@ components:
           type: string
           enum: [image]
         image:
-          $ref: '#/components/schemas/Image'
+          $ref: '#/components/schemas/GetImage'
+
+    SendImageMessagePayload:
+      description: >
+        The user uploaded an image
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ image ]
+        image:
+          $ref: '#/components/schemas/ImageUuid'
+
+    FileUuid:
+      type: object
+      properties:
+        media_uuid:
+          description: Id associated with this file
+          type: string
+
+    GetFile:
+      allOf:
+        - $ref: '#/components/schemas/FileUuid'
+        - type: object
+          properties:
+            mime_type:
+              description: Mime type of the file
+              type: string
+            file_name:
+                description: File name
+                type: string
+
+    GetFileMessage:
+      description: >
+        When `type = file`
+      allOf:
+        - $ref: '#/components/schemas/MessageBase'
+        - $ref: '#/components/schemas/GetFileMessagePayload'
+
+    GetFileMessagePayload:
+      description: >
+        The user uploaded a file
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [file]
+        file:
+          $ref: '#/components/schemas/GetFile'
+
+    SendFileMessagePayload:
+      description: >
+        The user uploaded a file
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ file ]
+        file:
+          $ref: '#/components/schemas/FileUuid'
 
     TextInputResponse:
       type: object
@@ -385,7 +450,8 @@ components:
         - $ref: '#/components/schemas/PostbackMessage'
         - $ref: '#/components/schemas/TextMessage'
         - $ref: '#/components/schemas/ButtonMessage'
-        - $ref: '#/components/schemas/ImageMessage'
+        - $ref: '#/components/schemas/GetImageMessage'
+        - $ref: '#/components/schemas/GetFileMessage'
         - $ref: '#/components/schemas/TextInputResponseMessage'
         - $ref: '#/components/schemas/TextInputRequestMessage'
 
@@ -395,7 +461,8 @@ components:
         - $ref: '#/components/schemas/PostbackMessagePayload'
         - $ref: '#/components/schemas/TextMessagePayload'
         - $ref: '#/components/schemas/ButtonMessagePayload'
-        - $ref: '#/components/schemas/ImageMessagePayload'
+        - $ref: '#/components/schemas/SendImageMessagePayload'
+        - $ref: '#/components/schemas/SendFileMessagePayload'
         - $ref: '#/components/schemas/TextInputResponseMessagePayload'
 
   securitySchemes:
@@ -602,6 +669,101 @@ paths:
       summary: Download
       description: >
         Download media uploaded previously
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /{page_id}/file:
+    post:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+      tags: [File]
+      summary: Upload
+      description: >
+        Upload file first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
+      requestBody:
+        description: Multipart form data with file name and file content
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file_name:
+                  type: string
+                file_content:
+                  description: The file bytes
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    description: a unique id which identifies the file uploaded
+                    type: integer
+
+  /{page_id}/file/{uuid}:
+    get:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+        - in: path
+          name: uuid
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the file
+      tags: [File]
+      summary: Download
+      description: >
+        Download the original file uploaded previously.
+      responses:
+        '200':
+          description: returned upon success
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /{page_id}/media/{uuid}:
+    get:
+      parameters:
+        - in: path
+          name: page_id
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the page
+        - in: path
+          name: uuid
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the media file
+      tags: [File]
+      summary: Download
+      description: >
+        Download a downsized version of the file uploaded previously if it was an image.
       responses:
         '200':
           description: returned upon success
