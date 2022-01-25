@@ -690,7 +690,7 @@ paths:
       tags: [File]
       summary: Upload file
       description: >
-        Upload file first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
+        Upload file first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint.
       requestBody:
         description: Multipart form data with file name and file content
         required: true
