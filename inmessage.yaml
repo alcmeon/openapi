@@ -688,7 +688,7 @@ paths:
           required: true
           description: Numeric ID of the page
       tags: [File]
-      summary: Upload
+      summary: Upload file
       description: >
         Upload file first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
       requestBody:
@@ -733,7 +733,7 @@ paths:
           required: true
           description: Numeric ID of the file
       tags: [File]
-      summary: Download
+      summary: Download original file
       description: >
         Download the original file uploaded previously.
       responses:
@@ -761,7 +761,7 @@ paths:
           required: true
           description: Numeric ID of the media file
       tags: [File]
-      summary: Download
+      summary: Download downsized image
       description: >
         Download a downsized version of the file uploaded previously if it was an image.
       responses:
