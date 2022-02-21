@@ -844,6 +844,42 @@ components:
           type: string
           description: Media description
 
+    WhatsappOrderObject:
+      type: object
+      properties:
+        type:
+          required: true
+          type: string
+          description: For this use case, type will be set to `order`
+        order:
+          required: true
+          type: object
+          description: >
+            An object containing a catalog identifier and a list of products
+          properties:
+            catalog_id:
+              description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
+              type: string
+            product_items:
+              type: array
+              description: >
+                A list of products
+              items:
+                type: object
+                properties:
+                  product_retailer_id:
+                    type: string
+                    description: Unique identifier of the product in a catalog
+                  quantity:
+                    type: string
+                    description: The number of item for this product
+                  item_price:
+                    type: string
+                    description: The unitary price of an item
+                  currency:
+                    type: string
+                    description: The price currency
+
     WhatsappMessageResponse:
       description: >
         On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
@@ -851,9 +887,9 @@ components:
       properties:
         type:
           description: >
-            A `text` or `interactive` or `document` or `image` or `video` object
+            A `text` or `interactive` or `document` or `image` or `video` or `order` object
           type: string
-          enum: [text, interactive, document, image, video]
+          enum: [text, interactive, document, image, video, order]
         text:
           description: >
             A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
@@ -862,6 +898,23 @@ components:
             body:
               description: The text of the message
               type: string
+        context:
+          description: >
+            If used when sending products, needed for asking information about the product being mentioned by the customer. In this case, type must be `text`
+          type: object
+          properties:
+            referred_product:
+              required: true
+              type: object
+              properties:
+                catalog_id:
+                  required: true
+                  description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
+                  type: string
+                product_retailer_id:
+                  description: Unique identifier of the product in a catalog
+                  type: string
+                  required: true
         interactive:
           description: A subset of an [interactive message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages) object.
           type: object
@@ -886,12 +939,24 @@ components:
           type: object
           allOf:
            - $ref: '#/components/schemas/WhatsappMediaObject'
+        order:
+          description: >
+            An [order object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/receive-responses-from-customers#placing-an-order)
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/WhatsappOrderObject'
 
     WhatsappEvent:
       description: >
         On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
       type: object
       properties:
+        type:
+          description: >
+            A `text` or `interactive` or `button` object
+          type: string
+          enum: [ text, interactive, button ]
+
         text:
           description: >
             A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
@@ -933,6 +998,106 @@ components:
                   description: An unique id associated with the button
                   type: string
                   example: 123
+            product:
+              description: A [Single product message object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/share-products-with-customers#single-product-messages)
+              type: object
+              properties:
+                body:
+                  type: object
+                  properties:
+                    text:
+                      description: A text displayed before the product
+                      type: string
+                footer:
+                  type: object
+                  properties:
+                    text:
+                      description: A text displayed after the product
+                      type: string
+                action:
+                  required: true
+                  description: An [action object](https://developers.facebook.com/docs/whatsapp/api/messages#action-object)
+                  type: object
+                  properties:
+                    catalog_id:
+                      required: true
+                      type: string
+                      description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
+                    product_retailer_id:
+                      required: true
+                      type: string
+                      description: Unique identifier of the product in a catalog
+            product_list:
+              description: A [product-list message object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/share-products-with-customers#multi-product-messages)
+              type: object
+              properties:
+                header:
+                  required: true
+                  type: object
+                  properties:
+                    type:
+                      description: Must be set to 'text'
+                      type: string
+                    text:
+                      description: A text displayed at the top of the list object
+                      type: string
+                body:
+                  required: true
+                  type: object
+                  properties:
+                    text:
+                      description: A text displayed before the list of objects
+                      type: string
+                footer:
+                  type: object
+                  properties:
+                    text:
+                      description: A text displayed after the list of objects
+                      type: string
+                action:
+                  required: true
+                  description: An [action object](https://developers.facebook.com/docs/whatsapp/api/messages#action-object)
+                  type: object
+                  properties:
+                    catalog_id:
+                      type: string
+                      required: true
+                      description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
+                    sections:
+                      required: true
+                      type: array
+                      description: >
+                          A list of elements containing a title with one or more products
+                      items:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            description: >
+                              The title associated with the section
+                          product_items:
+                            type: array
+                            description: Array of product objects to display
+                            items:
+                              type: object
+                              properties:
+                                product_retailer_id:
+                                  type: string
+                                  description: >
+                                    Unique identifier of the product in a catalog
+        button:
+          description: A [callback from quick reply button click object](https://developers.facebook.com/docs/whatsapp/api/messages/message-templates/interactive-message-templates#callback-from-a-quick-reply-button-click)
+            type: object
+            properties:
+              payload:
+                description: >
+                  The payload associated with the quick reply button clicked
+                type: string
+              text:
+                description: >
+                  The text associated with the button
+                type: string
+
 
 
     ##################################################
