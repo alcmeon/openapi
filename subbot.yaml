@@ -848,11 +848,9 @@ components:
       type: object
       properties:
         type:
-          required: true
           type: string
           description: For this use case, type will be set to `order`
         order:
-          required: true
           type: object
           description: >
             An object containing a catalog identifier and a list of products
@@ -904,17 +902,14 @@ components:
           type: object
           properties:
             referred_product:
-              required: true
               type: object
               properties:
                 catalog_id:
-                  required: true
                   description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
                   type: string
                 product_retailer_id:
                   description: Unique identifier of the product in a catalog
                   type: string
-                  required: true
         interactive:
           description: A subset of an [interactive message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages) object.
           type: object
@@ -1015,16 +1010,13 @@ components:
                       description: A text displayed after the product
                       type: string
                 action:
-                  required: true
                   description: An [action object](https://developers.facebook.com/docs/whatsapp/api/messages#action-object)
                   type: object
                   properties:
                     catalog_id:
-                      required: true
                       type: string
                       description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
                     product_retailer_id:
-                      required: true
                       type: string
                       description: Unique identifier of the product in a catalog
             product_list:
@@ -1032,7 +1024,6 @@ components:
               type: object
               properties:
                 header:
-                  required: true
                   type: object
                   properties:
                     type:
@@ -1042,7 +1033,6 @@ components:
                       description: A text displayed at the top of the list object
                       type: string
                 body:
-                  required: true
                   type: object
                   properties:
                     text:
@@ -1055,16 +1045,13 @@ components:
                       description: A text displayed after the list of objects
                       type: string
                 action:
-                  required: true
                   description: An [action object](https://developers.facebook.com/docs/whatsapp/api/messages#action-object)
                   type: object
                   properties:
                     catalog_id:
                       type: string
-                      required: true
                       description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
                     sections:
-                      required: true
                       type: array
                       description: >
                           A list of elements containing a title with one or more products
@@ -1087,16 +1074,16 @@ components:
                                     Unique identifier of the product in a catalog
         button:
           description: A [callback from quick reply button click object](https://developers.facebook.com/docs/whatsapp/api/messages/message-templates/interactive-message-templates#callback-from-a-quick-reply-button-click)
-            type: object
-            properties:
-              payload:
-                description: >
-                  The payload associated with the quick reply button clicked
-                type: string
-              text:
-                description: >
-                  The text associated with the button
-                type: string
+          type: object
+          properties:
+            payload:
+              description: >
+                The payload associated with the quick reply button clicked
+              type: string
+            text:
+              description: >
+                The text associated with the button
+              type: string
 
 
 
