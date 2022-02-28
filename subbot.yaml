@@ -1054,7 +1054,7 @@ components:
                     sections:
                       type: array
                       description: >
-                          A list of elements containing a title with one or more products
+                          A list of elements (max 30) containing a title with one or more products
                       items:
                         type: object
                         properties:
