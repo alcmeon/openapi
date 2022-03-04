@@ -107,7 +107,9 @@ paths:
         schema:
           type: integer
     put:
-      summary: Set a set of fields on a user
+      tags:
+        - User
+      summary: Set user fields
       requestBody:
         content:
           application/json:
@@ -117,7 +119,9 @@ paths:
         '200':
           description: Returned upon succes
     get:
-      summary: Return the fields for a user
+      tags:
+        - User
+      summary: Return user fields
       responses:
         '200':
           description: Returned upon succes
@@ -135,8 +139,9 @@ paths:
         schema:
           type: integer
     put:
+      tags:
+        - Conversation
       summary: Set conversation fields
-      description: Set conversation fields
       requestBody:
         content:
           application/json:
@@ -146,8 +151,9 @@ paths:
         '200':
           description: Returned upon succes
     get:
+      tags:
+        - Conversation
       summary: Return conversation fields
-      description: Return conversation fields
       responses:
         '200':
           description: Returned upon succes
