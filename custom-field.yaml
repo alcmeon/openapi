@@ -19,44 +19,30 @@ components:
     PrimitiveFieldValues:
       oneOf:
         - type: integer
-          description: when `type` == `integer`
+          description: When the field is of type integer
         - type: number
-          description: when `type` == `float`
+          description: When the field is of type float
         - type: string
-          description: when `type` == `string`
+          description: When the field is of type string
         - type: string
           format: uri
-          description: when `type` == `url`
+          description: When the field is of type url
         - type: string
           format: email
-          description: when `type` == `email`
+          description: When the field is of type email
         - type: string
           format: date-time
-          description: when `type` == `datetime`
+          description: When the field is of type datetime
         - type: string
           format: date
-          description: when `type` == `date`
+          description: When the field is of type date
         - type: boolean
-          description: when `type` == `boolean`
-        - type: string
-          description: when `type` == `enum`
+          description: When the field is of type boolean
         - $ref: '#/components/schemas/MultiPickListValue'
         - $ref: '#/components/schemas/PhoneFieldValue'
 
-    DictionaryFieldValue:
-      description: when `type` == `dictionary`
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: string
-            format: uuid
-          value:
-            $ref: '#/components/schemas/PrimitiveFieldValues'
-      
     PhoneFieldValue:
-      description: when `type` == `phone`
+      description: When the field is of type Phone
       type: object
       properties:
         country_prefix:
@@ -65,27 +51,11 @@ components:
           type: string
 
     MultiPickListValue:
-      description: when `type` == `multipicklist`
+      description: When the field is of type multi-picklist
       type: array
       items:
         type: string
         format: uuid
-
-    ListFieldValue:
-      description: when `type` == `list`
-      type: array
-      items:
-        allOf:
-          - $ref: '#/components/schemas/PrimitiveFieldValues'
-          - oneOf:
-            - $ref: '#/components/schemas/DictionaryFieldValue'
-
-    FieldValue:
-      allOf:
-        - $ref: '#/components/schemas/PrimitiveFieldValues'
-        - oneOf:
-          - $ref: '#/components/schemas/ListFieldValue'
-          - $ref: '#/components/schemas/DictionaryFieldValue'
 
     FieldValues:
       type: array
@@ -95,7 +65,7 @@ components:
           field_id:
             type: integer
           field_value:
-            $ref: '#/components/schemas/FieldValue'
+            $ref: '#/components/schemas/PrimitiveFieldValues'
 
 paths:
   /custom-field/users/{custom_field_user_id}:
