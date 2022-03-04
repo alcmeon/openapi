@@ -1,0 +1,157 @@
+openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
+    description: Production api server
+info:
+  title: Custom Fields
+  version: '1.0'
+
+security:
+  - basic_auth: []
+
+components:
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+
+  schemas:
+    PrimitiveFieldValues:
+      oneOf:
+        - type: integer
+          description: when `type` == `integer`
+        - type: number
+          description: when `type` == `float`
+        - type: string
+          description: when `type` == `string`
+        - type: string
+          format: uri
+          description: when `type` == `url`
+        - type: string
+          format: email
+          description: when `type` == `email`
+        - type: string
+          format: date-time
+          description: when `type` == `datetime`
+        - type: string
+          format: date
+          description: when `type` == `date`
+        - type: boolean
+          description: when `type` == `boolean`
+        - type: string
+          description: when `type` == `enum`
+        - $ref: '#/components/schemas/MultiPickListValue'
+        - $ref: '#/components/schemas/PhoneFieldValue'
+
+    DictionaryFieldValue:
+      description: when `type` == `dictionary`
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          value:
+            $ref: '#/components/schemas/PrimitiveFieldValues'
+      
+    PhoneFieldValue:
+      description: when `type` == `phone`
+      type: object
+      properties:
+        country_prefix:
+          type: string
+        number:
+          type: string
+
+    MultiPickListValue:
+      description: when `type` == `multipicklist`
+      type: array
+      items:
+        type: string
+        format: uuid
+
+    ListFieldValue:
+      description: when `type` == `list`
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/PrimitiveFieldValues'
+          - oneOf:
+            - $ref: '#/components/schemas/DictionaryFieldValue'
+
+    FieldValue:
+      allOf:
+        - $ref: '#/components/schemas/PrimitiveFieldValues'
+        - oneOf:
+          - $ref: '#/components/schemas/ListFieldValue'
+          - $ref: '#/components/schemas/DictionaryFieldValue'
+
+    FieldValues:
+      type: array
+      items:
+        type: object
+        properties:
+          field_id:
+            type: integer
+          field_value:
+            $ref: '#/components/schemas/FieldValue'
+
+paths:
+  /custom-field/users/{custom_field_user_id}:
+    parameters:
+      - in: path
+        name: custom_field_user_id
+        description: A custom_field_user_id which uniquely identifies a user.
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Set a set of fields on a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldValues'
+      responses:
+        '200':
+          description: Returned upon succes
+    get:
+      summary: Return the fields for a user
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldValues'
+
+  /custom-field/conversations/{conversation_id}:
+    parameters:
+      - in: path
+        name: conversation_id
+        description: A conversation_id which uniquely identifies a conversation
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Set conversation fields
+      description: Set conversation fields
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldValues'
+      responses:
+        '200':
+          description: Returned upon succes
+    get:
+      summary: Return conversation fields
+      description: Return conversation fields
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldValues'
