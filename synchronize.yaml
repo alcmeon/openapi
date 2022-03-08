@@ -501,6 +501,7 @@ paths:
   /actions/conversations/{conversation_id}:
     get:
       tags: [List]
+      summary: List a conversation's actions
       description: >
         Return the list of actions associated with the `conversation_id`
       parameters:
@@ -521,6 +522,7 @@ paths:
   /actions:
     get:
       tags: [List]
+      summary: List actions
       description: >
         The cost of this endpoint is high. It is proportional to the number of actions returned.
         As such, this endpoint will return at most 10 events
@@ -553,6 +555,7 @@ paths:
       tags: [Notify]
       servers:
         - url: https://your.server/
+      summary: Notify a webhook
       description: >
         This webhook can be configured via the Alcméon administration UI when a new API application
         is created.
