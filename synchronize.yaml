@@ -18,6 +18,17 @@ components:
       scheme: basic
 
   schemas:
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: an id unique to this Conversation
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+            
     Action:
       type: object
       properties:
@@ -487,6 +498,26 @@ security:
   - basic_auth: []
 
 paths:
+  /actions/conversation/{conversation_id}:
+    get:
+      tags: [List]
+      description: >
+        Return the list of actions associated with the `conversation_id`
+      parameters:
+        - in: path
+          name: conversation_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
   /actions:
     get:
       tags: [List]
