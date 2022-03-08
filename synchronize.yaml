@@ -498,7 +498,7 @@ security:
   - basic_auth: []
 
 paths:
-  /actions/conversation/{conversation_id}:
+  /actions/conversations/{conversation_id}:
     get:
       tags: [List]
       description: >
