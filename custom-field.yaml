@@ -62,9 +62,11 @@ components:
         format: uuid
 
     FieldValues:
+      description: A list of field/value pairs
       type: array
       items:
         type: object
+        description: A value for a specific field
         properties:
           field_id:
             type: integer
