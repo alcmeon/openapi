@@ -261,7 +261,7 @@ components:
           description: Is this message a sent privately ?
         content:
           type: string
-          description: content of message
+          description: content of message. On Twitter, this field is empty.
         discussion_id:
           type: integer
           description: DO NOT USE
@@ -284,16 +284,6 @@ components:
             $ref: '#/components/schemas/Attachment'
         author:
           $ref: '#/components/schemas/Author'
-
-    TwitterAuthor:
-      description: If defined, this field contains twitter-specific data
-      type: object
-      properties:
-        screen_name:
-          type: string
-          description: the Screen name. Does not include the starting @.
-        name:
-          type: string
 
     InstagramAuthor:
       description: If defined, this field contains instagram-specific data
@@ -346,13 +336,11 @@ components:
         name:
           type: string
           description: >
-            The name of the author of a message. For example, in Twitter, 
-            this field contains the @screen_name. In Facebook, this field 
-            contains the firstname+lastname
+            The name of the author of a message. On Facebook, this field 
+            contains the firstname+lastname. On Twitter, this field is
+            empty.
         facebook_author:
           $ref: '#/components/schemas/FacebookAuthor'
-        twitter_author:
-          $ref: '#/components/schemas/TwitterAuthor'
         instagram_author:
           $ref: '#/components/schemas/InstagramAuthor'
         inmessage_author:
