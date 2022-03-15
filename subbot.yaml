@@ -743,8 +743,7 @@ components:
       properties:
         type:
           type: string
-          description: The type of the interactive message
-          enum: [button]
+          description: Must be set to `button`
         body:
           type: object
           properties:
@@ -786,8 +785,7 @@ components:
       properties:
         type:
           type: string
-          description: The type of the interactive message
-          enum: [list]
+          description: Must be set to `list`
         body:
           type: object
           properties:
@@ -878,6 +876,9 @@ components:
       description: A [Single product message object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/share-products-with-customers#single-product-messages)
       type: object
       properties:
+        type:
+          type: string
+          description: Must be set to `product`
         body:
           type: object
           properties:
@@ -905,6 +906,9 @@ components:
       description: A [product-list message object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/share-products-with-customers#multi-product-messages)
       type: object
       properties:
+        type:
+          type: string
+          description: Must be set to `product_list`
         header:
           type: object
           properties:
@@ -965,7 +969,7 @@ components:
           description: >
             A `text` or `interactive` or `document` or `image` or `video` object
           type: string
-          enum: [text, interactive, document, image, video, order]
+          enum: [text, interactive, document, image, video]
         text:
           description: >
             A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
