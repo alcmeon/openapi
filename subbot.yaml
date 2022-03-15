@@ -1062,12 +1062,12 @@ components:
                   description: An unique id associated with the button
                   type: string
                   example: 123
-            order:
-              description: >
-                An [order object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/receive-responses-from-customers#placing-an-order)
-              type: object
-              allOf:
-                - $ref: '#/components/schemas/WhatsappOrderObject'
+        order:
+          description: >
+            An [order object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/receive-responses-from-customers#placing-an-order)
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/WhatsappOrderObject'
         button:
           description: A [callback from quick reply button click object](https://developers.facebook.com/docs/whatsapp/api/messages/message-templates/interactive-message-templates#callback-from-a-quick-reply-button-click)
           type: object
