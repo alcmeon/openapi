@@ -224,7 +224,15 @@ components:
             Users will need to authenticate against https://alcmeon.com/
         conversation_id:
           type: integer
-          description: an unique id associated with the conversation that contains this task.
+          description: a unique id associated with the conversation that contains this task.
+        conversation:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: a unique id associated with the conversation that contains this task.
+            custom_fields:
+             $ref: '#/components/schemas/CustomFields'
         state:
           type: string
           enum:
@@ -285,6 +293,58 @@ components:
         author:
           $ref: '#/components/schemas/Author'
 
+    CustomFieldPrimitiveFieldValues:
+      oneOf:
+        - type: integer
+          description: When the field is of type integer
+        - type: number
+          description: When the field is of type float
+        - type: string
+          description: When the field is of type string
+        - type: string
+          format: uri
+          description: When the field is of type url
+        - type: string
+          format: email
+          description: When the field is of type email
+        - type: string
+          format: date-time
+          description: When the field is of type datetime
+        - type: string
+          format: date
+          description: When the field is of type date
+        - type: boolean
+          description: When the field is of type boolean
+        - $ref: '#/components/schemas/CustomFieldMultiPickListValue'
+        - $ref: '#/components/schemas/CustomFieldPhoneFieldValue'
+
+    CustomFieldPhoneFieldValue:
+      description: When the field is of type Phone
+      type: object
+      properties:
+        country_prefix:
+          type: string
+        number:
+          type: string
+
+    CustomFieldMultiPickListValue:
+      description: When the field is of type multi-picklist
+      type: array
+      items:
+        type: string
+        format: uuid
+
+    CustomFields:
+      type: array
+      items:
+        type: object
+        properties:
+          field_id:
+            type: integer
+          field_value:
+            $ref: '#/components/schemas/CustomFieldPrimitiveFieldValues'
+
+
     InstagramAuthor:
       description: If defined, this field contains instagram-specific data
       type: object
@@ -339,6 +399,14 @@ components:
             The name of the author of a message. On Facebook, this field 
             contains the firstname+lastname. On Twitter, this field is
             empty.
+        group:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: a unique id associated with this author's custom fields
+            custom_fields:
+              $ref: '#/components/schemas/CustomFields'
         facebook_author:
           $ref: '#/components/schemas/FacebookAuthor'
         instagram_author:
