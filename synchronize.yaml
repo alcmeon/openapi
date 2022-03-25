@@ -318,7 +318,7 @@ components:
         - $ref: '#/components/schemas/CustomFieldMultiPickListValue'
         - $ref: '#/components/schemas/CustomFieldPhoneFieldValue'
 
-    CustomFieldPhoneFieldValue:
+    CustomFieldPhoneFieldValue:  
       description: When the field is of type Phone
       type: object
       properties:
