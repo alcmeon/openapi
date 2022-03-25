@@ -42,7 +42,10 @@ components:
           description: When the field is of type date
         - type: boolean
           description: When the field is of type boolean
-        - $ref: '#/components/schemas/MultiPickListValue'
+        - type: string
+          format: uuid
+          description: When the field is of type enum
+        - $ref: '#/components/schemas/MultiPickListFieldValue'
         - $ref: '#/components/schemas/PhoneFieldValue'
 
     PhoneFieldValue:
@@ -54,7 +57,7 @@ components:
         number:
           type: string
 
-    MultiPickListValue:
+    MultiPickListFieldValue:
       description: When the field is of type multi-picklist
       type: array
       items:
