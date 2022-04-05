@@ -654,7 +654,7 @@ paths:
             If you do not return a 200 status, we will attempt 3 delivery retries at 1 minute intervals
             for each consecutive event
 
-  /webhook:
+  /application/webhook:
     get:
       tags: [ Webhook status ]
       summary: Get webhook status
@@ -680,9 +680,12 @@ paths:
          content:
            application/json:
              schema:
-               type: boolean
-               description: >
-                 To be set to True or False to enable or disable external notifications
+               type: object
+               properties:
+                 enable:
+                  description: >
+                    To be set to True or False to enable or disable external notifications
+                  type: boolean
       responses:
         '200':
           description: Success
