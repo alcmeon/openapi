@@ -549,6 +549,17 @@ components:
               * `ok` - The answer was successfully sent on the underlying social channel
               * `fail` - The answer was not sent successfully
 
+    WebhookStatus:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The url identifying this webhook
+        enabled:
+          type: integer
+          description: Shows if the webhook is enabled or not (1 or 0)
+
+
 
 security:
   - basic_auth: []
@@ -642,3 +653,40 @@ paths:
 
             If you do not return a 200 status, we will attempt 3 delivery retries at 1 minute intervals
             for each consecutive event
+
+  /webhook:
+    get:
+      tags: [ Webhook status ]
+      summary: Get webhook status
+      description: >
+        Return the current status of the webhook.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebhookStatus'
+
+
+    post:
+      tags: [ Webhook status ]
+      summary: Set webhook status
+      description: >
+        To set webhook status in order to enable/disable external notifications
+      requestBody:
+         content:
+           application/json:
+             schema:
+               type: boolean
+               description: >
+                 To be set to True or False to enable or disable external notifications
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
