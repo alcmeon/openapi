@@ -1,0 +1,65 @@
+openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
+    description: Production api server
+
+info:
+  title: Scenarios
+  version: '1.0'
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+
+security:
+  - basic_auth: []
+
+paths:
+
+  /start-scenario:
+    post:
+      summary: Start Scenario
+      description: >
+        Start a scenario for a specific user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                starting_box:
+                  description: The unique id associated with the scenario entry point you would like to trigger.
+                  type: string
+                variables:
+                  type: object
+                  description: A set of key/value pairs that will be stored in the user-specific variables used within the scenario
+                user:
+                  type: object
+                  properties:
+                    social_media_user_id:
+                      type: string
+                      description: >
+                        The id associated with the user within the social media associated with the scenario.
+                        On Whatsapp, this is the user's phone number, in international format, without a leading +.
+                        For example a french phone number in this format will look like this 33672422826 
+                        (33 is the international prefix). Failure to provide an id in the correct format will be
+                        silently ignored and return a 200 status.
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ['ok']
