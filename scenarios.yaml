@@ -36,11 +36,19 @@ paths:
               type: object
               properties:
                 starting_box:
-                  description: The unique id associated with the scenario entry point you would like to trigger.
+                  description: >
+                    The unique id associated with the scenario entry point you would like to trigger.
+                    The format of this value is opaque and subject to change for new scenarios without notice. 
+                    The proper value can be found in the scenario editor
+                    by clicking in the top-right corner of a box and selecting the "Copy identifier" entry 
+                    in the menu. 
                   type: string
                 variables:
                   type: object
-                  description: A set of key/value pairs that will be stored in the user-specific variables used within the scenario
+                  description: >
+                    A set of key/value pairs that will be stored in the user-specific variables used 
+                    within the scenario. If you are unsure about what to store in this field, leave this
+                    dictionnary empty.
                 user:
                   type: object
                   properties:
@@ -63,3 +71,19 @@ paths:
                   status:
                     type: string
                     enum: ['ok']
+        '400':
+          description: Returned if the request body format is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      reason:
+                        type: string
+                        description: >
+                          A short string which describes what is wrong. Provide this string to 
+                          support@alcmeon.com if you wish to obtain more details about the problem.
+                          
