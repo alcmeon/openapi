@@ -16,9 +16,9 @@ components:
 
   schemas:
 
-    HandleEventRequest:
+    HandleEventRequestV2:
       allOf:
-        - $ref: '#/components/schemas/EventRequest'
+        - $ref: '#/components/schemas/EventRequestV2'
         - type: object
           properties:
             variables:
@@ -27,9 +27,25 @@ components:
                 The variables which were returned from the last call to
                 the /handle-event or /start endpoint
 
-    StartEventRequest:
+    HandleEventRequestV1:
       allOf:
-        - $ref: '#/components/schemas/EventRequest'
+        - $ref: '#/components/schemas/EventRequestV1'
+        - type: object
+          properties:
+            variables:
+              type: object
+              description: >
+                The variables which were returned from the last call to
+                the /handle-event or /start endpoint
+
+    HandleEventRequest:
+      oneOf:
+        - $ref: '#/components/schemas/HandleEventRequestV1'
+        - $ref: '#/components/schemas/HandleEventRequestV2'
+
+    StartEventRequestV2:
+      allOf:
+        - $ref: '#/components/schemas/EventRequestV2'
         - type: object
           properties:
             global_variables:
@@ -37,6 +53,22 @@ components:
               description: >
                 A set of conversation variables that the bot box can read. 
                 Only variables specified in Description.input_variables are available.
+
+    StartEventRequestV1:
+      allOf:
+        - $ref: '#/components/schemas/EventRequestV1'
+        - type: object
+          properties:
+            global_variables:
+              type: object
+              description: >
+                A set of conversation variables that the bot box can read.
+                Only variables specified in Description.input_variables are available.
+
+    StartEventRequest:
+      oneOf:
+        - $ref: '#/components/schemas/StartEventRequestV1'
+        - $ref: '#/components/schemas/StartEventRequestV2'
 
     BotResponse:
       type: object
@@ -144,6 +176,43 @@ components:
           type: array
           items:
             type: string
+
+    FileParameterValue:
+      type: object
+      description: The value for parameters of type `file`
+      properties:
+        url:
+          type: string
+          format: uri
+          description: "Where to download the file. This url should not be cached: it is valid for less than 30 seconds."
+        cache_key:
+          type: string
+          description: A unique id which can be used as the key to cache the file downloaded from the url. This id is warranted to change if the file is changed by the user.
+
+    StringParameterValue:
+      type: string
+      description: The value for parameters of type `string`
+
+    FloatParameterValue:
+      type: number
+      description: The value for parameters of type `float`
+
+    IntegerParameterValue:
+      type: integer
+      description: The value for parameters of type `integer`
+
+    BooleanParameterValue:
+      type: boolean
+      description: The value for parameters of type `boolean`
+
+    UrlParameterValue:
+      type: string
+      format: uri
+      description: The value for parameters of type `url`
+
+    EnumParameterValue:
+      type: string
+      description: The value for parameters of type `enum`
 
     Parameter:
       type: object
@@ -262,7 +331,7 @@ components:
         - gbm
         - webchat
 
-    EventRequest:
+    EventRequestV1:
       type: object
       properties:
         backend:
@@ -271,6 +340,44 @@ components:
         parameters:
           type: object
           description: The set of key/value pairs associated with the per-box description parameters.
+        user_external_id:
+          type: string
+          description: The raw id of the user in the underlying social network API
+        user_name:
+          type: string
+          description: A user name associated with the underlying social network API
+        event:
+          oneOf:
+            - $ref: '#/components/schemas/MessengerEvent'
+            - $ref: '#/components/schemas/TwitterEvent'
+            - $ref: '#/components/schemas/WhatsappEvent'
+            - $ref: '#/components/schemas/GbmEvent'
+            - $ref: '#/components/schemas/WebChatEvent'
+
+    EventRequestV2:
+      type: object
+      description: This object is identical to EventRequestv1, except that the parameters field has been updated to support file parameter values
+      properties:
+        backend:
+          $ref: '#/components/schemas/Backend'
+          description: The name of the backend this event is generated for
+        parameters:
+          type: array
+          items:
+            description: The set of key/value pairs associated with the per-box description parameters.
+            type: object
+            properties:
+              key:
+                type: string
+              value:
+                oneOf:
+                  - $ref: '#/components/schemas/StringParameterValue'
+                  - $ref: '#/components/schemas/FloatParameterValue'
+                  - $ref: '#/components/schemas/IntegerParameterValue'
+                  - $ref: '#/components/schemas/BooleanParameterValue'
+                  - $ref: '#/components/schemas/UrlParameterValue'
+                  - $ref: '#/components/schemas/EnumParameterValue'
+                  - $ref: '#/components/schemas/FileParameterValue'
         user_external_id:
           type: string
           description: The raw id of the user in the underlying social network API
