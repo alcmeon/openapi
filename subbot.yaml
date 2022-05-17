@@ -197,6 +197,11 @@ components:
         name:
           type: string
           description: The name of the bot. It will be displayed in the Alcméon editor GUI
+        version:
+          type: string
+          description: Which version of the subbot protocol this subbot supports. If this is not specified, we assume the subbot supports the v1 API.
+          enum: [v1, v2]
+          default: v1
         description:
           type: string
           description: A human-readable description of what the bot does. Displayed in the Alcméon editor GUI
