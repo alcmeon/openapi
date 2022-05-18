@@ -1,0 +1,149 @@
+openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
+    description: Production api server
+
+info:
+  title: Application Management
+  version: '1.0'
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+  schemas:
+
+    WebhookStatus:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The url identifying this webhook
+        enabled:
+          type: integer
+          description: Shows if the webhook is enabled or not (1 or 0)
+
+    HttpHeader:
+        type: object
+        properties:
+          name:
+            type: string
+            description: name of header
+          value:
+            type: string
+            description: value of header
+
+    Error:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique id associated with the error
+        datetime:
+          type: string
+          format: datetime
+          description: When the error happened
+        direction:
+          type: string
+          enum: [incoming, outgoing]
+          description: >
+            Incoming requests are requests sent to api.alcmeon.com.
+            Outgoing requests are requests triggered by Alcmeon sent to a third-party provided webhook.
+        is_internal:
+          type: boolean
+          description: true if the error is due to an internal error
+        status:
+          type: integer
+          description: HTTP status of failed request
+          nullable: true
+        method:
+          type: string
+          enum: [GET, POST, PUT, DELETE]
+          description: HTTP method of failed request
+        request_headers:
+          description: The list of HTTP request headers for the failed request
+          type: array
+          items:
+            $ref: '#/components/schemas/HttpHeader'
+        response_headers:
+          description: The list of HTTP response headers for the failed request
+          type: array
+          items:
+            $ref: '#/components/schemas/HttpHeader'
+        path:
+          type: string
+          description: HTTP path of failed request
+        details:
+          type: string
+          description: >
+            For outgoing requests, when the error is not internal, the first 100 
+            bytes of the body of the response.
+
+security:
+  - basic_auth: []
+
+paths:
+
+  /application/errors:
+    get:
+      tags: [ Errors ]
+      summary: List recent errors
+      description: Return the list of most recent errors
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+      
+
+  /application/webhook:
+    get:
+      tags: [ Webhook status ]
+      summary: Get webhook status
+      description: >
+        Return the current status of the webhook.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WebhookStatus'
+
+
+    post:
+      tags: [ Webhook status ]
+      summary: Set webhook status
+      description: >
+        To set webhook status in order to enable/disable external notifications
+      requestBody:
+         content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 enable:
+                  description: >
+                    To be set to True or False to enable or disable external notifications
+                  type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+
