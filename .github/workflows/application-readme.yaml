@@ -8,9 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: readmeio/github-readme-sync@v2
+      - uses: actions/checkout@v3
+      - uses: readmeio/rdme@v7.2.0
         with:
-          readme-oas-key: ${{ secrets.README_OAS_APPLICATION_KEY }}
-          oas-file-path: './application.yaml'
+          rdme: openapi ./application.yaml --key=${{ secrets.README_OAS_APPLICATION_KEY }} --id=${{README_API_KEY}}
 
