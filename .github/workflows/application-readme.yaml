@@ -11,5 +11,5 @@ jobs:
       - uses: actions/checkout@v3
       - uses: readmeio/rdme@v7.2.0
         with:
-          rdme: openapi ./application.yaml --key=${{ secrets.README_OAS_APPLICATION_KEY }} --id=${{README_API_KEY}}
+          rdme: openapi ./application.yaml --key=${{ secrets.README_OAS_APPLICATION_KEY }} --id=${{secrets.README_API_KEY}}
 
