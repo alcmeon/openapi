@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: readmeio/rdme@v7.2.0
+      - uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./application.yaml --key=${{ secrets.README_OAS_APPLICATION_KEY }} --id=${{secrets.README_API_KEY}}
 
