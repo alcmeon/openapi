@@ -29,6 +29,16 @@ components:
           description: the name associated with a role, displayed in the Alcméon user interface
           type: string
 
+    Team:
+      type: object
+      properties:
+        id:
+          description: a unique id associated with a team
+          type: integer
+        name:
+          description: the name associated with a team, displayed in the Alcméon user interface
+          type: string
+
     Account:
       type: object
       properties:
@@ -86,6 +96,24 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Role'
+
+  /teams:
+    get:
+      tags:
+        - Teams
+      summary: List
+      description: >
+        Return the list of teams that exist. Teams should be created, edited and named within
+        the Alcméon user interface.
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
 
   /accounts:
     post:
@@ -178,11 +206,16 @@ paths:
               properties:
                 roles:
                   description: >
-                    The list of role ids we want to assign to a user account
+                    The list of role ids we want to assign to a user account.
                     Setting an empty list of roles will remove all permissions from the user.
                   type: array
                   items:
                     type: integer
+                teams:
+                  description: >
+                    The list of team ids we want to assign to a user account.
+                    Setting an empty list of teams will remove all teams from the user.
+                  type: integer
                 is_active:
                   description: >
                     Set to ``true`` to enable a user account. ``false`` to disable
