@@ -190,6 +190,7 @@ paths:
         This endpoint makes it possible to:
 
           - Reset the list of roles associated with an account. 
+          - Reset the list of teams associated with an account. 
           - Deactivate or Activate an account
       parameters:
         - in: path
