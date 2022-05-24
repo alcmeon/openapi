@@ -17,4 +17,28 @@ jobs:
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./custom-field.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CUSTOM_FIELD_DEFINITION_ID }}
+      - name: exports.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./exports.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_EXPORTS_KEY }}
+      - name: inmessage.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./inmessage.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_WEBCHAT_KEY }}
+      - name: scenarios.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./scenarios.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SCENARIOS_DEFINITION_ID }}
+      - name: subbot.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./subbot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_SUBBOT_KEY }}
+      - name: synchronize.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./synchronize.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_SYNCHRONIZE_KEY }}
+      - name: user.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./user.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_USER_KEY }}
 
