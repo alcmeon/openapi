@@ -24,7 +24,7 @@ jobs:
       - name: inmessage.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./inmessage.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_WEBCHAT_KEY }}
+          rdme: openapi ./inmessage.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_INMESSAGE_ID }}
       - name: scenarios.yaml
         uses: readmeio/rdme@7.2.0
         with:
@@ -32,13 +32,13 @@ jobs:
       - name: subbot.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./subbot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_SUBBOT_KEY }}
+          rdme: openapi ./subbot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SUBBOT_ID }}
       - name: synchronize.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./synchronize.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_SYNCHRONIZE_KEY }}
+          rdme: openapi ./synchronize.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SYNCHRONIZE_ID }}
       - name: user.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./user.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_USER_KEY }}
+          rdme: openapi ./user.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_USER_ID }}
 
