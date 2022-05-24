@@ -20,7 +20,7 @@ jobs:
       - name: exports.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./exports.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAS_EXPORTS_KEY }}
+          rdme: openapi ./exports.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_EXPORTS_ID }}
       - name: inmessage.yaml
         uses: readmeio/rdme@7.2.0
         with:
