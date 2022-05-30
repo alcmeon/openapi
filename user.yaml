@@ -216,7 +216,9 @@ paths:
                   description: >
                     The list of team ids we want to assign to a user account.
                     Setting an empty list of teams will remove all teams from the user.
-                  type: integer
+                  type: array
+                  items:
+                    type: integer
                 is_active:
                   description: >
                     Set to ``true`` to enable a user account. ``false`` to disable
