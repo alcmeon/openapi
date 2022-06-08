@@ -1090,6 +1090,15 @@ components:
             body:
               description: The text of the message
               type: string
+            preview_url:
+              type: boolean
+              default: false
+              description: >
+                If true, Whatsapp will attempt to generate a preview within the Whatsapp application.
+                Note: this field is located in the text.body object on purpose, to mirror the 
+                Whatsapp cloud API. We automatically convert that field to the proper field if
+                using the on-premise API.
+                [Limitations](https://developers.facebook.com/docs/whatsapp/api/messages/text#urls)
         interactive:
           description: A subset of an [interactive message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages) object.
           type: object
