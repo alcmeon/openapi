@@ -616,12 +616,6 @@ paths:
         This webhook can be configured via the Alcméon administration UI when a new API application
         is created.
 
-
-        If you receive consecutive notifications with non-consecutive notification ids (there is
-        a gap in the notification id sequence), one or more than one notifications have been lost.
-        The exact gap detection condition to use is the following: `current_notification_id != previous_notification + 1`.
-        If this condition is true, you should use the [/actions](#post-/actions) endpoint to collect missing actions
-        before processing the newly-received notification
       requestBody:
         content:
           application/json:
@@ -640,5 +634,5 @@ paths:
             Return a 200 status to indicate that the data was received successfully.
 
 
-            If you do not return a 200 status, we will attempt 3 delivery retries at 1 minute intervals
-            for each consecutive event
+            If you do not return a 200 status, we will attempt delivery retries at 1, 2, 4, 8, etc. 
+            (power of two until 2048) minute intervals.
