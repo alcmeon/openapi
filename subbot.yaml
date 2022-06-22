@@ -82,7 +82,10 @@ components:
           items:
             $ref: '#/components/schemas/MessageResponse'
         exit:
-          description: A description of the output connector Alcméon should take to exit this bot box.
+          description: >
+            A description of the output connector Alcméon should take to exit this bot box. 
+            If null, no exit will be taken and the next messenge/event sent by a user
+            will be forwarded to the same subbot via its handle-event endpoint.
           $ref: '#/components/schemas/ExitResponse'
 
     ExitResponse:
