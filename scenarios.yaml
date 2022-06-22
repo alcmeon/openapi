@@ -7,6 +7,9 @@ info:
   title: Scenarios
   version: '1.0'
 
+x-readme:
+  explorer-enabled: false
+
 components:
 
   securitySchemes:

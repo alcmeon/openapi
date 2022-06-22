@@ -6,6 +6,9 @@ info:
   title: InMessage
   version: '1.0'
 
+x-readme:
+  explorer-enabled: false
+
 components:
   schemas:
     AuthenticatedPage:

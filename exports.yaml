@@ -6,6 +6,9 @@ info:
   title: Exports
   version: '1.0'
 
+x-readme:
+  explorer-enabled: false
+
 components:
   securitySchemes:
     basic_auth:

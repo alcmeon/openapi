@@ -6,6 +6,9 @@ info:
   title: Custom Fields
   version: '1.0'
 
+x-readme:
+  explorer-enabled: false
+
 security:
   - basic_auth: []
 
