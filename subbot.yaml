@@ -7,6 +7,9 @@ info:
   title: Subbot API
   version: '1.0'
 
+x-readme:
+  explorer-enabled: true
+
 components:
 
   securitySchemes:
