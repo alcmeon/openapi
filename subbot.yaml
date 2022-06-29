@@ -179,7 +179,16 @@ components:
           description: Name of header
           type: string
         type:
-          description: Type of header
+          description: >
+            Type of header. The following types are supported:
+              - integer: any positive or negative integers.
+              - string: any string
+              - url: a string, formatted as a url. Only http:// and https:// urls are supported.
+              - datetime: a datetime in YYYY-MM-DDTHH:MM:SS+0 format (GMT)
+              - url_to_shorten: a string, formatted as a url. Only http:// and https:// urls are supported.
+                Any cell within a column of this type will be replaced by a shortened version before
+                being stored for use by a subbot
+            If the content of a cell does not match the type of its header, the file will be rejected during upload.
           type: string
           enum: [integer, string, url, datetime, url_to_shorten]
         is_mandatory:
