@@ -172,6 +172,37 @@ components:
           items:
             type: string
 
+    ExcelFileSheetHeaderParameterSpecification:
+      type: object
+      properties:
+        name:
+          description: Name of header
+          type: string
+        type:
+          description: Type of header
+          type: string
+          enum: [integer, string, url, datetime, url_to_shorten]
+        is_mandatory:
+          description: If true, mandatory a file that is missing the header cannot be uploaded successfully.
+          type: boolean
+          default: false
+
+    ExcelFileSheetParameterSpecification:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExcelFileSheetHeaderParameterSpecification'
+
+    ExcelFileParameterSpecification:
+      type: object
+      properties:
+        sheets:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExcelFileSheetParameterSpecification'
+
     EnumParameterSpecification:
       type: object
       properties:
@@ -186,6 +217,18 @@ components:
     FileParameterValue:
       type: object
       description: The value for parameters of type `file`
+      properties:
+        url:
+          type: string
+          format: uri
+          description: "Where to download the file. This url should not be cached: it is valid for less than 30 seconds."
+        cache_key:
+          type: string
+          description: A unique id which can be used as the key to cache the file downloaded from the url. This id is warranted to change if the file is changed by the user.
+
+    ExcelFileParameterValue:
+      type: object
+      description: The value for parameters of type `excel`
       properties:
         url:
           type: string
@@ -220,12 +263,25 @@ components:
       type: string
       description: The value for parameters of type `enum`
 
+    ParameterValue:
+      description: A value for a parameter
+      nullable: true
+      oneOf:
+        - $ref: '#/components/schemas/StringParameterValue'
+        - $ref: '#/components/schemas/FloatParameterValue'
+        - $ref: '#/components/schemas/IntegerParameterValue'
+        - $ref: '#/components/schemas/BooleanParameterValue'
+        - $ref: '#/components/schemas/UrlParameterValue'
+        - $ref: '#/components/schemas/EnumParameterValue'
+        - $ref: '#/components/schemas/FileParameterValue'
+        - $ref: '#/components/schemas/ExcelFileParameterValue'
+
     Parameter:
       type: object
       properties:
         type:
           type: string
-          enum: [integer, float, boolean, string, url, enum, file]
+          enum: [integer, float, boolean, string, url, enum, file, excel]
           description: The type of the parameter
         name:
           type: string
@@ -236,20 +292,7 @@ components:
             A human-readable description of the meaning of the content of 
             this parameter. Displayed in the Alcméon editor GUI.
         default:
-          description: >
-            The default value for this parameter. 
-            This field can be null if no default value is needed. 
-            The type of this field depends on the content of the type field:
-              * if type=integer: json type=integer
-              * if type=float: json type=number
-              * type=boolean: json type=boolean
-              * type=string, url, enum: json type=string
-          nullable: true
-          anyOf:
-            - type: integer
-            - type: number
-            - type: boolean
-            - type: string
+          $ref: '#/components/schemas/ParameterValue'
         specification:
           description: >
             This field contains a type-specific dictionary that describes 
@@ -264,6 +307,7 @@ components:
             - $ref: '#/components/schemas/FloatParameterSpecification'
             - $ref: '#/components/schemas/StringParameterSpecification'
             - $ref: '#/components/schemas/FileParameterSpecification'
+            - $ref: '#/components/schemas/ExcelFileParameterSpecification'
             - $ref: '#/components/schemas/EnumParameterSpecification'
 
     Description:
@@ -376,14 +420,7 @@ components:
               key:
                 type: string
               value:
-                oneOf:
-                  - $ref: '#/components/schemas/StringParameterValue'
-                  - $ref: '#/components/schemas/FloatParameterValue'
-                  - $ref: '#/components/schemas/IntegerParameterValue'
-                  - $ref: '#/components/schemas/BooleanParameterValue'
-                  - $ref: '#/components/schemas/UrlParameterValue'
-                  - $ref: '#/components/schemas/EnumParameterValue'
-                  - $ref: '#/components/schemas/FileParameterValue'
+                $ref: '#/components/schemas/ParameterValue'
         user_external_id:
           type: string
           description: The raw id of the user in the underlying social network API
