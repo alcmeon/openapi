@@ -188,7 +188,6 @@ components:
               - url_to_shorten: a string, formatted as a url. Only http:// and https:// urls are supported.
                 Any cell within a column of this type will be replaced by a shortened version before
                 being stored for use by a subbot
-            If the content of a cell does not match the type of its header, the file will be rejected during upload.
           type: string
           enum: [integer, string, url, datetime, url_to_shorten]
         is_mandatory:
@@ -205,6 +204,7 @@ components:
             $ref: '#/components/schemas/ExcelFileSheetHeaderParameterSpecification'
 
     ExcelFileParameterSpecification:
+      description: If the content of a cell does not match the type of its header, the file will be rejected during upload.
       type: object
       properties:
         sheets:
