@@ -187,7 +187,6 @@ components:
           type: boolean
           default: false
 
-
     ExcelFileSheetParameterSpecification:
       type: object
       properties:
