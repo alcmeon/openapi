@@ -303,21 +303,24 @@ components:
         default:
           $ref: '#/components/schemas/ParameterValue'
         specification:
-          description: >
-            This field contains a type-specific dictionary that describes 
-            the set of values allowed for this parameter.
+          $ref: '#/components/schemas/ParameterSpecification'
+
+    ParameterSpecification:
+      description: >
+        This field contains a type-specific dictionary that describes 
+        the set of values allowed for this parameter.
 
 
-            This field can be set to null or an empty dictionary to indicate 
-            that no specific constraints exist for this parameter.
-          nullable: true            
-          oneOf:
-            - $ref: '#/components/schemas/IntegerParameterSpecification'
-            - $ref: '#/components/schemas/FloatParameterSpecification'
-            - $ref: '#/components/schemas/StringParameterSpecification'
-            - $ref: '#/components/schemas/FileParameterSpecification'
-            - $ref: '#/components/schemas/ExcelFileParameterSpecification'
-            - $ref: '#/components/schemas/EnumParameterSpecification'
+        This field can be set to null or an empty dictionary to indicate 
+        that no specific constraints exist for this parameter.
+      nullable: true            
+      oneOf:
+        - $ref: '#/components/schemas/IntegerParameterSpecification'
+        - $ref: '#/components/schemas/FloatParameterSpecification'
+        - $ref: '#/components/schemas/StringParameterSpecification'
+        - $ref: '#/components/schemas/FileParameterSpecification'
+        - $ref: '#/components/schemas/ExcelFileParameterSpecification'
+        - $ref: '#/components/schemas/EnumParameterSpecification'
 
     Description:
       type: object
