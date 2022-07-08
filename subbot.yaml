@@ -80,7 +80,10 @@ components:
           type: object
           description: The per-box/per-conversation variables that the bot wishes to store until a later call to URL/start or URL/event
         messages:
-          description: A list of MessageResponse Alcméon needs to handle
+          description: >
+            A list of MessageResponse which will be sent by Alcmeon on behalf of the subbot.
+            These messages will be sent before the `exit` field is processed.
+            If no messages should be sent, an empty array is expected
           type: array
           items:
             $ref: '#/components/schemas/MessageResponse'
@@ -89,6 +92,7 @@ components:
             A description of the output connector Alcméon should take to exit this bot box. 
             If null, no exit will be taken and the next messenge/event sent by a user
             will be forwarded to the same subbot via its handle-event endpoint.
+            This field is processed after any messages from the `messages` field are sent.
           $ref: '#/components/schemas/ExitResponse'
 
     ExitResponse:
