@@ -239,17 +239,86 @@ components:
           type: string
           description: A unique id which can be used as the key to cache the file downloaded from the url. This id is warranted to change if the file is changed by the user.
 
-    ExcelFileParameterValue:
+    TabularArraysParameterValue:
       type: object
       description: The value for parameters of type `excel`
       properties:
         url:
           type: string
           format: uri
-          description: "Where to download the file. This url should not be cached: it is valid for less than 30 seconds."
+          description: >
+            Where to download the file. This url should not be cached.
+            It is valid for less than 30 seconds.
         cache_key:
           type: string
           description: A unique id which can be used as the key to cache the file downloaded from the url. This id is warranted to change if the file is changed by the user.
+
+    TabularArrayCellInteger:
+      type: integer
+      description: A cell which contains a value for a header of type `integer`
+
+    TabularArrayCellString:
+      type: string
+      description: A cell which contains a value for a header of type `string`
+
+    TabularArrayCellUrl:
+      type: string
+      format: uri
+      description: A cell which contains a value for a header of type `url`
+
+    TabularArrayCellDatetime:
+      type: string
+      format: datetime
+      description: >
+        A cell which contains a value for a header of type `datetime`.
+        Format is "YYYY-MM-DDTHH:MM:SS+0" (GMT)
+
+    TabularArrayCellShortenedUrl:
+      type: string
+      format: uri
+      description: A cell which contains a value for a header of type `url_to_shorten`. i.e., a shortened url.
+
+    TabularArrayCell:
+      oneOf:
+        - $ref: '#/components/schemas/TabularArrayCellInteger'
+        - $ref: '#/components/schemas/TabularArrayCellString'
+        - $ref: '#/components/schemas/TabularArrayCellUrl'
+        - $ref: '#/components/schemas/TabularArrayCellDatetime'
+        - $ref: '#/components/schemas/TabularArrayCellShortenedUrl'
+
+    TabularArrayRow:
+      type: array
+      items:
+        $ref: '#/components/schemas/TabularArrayCell'
+
+    TabularArrayHeader:
+      description: A header for a column
+      type: object
+      properties:
+        name:
+          type: string
+    
+
+    TabularArray:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabularArrayHeader'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabularArrayRow'
+
+    TabularArrays:
+      type: object
+      description: user data uploaded as excel, converted to a set of tabular arrays, one for each excel sheet.
+      properties:
+        arrays:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabularArray'
 
     StringParameterValue:
       type: string
@@ -287,7 +356,7 @@ components:
         - $ref: '#/components/schemas/UrlParameterValue'
         - $ref: '#/components/schemas/EnumParameterValue'
         - $ref: '#/components/schemas/FileParameterValue'
-        - $ref: '#/components/schemas/ExcelFileParameterValue'
+        - $ref: '#/components/schemas/TabularArraysParameterValue'
 
     Parameter:
       type: object
@@ -1474,6 +1543,24 @@ security:
   - basic_auth: []
 
 paths:
+
+  /uploaded-tabular-data:
+    get:
+      tags:
+        - Helpers
+      summary: Return uploaded data
+      description: >
+        After a user successfully uploads excel data for a subbot (the data sheet formats
+        have been validated against the format expected by the subbot), the data
+        can be downloaded from the subbot by invoking this endpoint.
+
+      responses:
+        "200":
+          description: Return a 200 status on success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TabularArrays'
 
   /description:
     get:
