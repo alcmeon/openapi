@@ -248,7 +248,8 @@ components:
           format: uri
           description: >
             Where to download the file. This url should not be cached.
-            It is valid for less than 30 seconds.
+            It is valid for less than 30 seconds. This url is the full
+            url to the [GET /uploaded-tabular-data](ref:get_uploaded-tabular-data) endpoint.
         cache_key:
           type: string
           description: A unique id which can be used as the key to cache the file downloaded from the url. This id is warranted to change if the file is changed by the user.
