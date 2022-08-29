@@ -1546,6 +1546,9 @@ paths:
 
   /uploaded-tabular-data:
     get:
+      servers:
+        - url: https://api.alcmeon.com
+          description: Host for tabular data
       tags:
         - Helpers
       summary: Return uploaded data
