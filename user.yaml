@@ -7,8 +7,8 @@ info:
   title: User Provisionning
   version: '1.0'
 
-#x-readme:
-#  explorer-enabled: false
+x-readme:
+  explorer-enabled: false
 
 components:
 
