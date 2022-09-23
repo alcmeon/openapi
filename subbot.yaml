@@ -260,7 +260,7 @@ components:
       description: A cell which contains a value for a header of type `integer`
 
     TabularArrayCellFloat:
-      type: float
+      type: number
       description: A cell which contains a value for a header of type `float`
 
     TabularArrayCellString:
