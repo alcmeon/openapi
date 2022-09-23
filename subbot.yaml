@@ -186,6 +186,7 @@ components:
           description: >
             Type of header. The following types are supported:
               - integer: any positive or negative integers.
+              - float: any positive or negative floats.
               - string: any string
               - url: a string, formatted as a url. Only http:// and https:// urls are supported.
               - datetime: a datetime in YYYY-MM-DDTHH:MM:SS+0 format (GMT)
@@ -193,7 +194,7 @@ components:
                 Any cell within a column of this type will be replaced by a shortened version before
                 being stored for use by a subbot
           type: string
-          enum: [integer, string, url, datetime, url_to_shorten]
+          enum: [integer, float, string, url, datetime, url_to_shorten]
         is_mandatory:
           description: If true, mandatory a file that is missing the header cannot be uploaded successfully.
           type: boolean
@@ -258,6 +259,10 @@ components:
       type: integer
       description: A cell which contains a value for a header of type `integer`
 
+    TabularArrayCellFloat:
+      type: float
+      description: A cell which contains a value for a header of type `float`
+
     TabularArrayCellString:
       type: string
       description: A cell which contains a value for a header of type `string`
@@ -282,6 +287,7 @@ components:
     TabularArrayCell:
       oneOf:
         - $ref: '#/components/schemas/TabularArrayCellInteger'
+        - $ref: '#/components/schemas/TabularArrayCellFloat'
         - $ref: '#/components/schemas/TabularArrayCellString'
         - $ref: '#/components/schemas/TabularArrayCellUrl'
         - $ref: '#/components/schemas/TabularArrayCellDatetime'
