@@ -43,4 +43,8 @@ jobs:
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./user.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_USER_ID }}
+      - name: embed.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./embed.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_EMBED_ID }}
 
