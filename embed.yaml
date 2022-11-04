@@ -1,0 +1,98 @@
+openapi: 3.0.0
+servers:
+  - url: https://api.alcmeon.com/
+    description: Production api server
+
+info:
+  title: Embed (Alpha)
+  version: '1.0'
+
+x-readme:
+  explorer-enabled: false
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+
+security:
+  - basic_auth: []
+
+paths:
+
+  /embed:
+    post:
+      summary: Generate Embed Url
+      description: >
+        Generate a temporarily valid url for an Alcmeon conversation. This url
+        is expected to be associated with an iframe hosted on the domain configured
+        with the application calling this endpoint. DO NOT STORE the returned url 
+        in permanent storage.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conversation_id:
+                  description: the id of the conversation to display.
+                  type: integer
+                email:
+                  description: >
+                    The email of the user who wants to access the embed url.
+                    If there is no account matching this email, a new account 
+                    is automatically created with this email.
+                  type: string
+                  format: email
+                permission:
+                  description: >
+                    The user account associated with the email will be granted 
+                    these permissions before generating the url.
+                  type: string
+                  enum:
+                    - read
+                    - read-answer
+                    - read-answer-moderate
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    description: >
+                      A url which displays the requested conversation. This url is expected to be
+                      associated with an iframe within a browser. The hosting domain which contains
+                      the iframe MUST match the domain configured with the application performing
+                      this API request. This url is valid up to eight hours.
+                    type: string
+                    format: uri
+                  account_id:
+                    description: >
+                      The id associated with the user account created within
+                      Alcmeon which matches the email provided in the request.
+                    type: integer
+        '400':
+          description: Returned if the request body format is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      reason:
+                        type: string
+                        description: >
+                          A short string which describes what is wrong. Provide this string to 
+                          support@alcmeon.com if you wish to obtain more details about the problem.
