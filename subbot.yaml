@@ -497,6 +497,13 @@ components:
             - $ref: '#/components/schemas/WhatsappEvent'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
+      required:
+        - backend
+        - parameters
+        - user_external_id
+        - user_name
+        - event
+
 
     EventRequestV2:
       type: object
@@ -528,6 +535,12 @@ components:
             - $ref: '#/components/schemas/WhatsappEvent'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
+      required:
+        - backend
+        - parameters
+        - user_external_id
+        - user_name
+        - event
 
     MessageResponse:
       type: object
