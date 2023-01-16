@@ -497,6 +497,7 @@ components:
             - $ref: '#/components/schemas/WhatsappEvent'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
+            - $ref: '#/components/schemas/AppleMessagesEvent'
       required:
         - backend
         - parameters
@@ -535,6 +536,7 @@ components:
             - $ref: '#/components/schemas/WhatsappEvent'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
+            - $ref: '#/components/schemas/AppleMessagesEvent'
       required:
         - backend
         - parameters
@@ -1560,6 +1562,88 @@ components:
         - $ref: '#/components/schemas/WebchatButton'
         - $ref: '#/components/schemas/WebchatTextInputResponse'
         - $ref: '#/components/schemas/WebchatPostback'
+
+    ##################################################
+    # Apple Messages for Business objects
+    ##################################################
+    ISO639Locale:
+      description: The user's device locale settings as an ISO locale code.
+      type: string
+      enum:
+        - fr_FR
+        - en_UK
+
+    AppleMessagesTextEvent:
+      description: >
+        A message of type [Text](https://register.apple.com/resources/messages/msp-rest-api/type-text)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        locale:
+          $ref: '#/components/schemas/ISO639Locale'
+        body:
+          description: The text of the message sent by the user
+          type: string
+      required:
+        - type
+        - locale
+        - body
+
+
+    AppleMessagesInteractiveEvent:
+      description: >
+        A message of type Interactive
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [interactive]
+
+    AppleMessagesTypingStartEvent:
+      description: >
+        A message of type typing_start
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [typing_start]
+      required:
+        - type
+
+    AppleMessagesTypingEndEvent:
+      description: >
+        A message of type typing_end
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [typing_end]
+      required:
+        - type
+
+    AppleMessagesCloseEvent:
+      description: >
+        A message of type [close](https://register.apple.com/resources/messages/msp-rest-api/messages-received#receiving-a-closed-conversation)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [close]
+      required:
+        - type
+
+    AppleMessagesEvent:
+      description: >
+        On Apple Messages, a Message object
+      oneOf:
+        - $ref: '#/components/schemas/AppleMessagesTextEvent'
+        - $ref: '#/components/schemas/AppleMessagesInteractiveEvent'
+        - $ref: '#/components/schemas/AppleMessagesTypingStartEvent'
+        - $ref: '#/components/schemas/AppleMessagesTypingEndEvent'
+        - $ref: '#/components/schemas/AppleMessagesCloseEvent'
+
 
 security:
   - basic_auth: []

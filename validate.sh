@@ -1,5 +1,5 @@
 #/bin/sh
-npm install --prefix ./ @apidevtools/swagger-cli
+#npm install --prefix ./ @apidevtools/swagger-cli
 for f in user subbot inmessage exports synchronize custom-field scenarios application embed
 do
   echo "Validating $f";
