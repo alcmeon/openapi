@@ -1697,6 +1697,36 @@ components:
         - type
         - body
 
+    AppleVideoAsset:
+      description: A video asset for rich links
+      type: object
+      properties:
+        mimeType:
+          type: string
+          enum: [video/mp4]
+        url:
+          description: a url to the video data
+          type: string
+          format: uri
+      required:
+        - mimeType
+        - url
+
+    AppleImageAsset:
+      description: An image asset for rich links
+      type: object
+      properties:
+        mimeType:
+          type: string
+          enum: [image/png, image/jpeg]
+        data:
+          description: a base64 encoded string representing the image bytes
+          type: string
+      required:
+        - mimeType
+        - data
+  
+
     AppleRichLinkMessage:
       description: >
         A message [richLink](https://register.apple.com/resources/messages/msp-rest-api/type-richlink#rich-link-messages) message
@@ -1705,6 +1735,30 @@ components:
         type:
           type: string
           enum: [richLink]
+        body:
+          description: The link to send
+          type: string
+          format: uri
+        richLinkData:
+          type: object
+          properties:
+            url:
+              type: string
+              format: uri
+            title:
+              type: string
+            assets:
+              type: object
+              properties:
+                image:
+                  $ref: '#/components/schemas/AppleImageAsset'
+                video:
+                  $ref: '#/components/schemas/AppleVideoAsset'
+          required:
+            - url
+            - title
+            - assets
+            
       required:
         - type
 
