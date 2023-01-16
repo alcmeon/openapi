@@ -1573,6 +1573,23 @@ components:
         - fr_FR
         - en_UK
 
+    AppleMessagesAttachment:
+      type: object
+      properties:
+        name:
+          description: the name of the file created by the user.
+          type: string
+        file-size:
+          description: the size of the attachment in bytes.
+          type: number
+        mime-type:
+          description: mime type of the attachment.
+          type: string
+        url:
+          description: url where the attachment can be downloaded. This url is short-lived.
+          type: string
+          format: uri
+
     AppleMessagesTextEvent:
       description: >
         A message of type [Text](https://register.apple.com/resources/messages/msp-rest-api/type-text)
@@ -1586,6 +1603,11 @@ components:
         body:
           description: The text of the message sent by the user
           type: string
+        attachments:
+          description: The list of attachments associated with this message
+          type: array
+          items:
+            $ref: '#/components/schemas/AppleMessagesAttachment'
         group:
           description: [Group](https://register.apple.com/resources/messages/messaging-documentation/message-with-customers) field. Optional.
           type: string
