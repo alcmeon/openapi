@@ -1567,7 +1567,7 @@ components:
     ##################################################
     # Apple Messages for Business objects
     ##################################################
-    ISO639Locale:
+    AppleLocale:
       description: The user's device locale settings as an ISO locale code.
       type: string
       enum:
@@ -1600,7 +1600,7 @@ components:
           type: string
           enum: [text]
         locale:
-          $ref: '#/components/schemas/ISO639Locale'
+          $ref: '#/components/schemas/AppleLocale'
         body:
           description: The text of the message sent by the user
           type: string
@@ -1730,7 +1730,7 @@ components:
 
     AppleRichLinkMessage:
       description: >
-        A message [richLink](https://register.apple.com/resources/messages/msp-rest-api/type-richlink#rich-link-messages) message
+        A [richLink](https://register.apple.com/resources/messages/msp-rest-api/type-richlink#rich-link-messages) message
       type: object
       properties:
         type:
@@ -1762,6 +1762,197 @@ components:
             
       required:
         - type
+        - body
+        - richLinkData
+
+    AppleStyle:
+      type: string
+      description: >
+        A style that controls the size of the view rendered by Live Layout. 
+        The default is icon.
+      enum: [icon, small, large]
+
+    AppleInteractiveResponse:
+      description: an [InteractiveResponse](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#InteractiveResponse) object
+      type: object
+      properties:
+        title:
+          description: >
+            The main title that Messages shows in the header of the reply message bubble.
+            When the user taps the reply message bubble, Messages replaces the title with 
+            the user’s selection. Limited to 512 characters.
+          type: string
+          maxLength: 512
+        subTitle:
+          description: >
+            The subtitle that appears under the main title in the reply message bubble.
+            When the user taps the reply message bubble, Messages displays the subtitle 
+            in the header. Limited to 512 characters. 
+          type: string
+          maxLength: 512
+        secondarySubtitle:
+          description: >
+            A right-aligned title. Limited to 512 characters. Only custom interactive messages use this key.
+          type: string
+          maxLength: 512
+        tertiarySubtitle:
+          description: >
+            A right-aligned title. Limited to 512 characters. Only custom interactive messages use this key.
+          type: string
+          maxLength: 512
+        imageTitle:
+          description: >
+            The attached image's title. Limited to 512 characters. Only custom interactive messages use this key.
+          type: string
+          maxLength: 512
+        imageSubtitle:
+          description: >
+            The attached image's subtitle. Limited to 512 characters. Only custom interactive messages use this key.
+          type: string
+          maxLength: 512
+        style:
+          $ref: '#/components/schemas/AppleStyle'
+      required:
+        - title
+
+    AppleReplyMessage:
+      description: a [ReplyMessage](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#replyMessage) message
+      type: object
+      properties:
+        title:
+          type: string
+          description: >
+            The main title that the Messages app shows in the header of the reply message bubble.
+            When the user taps the reply message bubble, the Messages app replaces the title 
+            with the user’s selection. Limited to 512 characters.
+          maxLength: 512
+        subtitle:
+          type: string
+          description: >
+            The subtitle that appears under the main title in the reply message bubble.
+            When the user taps the reply message bubble, the Messages app displays the subtitle 
+            in the header. Limited to 512 characters.
+          maxLength: 512
+        imageTitle:
+          type: string
+          description: The attached image's title. Limited to 512 characters. Only custom interactive messages use this key.
+          maxLength: 512
+        imageSubtitle:
+          type: string
+          description: The attached image's subtitle. Limited to 512 characters. Only custom interactive messages use this key.
+          maxLength: 512
+        secondarySubtitle:
+          type: string
+          description: A right-aligned title. Limited to 512 characters. Only custom interactive messages use this key.
+          maxLength: 512
+        tertiarySubtitle:
+          type: string
+          description: A right-aligned subtitle. Limited to 512 characters. Only custom interactive messages use this key.
+          maxLength: 512
+        imageIdentifier:
+          type: string
+          description: The identifier for one of the images specified in interactiveData.data.images.
+        style:
+          $ref: '#/components/schemas/AppleStyle'
+
+    AppleReceivedMessage:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveResponse'
+        - type: object
+          properties:
+            imageIdentifier:
+              type: string
+          required:
+            - imageIdentifier
+
+    AppleInteractiveImages:
+      type: array
+      items:
+        description: an [ImageItem](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#ImageItem) in interactiveData.data.images
+        type: object
+        properties:
+          data:
+            description: A Base64-encoded string representing the image file data. Always provide @3x images at 72 dpi. 
+            type: string
+            format: byte
+          description:
+            description: Description of the image that the systems reads aloud to users who have VoiceOver enabled on their device.
+            type: string
+          identifier:
+            type: string
+            description: A string containing the image identifier, which must be unique within the list of images.
+        required:
+          - data
+          - identifier
+
+    AppleNewAuthenticationMessage:
+      description: A [New Authentication](https://register.apple.com/resources/messages/msp-rest-api/new-oauth) message
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [interactive]
+        locale:
+          $ref: '#/components/schemas/AppleLocale'
+        interactiveData:
+          type: object
+          properties:
+            bid:
+              type: string
+              enum:
+                - com.apple.messages.MSMessageExtensionBalloonPlugin:0000000000:com.apple.icloud.apps.messages.business.extension
+            data:
+              type: object
+              properties:
+                version:
+                  type: string
+                  enum: [2.0]
+                requestIdentifier:
+                  type: string
+                  format: uuid
+                images:
+                  $ref: '#/components/schemas/AppleInteractiveImages'
+                authenticate:
+                  type: object
+                  properties:
+                    oauth2:
+                      type: object
+                      properties:
+                        redirectURI:
+                          type: string
+                          format: uri
+                        responseType:
+                          type: string
+                          enum: [code]
+                        scope:
+                          type: array
+                          items:
+                            type: string
+                        state:
+                          type: string
+                      required:
+                        - scope
+                        - state
+                        - redirectURI
+                        - responseType
+                  required:
+                    - oauth2
+              required:
+                - version
+                - requestIdentifier
+                - authenticate
+            receivedMessage:
+              $ref: '#/components/schemas/AppleReceivedMessage'
+            replyMessage:
+              $ref: '#/components/schemas/AppleReplyMessage'
+          required:
+            - bid
+            - data
+            - receivedMessage
+            - replyMessage
+      required:
+        - type
+        - interactiveData
 
 
     AppleMessage:
@@ -1769,6 +1960,7 @@ components:
       oneOf:
         - $ref: '#/components/schemas/AppleTextMessage'
         - $ref: '#/components/schemas/AppleRichLinkMessage'
+        - $ref: '#/components/schemas/AppleNewAuthenticationMessage'
         
 
 
