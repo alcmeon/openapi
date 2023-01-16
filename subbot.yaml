@@ -1954,6 +1954,54 @@ components:
         - type
         - interactiveData
 
+    Apple_Quick_Reply_Message:
+      description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-message) message
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [interactive]
+        locale:
+          $ref: '#/components/schemas/AppleLocale'
+        interactiveData:
+          type: object
+          properties:
+            bid:
+              type: string
+              enum:
+                - com.apple.messages.MSMessageExtensionBalloonPlugin:0000000000:com.apple.icloud.apps.messages.business.extension
+            data:
+              type: object
+              properties:
+                quick-reply:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      summaryText:
+                        type: string
+                        description: A summary text that will be used for device notification but also shown in the transcript after user makes a choice.
+                      items:
+                        type: array
+                        maxLength: 5
+                        items:
+                          type: object
+                          properties:
+                            identifier:
+                              type: string
+                              description: An identifier to identify the item.
+                            title:
+                              type: string
+                              description: Title of the quick reply item. Max 1 line of text.
+              required:
+                - quick-reply
+          required:
+            - bid
+            - data
+      required:
+        - type
+        - interactiveData
+
 
     AppleMessage:
       description: A message sent by a brand to a user.
@@ -1961,6 +2009,7 @@ components:
         - $ref: '#/components/schemas/AppleTextMessage'
         - $ref: '#/components/schemas/AppleRichLinkMessage'
         - $ref: '#/components/schemas/AppleNewAuthenticationMessage'
+        - $ref: '#/components/schemas/Apple_Quick_Reply_Message'
         
 
 
