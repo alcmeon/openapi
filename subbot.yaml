@@ -1690,6 +1690,7 @@ components:
           description: The text message to send
           type: string
         attachments:
+          description: The optional attachments. There should be one \uFFFC in the message text body for each entry in this array.
           type: array
           items:
             $ref: '#/components/schemas/AppleAttachment'
@@ -1767,6 +1768,7 @@ components:
       description: A message sent by a brand to a user.
       oneOf:
         - $ref: '#/components/schemas/AppleTextMessage'
+        - $ref: '#/components/schemas/AppleRichLinkMessage'
         
 
 
