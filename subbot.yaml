@@ -1592,6 +1592,12 @@ components:
         intent:
           description: [Intent](https://register.apple.com/resources/messages/messaging-documentation/message-with-customers) field. Optional.
           type: string
+        capability-list:
+          description: The list of the user's device capabilities. XXX: Forward from HTTP header ?
+          type: array
+          items:
+            type: string
+            enum: [quick, list, time, auth, auth2, form]
       required:
         - type
         - locale
