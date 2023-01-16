@@ -556,11 +556,11 @@ components:
           description: >
             An object that matches the structure of the underlying social media message format.
           oneOf:
-            - $ref: '#/components/schemas/MessengerMessageResponse'
-            - $ref: '#/components/schemas/TwitterMessageResponse'
-            - $ref: '#/components/schemas/WhatsappMessageResponse'
-            - $ref: '#/components/schemas/GbmMessageResponse'
-            - $ref: '#/components/schemas/WebChatMessageResponse'
+            - $ref: '#/components/schemas/MessengerMessage'
+            - $ref: '#/components/schemas/TwitterMessage'
+            - $ref: '#/components/schemas/WhatsappMessage'
+            - $ref: '#/components/schemas/GbmMessage'
+            - $ref: '#/components/schemas/WebChatMessage'
             - $ref: '#/components/schemas/AppleMessage'
 
     ##################################################
@@ -694,7 +694,7 @@ components:
           items:
             $ref: '#/components/schemas/MessengerButton'
 
-    MessengerMessageResponse:
+    MessengerMessage:
       description: >
         On Messenger, a trimmed down version of the 
         [message](https://developers.facebook.com/docs/messenger-platform/reference/send-api#message) object.
@@ -784,7 +784,7 @@ components:
     # Twitter objects
     ##################################################
 
-    TwitterMessageResponse:
+    TwitterMessage:
       description: >
         On Twitter, a [MessageDataObject](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/new-event#message-data-object) object
       type: object
@@ -1225,7 +1225,7 @@ components:
                             Unique identifier of the product in a catalog
 
 
-    WhatsappMessageResponse:
+    WhatsappMessage:
       description: >
         On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
       type: object
@@ -1371,7 +1371,7 @@ components:
     # Google Business Messages objects
     ##################################################
 
-    GbmMessageResponse:
+    GbmMessage:
       description: >
         On Google Business Messages, a subset of the 
         [Message](https://developers.google.com/business-communications/business-messages/reference/rest/v1/conversations.messages#resource:-message) object
@@ -1518,7 +1518,7 @@ components:
               type: string
               description: The payload associated with the postback button displayed in the persistent menu
 
-    WebChatMessageResponse:
+    WebChatMessage:
       description: >
         On WebChat, a subset of the
         [Message](https://docs.google.com/document/d/1cLUiM00Yd4Vw_EWkBmyMlmSfxAeKRJj1_1nRUJirgL0/edit?usp=sharing) object
