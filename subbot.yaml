@@ -1669,11 +1669,69 @@ components:
       required:
         - type
 
+    AppleCommonInteractiveEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [interactive]
+        interactive:
+          type: object
+          properties:
+            bid:
+              type: string
+              enum:
+                - com.apple.messages.MSMessageExtensionBalloonPlugin:0000000000:com.apple.icloud.apps.messages.business.extension
+            data:
+              type: object
+              properties:
+                requestIdentifier:
+                  type: string
+                version:
+                  type: string
+                  enum: [1]
+                images:
+                  $ref: '#/components/schemas/AppleInteractiveImages'
+              required:
+                - requestIdentifier
+                - version
+          required:
+            - bid
+            - data
+      required:
+        - type
+        - interactive
+
+    Apple_Quick_Reply_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleCommonInteractiveEvent'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    selectedIndex:
+                      description: The selected item number from top order.
+                      type: integer
+                    selectedIdentifier:
+                      description: The selected identifier of the item.
+                      type: string
+                    items:
+                      $ref: '#/components/schemas/Apple_Quick_Reply_Items'
+                  required:
+                    - selectedIndex
+                    - selectedIdentifier
+                    - items
+
     AppleEvent:
       description: >
         A message sent by a user to a brand.
       oneOf:
         - $ref: '#/components/schemas/AppleTextEvent'
+        - $ref: '#/components/schemas/Apple_Quick_Reply_Event'
         - $ref: '#/components/schemas/AppleInteractiveEvent'
         - $ref: '#/components/schemas/AppleTypingStartEvent'
         - $ref: '#/components/schemas/AppleTypingEndEvent'
@@ -1954,6 +2012,19 @@ components:
         - type
         - interactiveData
 
+    Apple_Quick_Reply_Items:
+      type: array
+      maxLength: 5
+      items:
+        type: object
+        properties:
+          identifier:
+            type: string
+            description: An identifier to identify the item.
+          title:
+            type: string
+            description: Title of the quick reply item. Max 1 line of text.
+
     Apple_Quick_Reply_Message:
       description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-message) message
       type: object
@@ -1982,17 +2053,7 @@ components:
                         type: string
                         description: A summary text that will be used for device notification but also shown in the transcript after user makes a choice.
                       items:
-                        type: array
-                        maxLength: 5
-                        items:
-                          type: object
-                          properties:
-                            identifier:
-                              type: string
-                              description: An identifier to identify the item.
-                            title:
-                              type: string
-                              description: Title of the quick reply item. Max 1 line of text.
+                        $ref: '#/components/schemas/Apple_Quick_Reply_Items'
               required:
                 - quick-reply
           required:
