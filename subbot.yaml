@@ -1586,6 +1586,12 @@ components:
         body:
           description: The text of the message sent by the user
           type: string
+        group:
+          description: [Group](https://register.apple.com/resources/messages/messaging-documentation/message-with-customers) field. Optional.
+          type: string
+        intent:
+          description: [Intent](https://register.apple.com/resources/messages/messaging-documentation/message-with-customers) field. Optional.
+          type: string
       required:
         - type
         - locale
