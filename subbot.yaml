@@ -1772,12 +1772,12 @@ components:
                         properties:
                           sections:
                             allOf:
-                              - description: >
-                                  The first element in this array contains the items selected by the user.
-                                  The second element in this array
-                                type: array
-                                minItems: 2
-                                maxItems: 2
+#                              - description: >
+#                                  The first element in this array contains the items selected by the user.
+#                                  The second element in this array
+#                                type: array
+#                                minItems: 2
+#                                maxItems: 2
                               - $ref: '#/components/schemas/AppleListPickerSection'
                         required:
                           - sections
@@ -1791,7 +1791,7 @@ components:
       oneOf:
         - $ref: '#/components/schemas/AppleTextEvent'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Event'
-#        - $ref: '#/components/schemas/Apple_List_Picker_Event'
+        - $ref: '#/components/schemas/Apple_List_Picker_Event'
         - $ref: '#/components/schemas/AppleTypingStartEvent'
         - $ref: '#/components/schemas/AppleTypingEndEvent'
         - $ref: '#/components/schemas/AppleCloseEvent'
