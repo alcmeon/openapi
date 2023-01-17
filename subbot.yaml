@@ -1627,14 +1627,6 @@ components:
         - body
 
 
-    AppleInteractiveEvent:
-      description: >
-        A message of type Interactive
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [interactive]
 
     AppleTypingStartEvent:
       description: >
@@ -1669,12 +1661,14 @@ components:
       required:
         - type
 
-    AppleCommonInteractiveEvent:
+    AppleInteractiveEvent:
       type: object
       properties:
         type:
           type: string
           enum: [interactive]
+        locale:
+          $ref: '#/components/schemas/AppleLocale'
         interactive:
           type: object
           properties:
@@ -1704,8 +1698,9 @@ components:
 
     Apple_Quick_Reply_Event:
       allOf:
-        - $ref: '#/components/schemas/AppleCommonInteractiveEvent'
+        - $ref: '#/components/schemas/AppleInteractiveEvent'
         - type: object
+          description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-webhook-event) event
           properties:
             interactive:
               type: object
@@ -1726,13 +1721,77 @@ components:
                     - selectedIdentifier
                     - items
 
+    AppleListPickerSection:
+      type: object
+      properties:
+        title:
+          type: string
+        order:
+          type: integer
+        multipleSelection:
+          type: boolean
+          default: false
+        listPickerItem:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              identifier:
+                type: string
+              subtitle:
+                type: string
+              order:
+                type: integer
+              imageIdentifier:
+                type: string
+              style:
+                $ref: '#/components/schemas/AppleStyle'
+            required:
+              - identifier
+              - title
+      required:
+        - title
+
+    Apple_List_Picker_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    listPicker:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          sections:
+                            allOf:
+                              - description: >
+                                  The first element in this array contains the items selected by the user.
+                                  The second element in this array
+                                type: array
+                                minItems: 2
+                                maxItems: 2
+                              - $ref: '#/components/schemas/AppleListPickerSection'
+                        required:
+                          - sections
+                  required:
+                    - listPicker
+      
+
     AppleEvent:
       description: >
         A message sent by a user to a brand.
       oneOf:
         - $ref: '#/components/schemas/AppleTextEvent'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Event'
-        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - $ref: '#/components/schemas/Apple_List_Picker_Event'
         - $ref: '#/components/schemas/AppleTypingStartEvent'
         - $ref: '#/components/schemas/AppleTypingEndEvent'
         - $ref: '#/components/schemas/AppleCloseEvent'
@@ -2025,15 +2084,12 @@ components:
             type: string
             description: Title of the quick reply item. Max 1 line of text.
 
-    Apple_Quick_Reply_Message:
-      description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-message) message
+    AppleInteractiveMessage:
       type: object
       properties:
         type:
           type: string
           enum: [interactive]
-        locale:
-          $ref: '#/components/schemas/AppleLocale'
         interactiveData:
           type: object
           properties:
@@ -2043,19 +2099,6 @@ components:
                 - com.apple.messages.MSMessageExtensionBalloonPlugin:0000000000:com.apple.icloud.apps.messages.business.extension
             data:
               type: object
-              properties:
-                quick-reply:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      summaryText:
-                        type: string
-                        description: A summary text that will be used for device notification but also shown in the transcript after user makes a choice.
-                      items:
-                        $ref: '#/components/schemas/Apple_Quick_Reply_Items'
-              required:
-                - quick-reply
           required:
             - bid
             - data
@@ -2063,6 +2106,53 @@ components:
         - type
         - interactiveData
 
+    Apple_Quick_Reply_Message:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-message) message
+          type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    quick-reply:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          summaryText:
+                            type: string
+                            description: A summary text that will be used for device notification but also shown in the transcript after user makes a choice.
+                          items:
+                            $ref: '#/components/schemas/Apple_Quick_Reply_Items'
+                  required:
+                    - quick-reply
+
+    Apple_List_Picker_Message:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    listPicker:
+                      type: object
+                      properties:
+                        sections:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/AppleListPickerSection'
+                      required:
+                        - sections
+                  required:
+                    - listPicker
 
     AppleMessage:
       description: A message sent by a brand to a user.
@@ -2071,6 +2161,7 @@ components:
         - $ref: '#/components/schemas/AppleRichLinkMessage'
         - $ref: '#/components/schemas/AppleNewAuthenticationMessage'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Message'
+        - $ref: '#/components/schemas/Apple_List_Picker_Message'
         
 
 
