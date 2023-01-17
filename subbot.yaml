@@ -1766,21 +1766,21 @@ components:
                   type: object
                   properties:
                     listPicker:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          sections:
+                      type: object
+                      properties:
+                        sections:
+                          type: array
+                          items:
                             allOf:
-#                              - description: >
-#                                  The first element in this array contains the items selected by the user.
-#                                  The second element in this array
+                              - description: >
+                                  The first element in this array contains the items selected by the user.
+                                  The second element in this array
 #                                type: array
 #                                minItems: 2
 #                                maxItems: 2
                               - $ref: '#/components/schemas/AppleListPickerSection'
-                        required:
-                          - sections
+                      required:
+                        - sections
                   required:
                     - listPicker
       
