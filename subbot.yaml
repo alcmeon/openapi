@@ -2155,6 +2155,68 @@ components:
                   required:
                     - listPicker
 
+    Apple_Location:
+      type: object
+      properties:
+        title:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        radius:
+          type: number
+
+    Apple_Timeslot:
+      type: object
+      properties:
+        duration:
+          type: integer
+        identifier:
+          type: string
+        startTime:
+          description: A UTC date string, represented by a valid date in ISO-8601 format and specified as absolute GMT +0000 date
+          type: string
+          format: date-time
+      required:
+        - duration
+        - identifier
+        - startTime
+
+    Apple_Time_Picker_Message:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - type: object
+          description: a [TimePicker](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#time-picker-message) message
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    event:
+                      type: object
+                      properties:
+                        identifier:
+                          type: string
+                        imageIdentifier:
+                          type: string
+                        location:
+                          $ref: '#/components/schemas/Apple_Location'
+                        timeslots:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/Apple_Timeslot'
+                        timezoneOffset:
+                          type: integer
+                        title:
+                          type: string
+                      required:
+                        - identifier
+                  required:
+                    - event
+
     AppleMessage:
       description: A message sent by a brand to a user.
       oneOf:
@@ -2163,6 +2225,7 @@ components:
         - $ref: '#/components/schemas/AppleNewAuthenticationMessage'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Message'
         - $ref: '#/components/schemas/Apple_List_Picker_Message'
+        - $ref: '#/components/schemas/Apple_Time_Picker_Message'
         
 
 
