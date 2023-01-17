@@ -1669,7 +1669,7 @@ components:
           enum: [interactive]
         locale:
           $ref: '#/components/schemas/AppleLocale'
-        interactive:
+        interactiveData:
           type: object
           properties:
             bid:
@@ -1702,7 +1702,7 @@ components:
         - type: object
           description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-webhook-event) event
           properties:
-            interactive:
+            interactiveData:
               type: object
               properties:
                 data:
@@ -1759,7 +1759,7 @@ components:
         - $ref: '#/components/schemas/AppleInteractiveEvent'
         - type: object
           properties:
-            interactive:
+            interactiveData:
               type: object
               properties:
                 data:
@@ -1784,6 +1784,58 @@ components:
                   required:
                     - listPicker
       
+    Apple_Time_Picker_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - description: XXX. Undocumented.
+
+    Apple_Form_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - description: a user's [response](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#response-payload) to a form.
+          type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    dynamic:
+                      type: object
+                      properties:
+                        selections:
+                          type: object
+                          properties:
+                            pageIdentifier:
+                              type: string
+                            title:
+                              type: string
+                            subtitle:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  identifier:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum: [select, datePicker, input]
+                                  title:
+                                    type: string
+                                  value:
+                                    type: string
+                      required:
+                        - selections
+                  required:
+                    - dynamic
+              required:
+                - data
+          required:
+            - interactiveData
+  
 
     AppleEvent:
       description: >
@@ -1792,6 +1844,8 @@ components:
         - $ref: '#/components/schemas/AppleTextEvent'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Event'
         - $ref: '#/components/schemas/Apple_List_Picker_Event'
+        - $ref: '#/components/schemas/Apple_Time_Picker_Event'
+        - $ref: '#/components/schemas/Apple_Form_Event'
         - $ref: '#/components/schemas/AppleTypingStartEvent'
         - $ref: '#/components/schemas/AppleTypingEndEvent'
         - $ref: '#/components/schemas/AppleCloseEvent'
@@ -2102,7 +2156,7 @@ components:
               properties:
                 version:
                   type: string
-                  enum: [1.0]
+                  enum: ['1.0']
                 requestIdentifier:
                   type: string
               required:
