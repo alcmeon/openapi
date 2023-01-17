@@ -1698,7 +1698,7 @@ components:
 
     Apple_Quick_Reply_Event:
       allOf:
-        - $ref: '#/components/schemas/AppleInteractiveEvent'
+#        - $ref: '#/components/schemas/AppleInteractiveEvent'
         - type: object
           description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-webhook-event) event
           properties:
@@ -1791,7 +1791,7 @@ components:
       oneOf:
         - $ref: '#/components/schemas/AppleTextEvent'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Event'
-        - $ref: '#/components/schemas/Apple_List_Picker_Event'
+#        - $ref: '#/components/schemas/Apple_List_Picker_Event'
         - $ref: '#/components/schemas/AppleTypingStartEvent'
         - $ref: '#/components/schemas/AppleTypingEndEvent'
         - $ref: '#/components/schemas/AppleCloseEvent'
