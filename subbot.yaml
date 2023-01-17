@@ -2381,6 +2381,74 @@ components:
             - type
             - items
 
+    Apple_Form_Date_Picker_Page:
+      allOf:
+        - $ref: '#/components/schemas/Apple_Form_Page'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [datePicker]
+            hintText:
+              type: string
+            options:
+              type: object
+              properties:
+                dateFormat:
+                  type: string
+                  default: MM/dd/yyyy
+                startDate:
+                  type: string
+                minimumDate:
+                  type: string
+                maximumDate:
+                  type: string
+                labelText:
+                  type: string
+                  default: Date
+              required:
+                - identifier
+          required:
+            - type
+
+    Apple_Form_Input_Page:
+      allOf:
+        - $ref: '#/components/schemas/Apple_Form_Page'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [input]
+            hintText:
+              type: string
+            options:
+              type: object
+              properties:
+                regex:
+                  type: string
+                placeholder:
+                  type: string
+                required:
+                  type: boolean
+                  default: false
+                inputType:
+                  type: string
+                  enum: [singleline, multiline]
+                labelText:
+                  type: string
+                prefixText:
+                  type: string
+                maximumCharacterCount:
+                  type: integer
+                keyboardType:
+                  type: string
+                  enum: [default, asciiCapable, numbersAndPunctuation, URL, numberPad, phonePad, namePhonePad, emailAddress, decimalPad, UIKeyboardTypeTwitter, webSearch]
+                textContentType:
+                  type: string
+                  enum: [name, namePrefix, givenName, middleName, familyName, nameSuffix, nickname, jobTitle, organizationName, location, fullStreetAddress, streetAddressLine1, streetAddressLine2, addressCity, addressState, addressCityAndState, sublocality, countryName, postalCode, telephoneNumber, emailAddress, URL, creditCardNumber, username, password, newPassword, oneTimeCode]
+          required:
+            - type
+
     Apple_Form_Data:
       type: object
       properties:
@@ -2411,6 +2479,8 @@ components:
             oneOf:
               - $ref: '#/components/schemas/Apple_Form_Select_Page'
               - $ref: '#/components/schemas/Apple_Form_Picker_Page'
+              - $ref: '#/components/schemas/Apple_Form_Date_Picker_Page'
+              - $ref: '#/components/schemas/Apple_Form_Input_Page'
       required:
         - startPageIdentifier
 
