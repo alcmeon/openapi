@@ -2084,7 +2084,7 @@ components:
             type: string
             description: Title of the quick reply item. Max 1 line of text.
 
-    AppleInteractiveMessage:
+    AppleBasicInteractiveMessage:
       type: object
       properties:
         type:
@@ -2106,9 +2106,26 @@ components:
         - type
         - interactiveData
 
-    Apple_Quick_Reply_Message:
+    AppleInteractiveMessage:
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                receivedMessage:
+                  $ref: '#/components/schemas/AppleReceivedMessage'
+                replyMessage:
+                  $ref: '#/components/schemas/AppleReplyMessage'
+                required:
+                  - receivedMessage
+                  - replyMessage
+        
+
+    Apple_Quick_Reply_Message:
+      allOf:
+        - $ref: '#/components/schemas/AppleBasicInteractiveMessage'
         - description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-message) message
           type: object
           properties:
