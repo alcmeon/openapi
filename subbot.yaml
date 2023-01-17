@@ -2108,7 +2108,7 @@ components:
 
     AppleInteractiveMessage:
       allOf:
-        - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - $ref: '#/components/schemas/AppleBasicInteractiveMessage'
         - type: object
           properties:
             interactiveData:
@@ -2118,9 +2118,9 @@ components:
                   $ref: '#/components/schemas/AppleReceivedMessage'
                 replyMessage:
                   $ref: '#/components/schemas/AppleReplyMessage'
-                required:
-                  - receivedMessage
-                  - replyMessage
+              required:
+                - receivedMessage
+                - replyMessage
         
 
     Apple_Quick_Reply_Message:
