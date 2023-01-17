@@ -2135,8 +2135,9 @@ components:
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
         - type: object
+          description: a [ListPicker](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#list-picker-message) message
           properties:
-            interactive:
+            interactiveData:
               type: object
               properties:
                 data:
