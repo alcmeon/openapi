@@ -497,7 +497,7 @@ components:
             - $ref: '#/components/schemas/WhatsappEvent'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
-            - $ref: '#/components/schemas/AppleEvent'
+            - $ref: '#/components/schemas/Apple_Event'
       required:
         - backend
         - parameters
@@ -536,7 +536,7 @@ components:
             - $ref: '#/components/schemas/WhatsappEvent'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
-            - $ref: '#/components/schemas/AppleEvent'
+            - $ref: '#/components/schemas/Apple_Event'
       required:
         - backend
         - parameters
@@ -561,7 +561,7 @@ components:
             - $ref: '#/components/schemas/WhatsappMessage'
             - $ref: '#/components/schemas/GbmMessage'
             - $ref: '#/components/schemas/WebChatMessage'
-            - $ref: '#/components/schemas/AppleMessage'
+            - $ref: '#/components/schemas/Apple_Message'
 
     ##################################################
     # Messenger objects
@@ -1591,7 +1591,7 @@ components:
           type: string
           format: uri
 
-    AppleTextEvent:
+    Apple_Text_Event:
       description: >
         A message of type [Text](https://register.apple.com/resources/messages/msp-rest-api/type-text)
       type: object
@@ -1628,7 +1628,7 @@ components:
 
 
 
-    AppleTypingStartEvent:
+    Apple_Typing_Start_Event:
       description: >
         A message of type typing_start
       type: object
@@ -1639,7 +1639,7 @@ components:
       required:
         - type
 
-    AppleTypingEndEvent:
+    Apple_Typing_End_Event:
       description: >
         A message of type typing_end
       type: object
@@ -1650,7 +1650,7 @@ components:
       required:
         - type
 
-    AppleCloseEvent:
+    Apple_Close_Event:
       description: >
         A message of type [close](https://register.apple.com/resources/messages/msp-rest-api/messages-received#receiving-a-closed-conversation)
       type: object
@@ -1837,20 +1837,20 @@ components:
             - interactiveData
   
 
-    AppleEvent:
+    Apple_Event:
       description: >
         A message sent by a user to a brand.
       oneOf:
-        - $ref: '#/components/schemas/AppleTextEvent'
+        - $ref: '#/components/schemas/Apple_Text_Event'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Event'
         - $ref: '#/components/schemas/Apple_List_Picker_Event'
         - $ref: '#/components/schemas/Apple_Time_Picker_Event'
         - $ref: '#/components/schemas/Apple_Form_Event'
-        - $ref: '#/components/schemas/AppleTypingStartEvent'
-        - $ref: '#/components/schemas/AppleTypingEndEvent'
-        - $ref: '#/components/schemas/AppleCloseEvent'
+        - $ref: '#/components/schemas/Apple_Typing_Start_Event'
+        - $ref: '#/components/schemas/Apple_Typing_End_Event'
+        - $ref: '#/components/schemas/Apple_Close_Event'
 
-    AppleTextMessage:
+    Apple_Text_Message:
       description: A text message
       type: object
       properties:
@@ -1899,7 +1899,7 @@ components:
         - data
   
 
-    AppleRichLinkMessage:
+    Apple_Rich_Link_Message:
       description: >
         A [richLink](https://register.apple.com/resources/messages/msp-rest-api/type-richlink#rich-link-messages) message
       type: object
@@ -2056,7 +2056,7 @@ components:
           - data
           - identifier
 
-    AppleNewAuthenticationMessage:
+    Apple_New_Authentication_Message:
       description: A [New Authentication](https://register.apple.com/resources/messages/msp-rest-api/new-oauth) message
       type: object
       properties:
@@ -2572,17 +2572,17 @@ components:
                     - dynamic
 
 
-    AppleMessage:
+    Apple_Message:
       description: A message sent by a brand to a user.
       oneOf:
-        - $ref: '#/components/schemas/AppleTextMessage'
-        - $ref: '#/components/schemas/AppleRichLinkMessage'
-        - $ref: '#/components/schemas/AppleNewAuthenticationMessage'
+        - $ref: '#/components/schemas/Apple_Text_Message'
+        - $ref: '#/components/schemas/Apple_Rich_Link_Message'
         - $ref: '#/components/schemas/Apple_Quick_Reply_Message'
         - $ref: '#/components/schemas/Apple_List_Picker_Message'
         - $ref: '#/components/schemas/Apple_Time_Picker_Message'
         - $ref: '#/components/schemas/Apple_iMessage_App_Message'
         - $ref: '#/components/schemas/Apple_Form_Message'
+        - $ref: '#/components/schemas/Apple_New_Authentication_Message'
         
         
 
