@@ -2056,74 +2056,6 @@ components:
           - data
           - identifier
 
-    Apple_New_Authentication_Message:
-      description: A [New Authentication](https://register.apple.com/resources/messages/msp-rest-api/new-oauth) message
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [interactive]
-        locale:
-          $ref: '#/components/schemas/AppleLocale'
-        interactiveData:
-          type: object
-          properties:
-            bid:
-              type: string
-              enum:
-                - com.apple.messages.MSMessageExtensionBalloonPlugin:0000000000:com.apple.icloud.apps.messages.business.extension
-            data:
-              type: object
-              properties:
-                version:
-                  type: string
-                  enum: [2.0]
-                requestIdentifier:
-                  type: string
-                  format: uuid
-                images:
-                  $ref: '#/components/schemas/AppleInteractiveImages'
-                authenticate:
-                  type: object
-                  properties:
-                    oauth2:
-                      type: object
-                      properties:
-                        redirectURI:
-                          type: string
-                          format: uri
-                        responseType:
-                          type: string
-                          enum: [code]
-                        scope:
-                          type: array
-                          items:
-                            type: string
-                        state:
-                          type: string
-                      required:
-                        - scope
-                        - state
-                        - redirectURI
-                        - responseType
-                  required:
-                    - oauth2
-              required:
-                - version
-                - requestIdentifier
-                - authenticate
-            receivedMessage:
-              $ref: '#/components/schemas/AppleReceivedMessage'
-            replyMessage:
-              $ref: '#/components/schemas/AppleReplyMessage'
-          required:
-            - bid
-            - data
-            - receivedMessage
-            - replyMessage
-      required:
-        - type
-        - interactiveData
 
     Apple_Quick_Reply_Items:
       type: array
@@ -2582,7 +2514,6 @@ components:
         - $ref: '#/components/schemas/Apple_Time_Picker_Message'
         - $ref: '#/components/schemas/Apple_iMessage_App_Message'
         - $ref: '#/components/schemas/Apple_Form_Message'
-        - $ref: '#/components/schemas/Apple_New_Authentication_Message'
         
         
 
