@@ -1864,6 +1864,47 @@ components:
           required:
             - interactiveData
 
+    Apple_Authentication_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEventv1'
+        - type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    authenticate:
+                      type: object
+                      properties:
+                        token:
+                          type: string
+                          description: A Base64-encoded authentication token string, which is encrypted with the responseEncryptionKey from the request when authentication is successful.
+                        status:
+                          type: string
+                        errors:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              code:
+                                description: A numerical error code. 
+                                type: integer
+                                enum: [1, 2, 3]
+                              domain:
+                                type: string
+                                enum: []
+                                description: A string indicating the error domain. XXX: Missing description of values (at least, 2: cryptor vs authentication)
+                              message:
+                                type: string
+                                enum: []
+                                description: A string indicating the description of the error. XXX. Missing description of values
+                      required:
+                        - status
+                        - error_code
+      
+  
     Apple_New_Authentication_Event:
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv2'
@@ -1901,6 +1942,7 @@ components:
         - $ref: '#/components/schemas/Apple_Typing_Start_Event'
         - $ref: '#/components/schemas/Apple_Typing_End_Event'
         - $ref: '#/components/schemas/Apple_Close_Event'
+        - $ref: '#/components/schemas/Apple_Authentication_Event'
         - $ref: '#/components/schemas/Apple_New_Authentication_Event'
 
     Apple_Text_Message:
@@ -2624,6 +2666,46 @@ components:
                   required:
                     - dynamic
 
+    Apple_Authentication_Message:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - type: object
+          description: an [authentication message](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#authentication-message).
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    authenticate:
+                      type: object
+                      properties:
+                        oauth2:
+                          type: object
+                          properties:
+                            clientSecret:
+                              type: string
+                              description: A string indicating the secret provisioned by the authorization server.
+                            responseEncryptionKey:
+                              type: string
+                              description: A string indicating the Base64-encoded public key that encrypts the access token returned in the response.
+                            responseType:
+                              type: string
+                              enum: [code]
+                              description: A string indicating the type of authentication request.
+                            scope:
+                              type: array
+                              description: An array of scope items that specifies the scope of the request.This dictionary entry gives the exact fields of data that the authentication service provides to the client requesting the authentication.
+                              items:
+                                type: string
+                            state:
+                              type: string
+                              description: A string indicating the state of the authentication request.
+                          required: [responseType, scope, state, responseEncryptionKey, clientSecret]
+                      required: [oauth2]
+                  required: [authenticate]
+
 
     Apple_Message:
       description: A message sent by a brand to a user.
@@ -2635,6 +2717,7 @@ components:
         - $ref: '#/components/schemas/Apple_Time_Picker_Message'
         - $ref: '#/components/schemas/Apple_iMessage_App_Message'
         - $ref: '#/components/schemas/Apple_Form_Message'
+        - $ref: '#/components/schemas/Apple_Authentication_Message'
         - $ref: '#/components/schemas/Apple_New_Authentication_Message'
         
         
