@@ -1894,15 +1894,14 @@ components:
                                 enum: [1, 2, 3]
                               domain:
                                 type: string
-                                enum: []
-                                description: A string indicating the error domain. XXX: Missing description of values (at least, 2: cryptor vs authentication)
+                                enum: ['com.apple.icloud.messages.business.cryptor']
+                                description: A string indicating the error domain. XXX. Missing description of values (at least, 2. cryptor vs authentication)
                               message:
                                 type: string
-                                enum: []
                                 description: A string indicating the description of the error. XXX. Missing description of values
                       required:
                         - status
-                        - error_code
+                        - errors
       
   
     Apple_New_Authentication_Event:
