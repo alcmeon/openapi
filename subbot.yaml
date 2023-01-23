@@ -1681,9 +1681,6 @@ components:
               properties:
                 requestIdentifier:
                   type: string
-                version:
-                  type: string
-                  enum: [1.0]
                 images:
                   $ref: '#/components/schemas/AppleInteractiveImages'
               required:
@@ -1696,9 +1693,40 @@ components:
         - type
         - interactive
 
-    Apple_Quick_Reply_Event:
+    AppleInteractiveEventv1:
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    version:
+                      type: string
+                      enum: [1.0]
+      
+    AppleInteractiveEventv2:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    version:
+                      type: string
+                      enum: [2.0]
+      
+
+    Apple_Quick_Reply_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - type: object
           description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-webhook-event) event
           properties:
@@ -1756,7 +1784,7 @@ components:
 
     Apple_List_Picker_Event:
       allOf:
-        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - type: object
           properties:
             interactiveData:
@@ -1786,12 +1814,12 @@ components:
       
     Apple_Time_Picker_Event:
       allOf:
-        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - description: XXX. Undocumented.
 
     Apple_Form_Event:
       allOf:
-        - $ref: '#/components/schemas/AppleInteractiveEvent'
+        - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - description: a user's [response](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#response-payload) to a form.
           type: object
           properties:
@@ -1835,6 +1863,30 @@ components:
                 - data
           required:
             - interactiveData
+
+    Apple_New_Authentication_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEventv2'
+        - type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    authenticate:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          enum: [success, failure, cancel, unknown]
+                        error_code:
+                          type: string
+                      required:
+                        - status
+                        - error_code
+      
   
 
     Apple_Event:
@@ -1849,6 +1901,7 @@ components:
         - $ref: '#/components/schemas/Apple_Typing_Start_Event'
         - $ref: '#/components/schemas/Apple_Typing_End_Event'
         - $ref: '#/components/schemas/Apple_Close_Event'
+        - $ref: '#/components/schemas/Apple_New_Authentication_Event'
 
     Apple_Text_Message:
       description: A text message
@@ -2056,6 +2109,74 @@ components:
           - data
           - identifier
 
+    Apple_New_Authentication_Message:
+      description: A [New Authentication](https://register.apple.com/resources/messages/msp-rest-api/new-oauth) message
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [interactive]
+        locale:
+          $ref: '#/components/schemas/AppleLocale'
+        interactiveData:
+          type: object
+          properties:
+            bid:
+              type: string
+              enum:
+                - com.apple.messages.MSMessageExtensionBalloonPlugin:0000000000:com.apple.icloud.apps.messages.business.extension
+            data:
+              type: object
+              properties:
+                version:
+                  type: string
+                  enum: [2.0]
+                requestIdentifier:
+                  type: string
+                  format: uuid
+                images:
+                  $ref: '#/components/schemas/AppleInteractiveImages'
+                authenticate:
+                  type: object
+                  properties:
+                    oauth2:
+                      type: object
+                      properties:
+                        redirectURI:
+                          type: string
+                          format: uri
+                        responseType:
+                          type: string
+                          enum: [code]
+                        scope:
+                          type: array
+                          items:
+                            type: string
+                        state:
+                          type: string
+                      required:
+                        - scope
+                        - state
+                        - redirectURI
+                        - responseType
+                  required:
+                    - oauth2
+              required:
+                - version
+                - requestIdentifier
+                - authenticate
+            receivedMessage:
+              $ref: '#/components/schemas/AppleReceivedMessage'
+            replyMessage:
+              $ref: '#/components/schemas/AppleReplyMessage'
+          required:
+            - bid
+            - data
+            - receivedMessage
+            - replyMessage
+      required:
+        - type
+        - interactiveData
 
     Apple_Quick_Reply_Items:
       type: array
@@ -2514,6 +2635,7 @@ components:
         - $ref: '#/components/schemas/Apple_Time_Picker_Message'
         - $ref: '#/components/schemas/Apple_iMessage_App_Message'
         - $ref: '#/components/schemas/Apple_Form_Message'
+        - $ref: '#/components/schemas/Apple_New_Authentication_Message'
         
         
 
