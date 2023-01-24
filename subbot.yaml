@@ -1568,11 +1568,19 @@ components:
     # Apple Messages for Business objects
     ##################################################
     AppleLocale:
-      description: The user's device locale settings as an ISO locale code.
+      description: The user's device locale settings as an ISO locale code. XXX. Fill valid values in enum below
       type: string
       enum:
         - fr_FR
         - en_UK
+
+    AppleCountryCode:
+      description: a two-letter ISO 3166 country code. XXX. Fill valid values in enum below
+      type: string
+
+    AppleCurrencyCode:
+      description:  a three-letter ISO 4217 currency code. XXX. Fill valid values in enum below
+      type: string
 
     AppleAttachment:
       type: object
@@ -2705,6 +2713,219 @@ components:
                       required: [oauth2]
                   required: [authenticate]
 
+    ApplePayEndpoints:
+      type: object
+      properties:
+        paymentGatewayUrl:
+          type: string
+          format: uri
+          description: Called by Apple Pay to process the payment through the payment provider. The URL should match the URL in the initiativeContext field of the payment session.
+        fallbackUrl:
+          type: string
+          format: uri
+          description: A URL that opens in a web browser so the customer can complete the purchase if their device is unable to make payments using Apple Pay.
+        orderTrackingUrl:
+          type: string
+          format: uri
+          description: Called by Messages for Business after completing the order; provides you with an opportunity to update the order information in your system.
+        paymentMethodUpdateUrl:
+          type: string
+          format: uri
+          description: Called by Apple Pay when the customer changes the payment method. If you don’t implement this endpoint and you include this key in the dictionary, the customer sees an error message.
+        shippingContactUpdateUrl:
+          type: string
+          format: uri
+          description: Called by Apple Pay when the customer changes their shipping address information. If you don’t implement this endpoint and you include this key in the dictionary, the customer sees an error message.
+        shippingMethodUpdateUrl:
+          type: string
+          format: uri
+          description: Called by Apple Pay when the customer changes the shipping method. If you don’t implement this endpoint and you include this key in the dictionary, the customer sees an error message.
+      required: [paymentGatewayUrl]
+
+    ApplePayMerchantSession:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The canonical name for your store, suitable for display and consisting of 64 or fewer UTF-8 characters. Do not localize the name.
+        epochTimestamp:
+          type: string
+          description: The time representation in number of seconds that have elapsed since 00:00:00 UTC, Thursday, January 1, 1970.
+        expiresAt:
+          type: string
+          description: The expiration time representation in number of seconds that have elapsed since 00:00:00 UTC, Thursday, January 1, 1970.
+        initiative:
+          type: string
+          description: A predefined value that identifies the e-commerce application making the request.
+          enum: [messaging]
+        initiativeContext:
+          type: string
+          format: uri
+          description: Your payment gateway URL. 
+        merchantIdentifier:
+          type: string
+          description: A unique identifier that represents a merchant for Apple Pay.
+        merchantSessionIdentifier:
+          type: string
+          description: A unique identifier that represents a merchant's session for Apple Pay.
+        nonce:
+          type: string
+          format: byte
+          description: XXX. The type of this field is currently undocumented and unknown
+        signature:
+          type: string
+          format: byte
+          description: XXX. The type of this field is currently undocumented and unknown
+      required: [displayName, epochTimestamp, expiresAt, initiative, initiativeContext, merchantIdentifier, merchantSessionIdentifier]
+
+
+    AppleContactFields:
+      description: a list of [contact field](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaycontactfield)
+      type: array
+      items:
+        type: string
+        enum: [email, name, phone, postalAddress, phoneticName]
+
+
+    ApplePayDateComponent:
+      description: a [DateComponents](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaydatecomponents)
+      type: object
+      properties:
+        years:
+          type: integer
+        months:
+          type: integer
+        days:
+          type: integer
+        hours:
+          type: integer
+
+
+    ApplePayShippingMethod:
+      type: object
+      properties:
+        label:
+          type: string
+        detail:
+          type: string
+        amount:
+          type: string
+        identifier:
+          type: string
+        dateComponentsRange:
+          type: object
+          properties:
+            startDateComponents:
+              $ref: '#/components/schemas/ApplePayDateComponent'
+            endDateComponents:
+              $ref: '#/components/schemas/ApplePayDateComponent'
+      required: [label, detail, amount, identifier]
+
+    ApplePayLineItem:
+      description: a [Line item](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaylineitem)
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [final, pending]
+        label:
+          type: string
+        amount:
+          type: string
+        paymentTiming:
+          type: string
+          enum: [immediate, recurring, deferred, automaticReload]
+        recurringPaymentStartDate:
+          type: string
+          description: XXX. ubnknown
+        recurringPaymentIntervalUnit:
+          type: string
+          enum: [year, month, day, hour, minute]
+        recurringPaymentIntervalCount:
+          type: integer
+          minimum: 0
+        recurringPaymentEndDate:
+          type: string
+          description: XXX. uinknown
+        deferredPaymentDate:
+          type: string
+          description: XXX. uinknown
+        automaticReloadPaymentThresholdAmount:
+          type: string
+
+    ApplePayApplePay:
+      type: object
+      properties:
+        merchantCapabilities:
+          type: array
+          items:
+            type: string
+            enum: [supports3DS, supportsCredit, supportsDebit, supportsEMV]
+        merchantIdentifier:
+          type: string
+          description: A unique identifier that represents a merchant for Apple Pay.
+        supportedNetworks:
+          type: string
+          enum: [amex, bancomat, bancontact, cartesBancaires, chinaUnionPay, dankort, discover, eftpos, electron, elo, girocard, interac, jcb, mada, maestro, masterCard, mir, privateLabel, visa, vPay]
+      required: [merchantIdentifier]
+
+
+    ApplePayPaymentRequest:
+      type: object
+      properties:
+        applePay:
+          $ref: '#/components/schemas/ApplePayApplePay'
+        countryCode:
+          $ref: '#/components/schemas/AppleCountryCode'
+        currencyCode:
+          $ref: '#/components/schemas/AppleCurrencyCode'
+        lineItems:
+          description: An array of line items explaining payments and additional charges.
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplePayLineItem'
+        requiredBillingContactFields:
+          $ref: '#/components/schemas/AppleContactFields'
+        requiredShippingContactFields:
+          $ref: '#/components/schemas/AppleContactFields'
+        shippingMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplePayShippingMethod'
+        supportedCountries:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppleCountryCode'
+        total:
+          $ref: '#/components/schemas/ApplePayLineItem'
+      required: [applePay, countryCode, currencyCode, lineItems, total]
+
+
+    Apple_Pay_Message:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveMessage'
+        - type: object
+          description: an [apple pay message](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#apple-pay-message)
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    payment:
+                      type: object
+                      properties:
+                        endpoints:
+                          $ref: '#/components/schemas/ApplePayEndpoints'
+                        merchantSession:
+                          $ref: '#/components/schemas/ApplePayMerchantSession'
+                        paymentRequest:
+                          $ref: '#/components/schemas/ApplePayPaymentRequest'
+                      required: [endpoints, merchantSession, paymentRequest]
+                  required: [payment]
+
+
 
     Apple_Message:
       description: A message sent by a brand to a user.
@@ -2718,8 +2939,7 @@ components:
         - $ref: '#/components/schemas/Apple_Form_Message'
         - $ref: '#/components/schemas/Apple_Authentication_Message'
         - $ref: '#/components/schemas/Apple_New_Authentication_Message'
-        
-        
+        - $ref: '#/components/schemas/Apple_Pay_Message'
 
 
 security:
