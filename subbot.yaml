@@ -1934,6 +1934,25 @@ components:
                       required:
                         - status
                         - error_code
+
+    Apple_Pay_Event:
+      allOf:
+        - $ref: '#/components/schemas/AppleInteractiveEventv2'
+        - type: object
+          description: This format is not documented. XXX. The following is completely guessed
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    payment:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+    
       
   
 
@@ -1951,6 +1970,7 @@ components:
         - $ref: '#/components/schemas/Apple_Close_Event'
         - $ref: '#/components/schemas/Apple_Authentication_Event'
         - $ref: '#/components/schemas/Apple_New_Authentication_Event'
+        - $ref: '#/components/schemas/Apple_Pay_Event'
 
     Apple_Text_Message:
       description: A text message
