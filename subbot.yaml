@@ -1255,11 +1255,31 @@ components:
         image:
           $ref: '#/components/schemas/Whatsapp_Media'
 
+    Whatsapp_Audio_Message:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [audio]
+        audio:
+          $ref: '#/components/schemas/Whatsapp_Media'
+
+    Whatsapp_Document_Message:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [audio]
+        document:
+          $ref: '#/components/schemas/Whatsapp_Document_Media'
+
     Whatsapp_Message:
       description: >
         On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
       oneOf:
         - $ref: '#/components/schemas/Whatsapp_Image_Message'
+        - $ref: '#/components/schemas/Whatsapp_Audio_Message'
+        - $ref: '#/components/schemas/Whatsapp_Document_Message'
 
     WhatsappEvent:
       description: >
