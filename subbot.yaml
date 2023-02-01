@@ -494,7 +494,7 @@ components:
           oneOf:
             - $ref: '#/components/schemas/MessengerEvent'
             - $ref: '#/components/schemas/TwitterEvent'
-            - $ref: '#/components/schemas/WhatsappEvent'
+            - $ref: '#/components/schemas/Whatsapp_Event'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
             - $ref: '#/components/schemas/Apple_Event'
@@ -533,7 +533,7 @@ components:
           oneOf:
             - $ref: '#/components/schemas/MessengerEvent'
             - $ref: '#/components/schemas/TwitterEvent'
-            - $ref: '#/components/schemas/WhatsappEvent'
+            - $ref: '#/components/schemas/Whatsapp_Event'
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
             - $ref: '#/components/schemas/Apple_Event'
@@ -1345,91 +1345,27 @@ components:
         - $ref: '#/components/schemas/Whatsapp_Product_Message'
         - $ref: '#/components/schemas/Whatsapp_Product_List_Message'
 
-    WhatsappEvent:
-      description: >
-        On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
+    Whatsapp_Text_Event:
       type: object
+      required: [type, text]
       properties:
         type:
-          description: >
-            A `text` (with or without `context`) or `interactive` or `button` or `order` object
           type: string
-          enum: [ text, interactive, button, order ]
-
+          enum: [text]
         text:
-          description: >
-            A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
           type: object
+          required: [body]
           properties:
             body:
-              description: The text of the message
               type: string
-        context:
-          description: >
-            Can be used to receive information about a product: mandatory when user asks information about a product to 
-            get product and catalog references. In this case, event type must be `text` and a `text` object must be included in the event
-          type: object
-          properties:
-            referred_product:
-              type: object
-              properties:
-                catalog_id:
-                  description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
-                  type: string
-                product_retailer_id:
-                  description: Unique identifier of the product in a catalog
-                  type: string
-        interactive:
-          description: >
-            A [interactive object](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages)
-          type: object
-          properties:
-            button_reply:
-              description: A [Reply Buttons object](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages)
-              type: object
-              properties:
-                title:
-                  description: The button label
-                  type: string
-                  example: Button-1
-                payload:
-                  description: An unique id associated with the button
-                  type: string
-                  example: 123
-            list_reply:
-              description: A [List Messages object](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages)
-              type: object
-              properties:
-                title:
-                  description: The button label
-                  type: string
-                  example: Button-1
-                description:
-                  description: A text describing what the button represents
-                  type: string
-                  example: This is my answer
-                payload:
-                  description: An unique id associated with the button
-                  type: string
-                  example: 123
-        order:
-          description: >
-            An [order object](https://developers.facebook.com/docs/whatsapp/guides/commerce-guides/receive-responses-from-customers#placing-an-order)
-          type: object
-          allOf:
-            - $ref: '#/components/schemas/WhatsappOrderObject'
-        button:
-          description: A [callback from quick reply button click object](https://developers.facebook.com/docs/whatsapp/api/messages/message-templates/interactive-message-templates#callback-from-a-quick-reply-button-click)
-          type: object
-          properties:
-            payload:
-              description: >
-                The payload associated with the quick reply button clicked
-              type: string
-            text:
-              description: >
-                The text associated with the button
-              type: string
+
+ 
+
+    Whatsapp_Event:
+      description: >
+        On Whatsapp, a subset of the [message notifications](https://developers.facebook.com/docs/whatsapp/on-premises/webhooks/inbound)
+      oneOf:
+        - $ref: '#/components/schemas/Whatsapp_Text_Event'
 
 
 
