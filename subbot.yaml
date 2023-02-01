@@ -1337,15 +1337,11 @@ components:
     Whatsapp_Interactive_Body:
       type: object
       properties:
-        body:
-          type: object
-          properties:
-            text:
-              description: Emojis, markdown, and links are supported
-              type: string
-              maxLength: 1024
-          required: [text]
-      required: [body]
+        text:
+          description: Emojis, markdown, and links are supported
+          type: string
+          maxLength: 1024
+      required: [text]
 
     Whatsapp_List_Message:
       allOf:
