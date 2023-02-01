@@ -558,7 +558,7 @@ components:
           oneOf:
             - $ref: '#/components/schemas/MessengerMessage'
             - $ref: '#/components/schemas/TwitterMessage'
-            - $ref: '#/components/schemas/WhatsappMessage'
+            - $ref: '#/components/schemas/Whatsapp_Message'
             - $ref: '#/components/schemas/GbmMessage'
             - $ref: '#/components/schemas/WebChatMessage'
             - $ref: '#/components/schemas/Apple_Message'
@@ -1224,60 +1224,42 @@ components:
                           description: >
                             Unique identifier of the product in a catalog
 
-
-    WhatsappMessage:
+    Whatsapp_Media:
       description: >
-        On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
+        a Media object. The data the url points to is cached. The cache key is the url itself.
+      type: object
+      properties:
+        link:
+          type: string
+          format: uri
+        caption:
+          type: string
+          maxLength: 1024
+      required: [link]
+
+    Whatsapp_Document_Media:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Media'
+        - type: object
+          properties:
+            filename:
+              type: string
+              description: The extension of the filename will specify what format the document is displayed as in WhatsApp.
+
+    Whatsapp_Image_Message:
       type: object
       properties:
         type:
-          description: >
-            A `text` or `interactive` or `document` or `image` or `video` object
           type: string
-          enum: [text, interactive, document, image, video]
-        text:
-          description: >
-            A [text_object](https://developers.facebook.com/docs/whatsapp/api/messages#text-object)
-          type: object
-          properties:
-            body:
-              description: The text of the message
-              type: string
-            preview_url:
-              type: boolean
-              default: false
-              description: >
-                If true, Whatsapp will attempt to generate a preview within the Whatsapp application.
-                Note: this field is located in the text.body object on purpose, to mirror the 
-                Whatsapp cloud API. We automatically convert that field to the proper field if
-                using the on-premise API.
-                [Limitations](https://developers.facebook.com/docs/whatsapp/api/messages/text#urls)
-        interactive:
-          description: A subset of an [interactive message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages) object.
-          type: object
-          oneOf:
-            - $ref: '#/components/schemas/list'
-            - $ref: '#/components/schemas/button'
-            - $ref: '#/components/schemas/product'
-            - $ref: '#/components/schemas/product_list'
+          enum: [image]
         image:
-          description: >
-            A [media_object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) containing an image
-          type: object
-          allOf:
-           - $ref: '#/components/schemas/WhatsappMediaObject'
-        video:
-          description: >
-            A [media_object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) containing a video
-          type: object
-          allOf:
-           - $ref: '#/components/schemas/WhatsappMediaObject'
-        document:
-          description: >
-            A [media_object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) containing a document
-          type: object
-          allOf:
-           - $ref: '#/components/schemas/WhatsappMediaObject'
+          $ref: '#/components/schemas/Whatsapp_Media'
+
+    Whatsapp_Message:
+      description: >
+        On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
+      oneOf:
+        - $ref: '#/components/schemas/Whatsapp_Image_Message'
 
     WhatsappEvent:
       description: >
