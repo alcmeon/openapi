@@ -1368,26 +1368,31 @@ components:
 
     Whatsapp_Button_Event:
       type: object
-      required: [type, button] 
+      required: [type, interactive] 
       properties:
         type:
           type: string
-          enum: [button]
-        button:
+          enum: [interactive]
+        interactive:
           type: object
-          required: [payload, text]
+          required: [type, button_reply]
           properties:
-            payload:
-              description: the payload of the button the user clicked on
+            type:
               type: string
-            text:
-              description: the label displayed on the button the user clicked on
-              type: string
+              enum: [button_reply]
+            button_reply:
+              type: object
+              required: [id, title]
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
  
 
     Whatsapp_Event:
       description: >
-        On Whatsapp, a subset of the [message notifications](https://developers.facebook.com/docs/whatsapp/on-premises/webhooks/inbound)
+        On Whatsapp, a subset of the [message notifications](https://developers.facebook.com/docs/whatsapp/on-premises/webhooks/components#messages_object)
       oneOf:
         - $ref: '#/components/schemas/Whatsapp_Text_Event'
         - $ref: '#/components/schemas/Whatsapp_Image_Event'
