@@ -1002,107 +1002,6 @@ components:
     # Whatsapp objects
     ##################################################
 
-    button:
-      description: A subset of the [Reply Buttons](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages#reply-buttons) object
-      type: object
-      properties:
-        type:
-          type: string
-          description: Must be set to `button`
-        body:
-          type: object
-          properties:
-            text:
-              description: An text displayed before the buttons
-              type: string
-        action:
-          type: object
-          properties:
-            buttons:
-              type: array
-              description: >
-                A list of buttons
-              items:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    description: >
-                      The type of the button object
-                    enum: [reply]
-                  reply:
-                    type: object
-                    description: >
-                      A clickable reply button
-                    properties:
-                      title:
-                        type: string
-                        description: >
-                          The label displayed in the button
-                      id:
-                        type: string
-                        description: >
-                          An unique postback id associated with the button
-
-    list:
-      description: A subset of the [List message](https://developers.facebook.com/docs/whatsapp/guides/interactive-messages#list-messages) object
-      type: object
-      properties:
-        type:
-          type: string
-          description: Must be set to `list`
-        body:
-          type: object
-          properties:
-            text:
-              description: The text of the message
-              type: string
-        action:
-          type: object
-          properties:
-            sections:
-              type: array
-              description: >
-                A list of rows containing a title with one or more buttons
-              items:
-                type: object
-                properties:
-                  title:
-                    type: string
-                    description: >
-                      The title associated with the section
-                  rows:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        title:
-                          type: string
-                          description: >
-                            The title associated with the button
-                        id:
-                          type: string
-                          description: >
-                            An unique id associated with the button
-                        description:
-                          type: string
-                          description: >
-                            A simple text describing what button does (optional)
-            button:
-              type: string
-              description: A simple text to describe the content of the list of buttons to display below
-
-    WhatsappMediaObject:
-      description: A subset of the [Media object](https://developers.facebook.com/docs/whatsapp/api/messages#media-object) object
-      type: object
-      properties:
-        link:
-          type: string
-          description: The URL of the media to be sent
-        caption:
-          type: string
-          description: Media description
-
     WhatsappOrderObject:
       type: object
       properties:
@@ -1393,6 +1292,17 @@ components:
                   required: [button]
               required: [type, body, action]
 
+    Whatsapp_Product_Action:
+      type: object
+      properties:
+        catalog_id:
+          type: string
+          description: Unique identifier of the Facebook catalog linked to your WhatsApp Business Account. This ID can be retrieved via Commerce Manager.
+        product_retailer_id:
+          type: string
+          maxLength: 100
+      required: [catalog_id, product_retailer_id]
+
     Whatsapp_Product_Message:
       allOf:
         - $ref: '#/components/schemas/Whatsapp_Interactive_Base'
@@ -1407,16 +1317,46 @@ components:
                 body:
                   $ref: '#/components/schemas/Whatsapp_Interactive_Body'
                 action:
-                  type: object
-                  properties:
-                    catalog_id:
-                      type: string
-                      description: Unique identifier of the Facebook catalog linked to your WhatsApp Business Account. This ID can be retrieved via Commerce Manager.
-                    product_retailer_id:
-                      type: string
-                      maxLength: 100
-                  required: [catalog_id, product_retailer_id]
+                  $ref: '#/components/schemas/Whatsapp_Product_Action'
               required: [type, action]
+
+    Whatsapp_Product_List_Message:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Base'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [product_list]
+                header:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Header'
+                body:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Body'
+                action:
+                  allOf:
+                    - $ref: '#/components/schemas/Whatsapp_Product_Action'
+                    - type: object
+                      properties:
+                        sections:
+                          type: object
+                          properties:
+                            title:
+                              type: string
+                              maxLength: 24
+                            product_items:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  product_retailer_id:
+                                    type: string
+                                required: [product_retailer_id]
+                          required: [title, product_items]
+                      required: [sections]
+              required: [type, header, body, action]
 
     Whatsapp_Button_Message:
       allOf:
@@ -1492,6 +1432,7 @@ components:
         - $ref: '#/components/schemas/Whatsapp_List_Message'
         - $ref: '#/components/schemas/Whatsapp_Button_Message'
         - $ref: '#/components/schemas/Whatsapp_Product_Message'
+        - $ref: '#/components/schemas/Whatsapp_Product_List_Message'
 
     WhatsappEvent:
       description: >
