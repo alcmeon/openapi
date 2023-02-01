@@ -1273,10 +1273,33 @@ components:
         document:
           $ref: '#/components/schemas/Whatsapp_Document_Media'
 
+    Whatsapp_Text_Message:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        text:
+          type: object
+          properties:
+            text:
+              type: string
+              description: the text of the message. See [Formatting](https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages#formatting)
+            preview_url:
+              type: boolean
+              default: false
+              description: >
+                If true, Whatsapp will attempt to generate a preview within the Whatsapp application.
+                Note: this field is located in the text.body object on purpose, to mirror the 
+                Whatsapp cloud API. We automatically convert that field to the proper field if
+                using the on-premise API.
+                [Limitations](https://developers.facebook.com/docs/whatsapp/api/messages/text#urls)
+
     Whatsapp_Message:
       description: >
         On Whatsapp, a subset of the [message](https://developers.facebook.com/docs/whatsapp/api/messages#parameters) object.
       oneOf:
+        - $ref: '#/components/schemas/Whatsapp_Text_Message'
         - $ref: '#/components/schemas/Whatsapp_Image_Message'
         - $ref: '#/components/schemas/Whatsapp_Audio_Message'
         - $ref: '#/components/schemas/Whatsapp_Document_Message'
