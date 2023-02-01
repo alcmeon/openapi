@@ -1381,7 +1381,7 @@ components:
         text:
           type: object
           properties:
-            text:
+            body:
               type: string
               description: the text of the message. See [Formatting](https://developers.facebook.com/docs/whatsapp/on-premises/reference/messages#formatting)
             preview_url:
@@ -1393,6 +1393,8 @@ components:
                 Whatsapp cloud API. We automatically convert that field to the proper field if
                 using the on-premise API.
                 [Limitations](https://developers.facebook.com/docs/whatsapp/api/messages/text#urls)
+          required: [body]
+      required: [type, text]
 
     Whatsapp_Message:
       description: >
