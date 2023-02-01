@@ -1254,6 +1254,7 @@ components:
           enum: [image]
         image:
           $ref: '#/components/schemas/Whatsapp_Media'
+      required: [type, image]
 
     Whatsapp_Audio_Message:
       type: object
@@ -1263,15 +1264,113 @@ components:
           enum: [audio]
         audio:
           $ref: '#/components/schemas/Whatsapp_Media'
+      required: [type, audio]
+
+    Whatsapp_Video_Message:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [video]
+        video:
+          $ref: '#/components/schemas/Whatsapp_Media'
+      required: [type, video]
 
     Whatsapp_Document_Message:
       type: object
       properties:
         type:
           type: string
-          enum: [audio]
+          enum: [document]
         document:
           $ref: '#/components/schemas/Whatsapp_Document_Media'
+      required: [type, document]
+
+    Whatsapp_Interactive_Base:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [interactive]
+        interactive:
+          type: object
+          properties:
+            footer:
+              type: object
+              properties:
+                text:
+                  type: string
+                  maxLength: 60
+                  description: Required if footer is present. The footer content. Emojis, markdown, and links are supported.
+      required: [type, interactive]
+
+    Whatsapp_Interactive_Document_Header:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Document_Message'
+        
+    Whatsapp_Interactive_Image_Header:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Image_Message'
+        
+    Whatsapp_Interactive_Video_Header:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Video_Message'
+        
+    Whatsapp_Interactive_Text_Header:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        text:
+          type: string
+          maxLength: 60
+          description: Text for the header. Formatting allows emojis, but not markdown.
+
+    Whatsapp_Interactive_Header:
+      oneOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Document_Header'
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Image_Header'
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Video_Header'
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Text_Header'
+
+    Whatsapp_Interactive_Body:
+      type: object
+      properties:
+        body:
+          type: object
+          properties:
+            text:
+              description: Emojis, markdown, and links are supported
+              type: string
+              maxLength: 1024
+          required: [text]
+      required: [body]
+
+    Whatsapp_List_Message:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Base'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [list]
+                header:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Header'
+                body:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Body'
+                action:
+                  type: object
+                  properties:
+                    button:
+                      type: string
+                      description:  Emojis are supported, markdown is not.
+                      maxLength: 20
+                  required: [button]
+              required: [type, body, action]
 
     Whatsapp_Text_Message:
       type: object
@@ -1303,6 +1402,8 @@ components:
         - $ref: '#/components/schemas/Whatsapp_Image_Message'
         - $ref: '#/components/schemas/Whatsapp_Audio_Message'
         - $ref: '#/components/schemas/Whatsapp_Document_Message'
+        - $ref: '#/components/schemas/Whatsapp_Video_Message'
+        - $ref: '#/components/schemas/Whatsapp_List_Message'
 
     WhatsappEvent:
       description: >
