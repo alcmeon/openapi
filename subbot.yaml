@@ -1140,13 +1140,6 @@ components:
           maxLength: 60
           description: Text for the header. Formatting allows emojis, but not markdown.
 
-    Whatsapp_Interactive_Header:
-      oneOf:
-        - $ref: '#/components/schemas/Whatsapp_Interactive_Document_Header'
-        - $ref: '#/components/schemas/Whatsapp_Interactive_Image_Header'
-        - $ref: '#/components/schemas/Whatsapp_Interactive_Video_Header'
-        - $ref: '#/components/schemas/Whatsapp_Interactive_Text_Header'
-
     Whatsapp_Interactive_Body:
       type: object
       properties:
@@ -1168,7 +1161,7 @@ components:
                   type: string
                   enum: [list]
                 header:
-                  $ref: '#/components/schemas/Whatsapp_Interactive_Header'
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Text_Header'
                 body:
                   $ref: '#/components/schemas/Whatsapp_Interactive_Body'
                 action:
@@ -1246,7 +1239,7 @@ components:
                   type: string
                   enum: [product_list]
                 header:
-                  $ref: '#/components/schemas/Whatsapp_Interactive_Header'
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Text_Header'
                 body:
                   $ref: '#/components/schemas/Whatsapp_Interactive_Body'
                 action:
@@ -1284,7 +1277,11 @@ components:
                   type: string
                   enum: [button]
                 header:
-                  $ref: '#/components/schemas/Whatsapp_Interactive_Header'
+                  oneOf:
+                    - $ref: '#/components/schemas/Whatsapp_Interactive_Document_Header'
+                    - $ref: '#/components/schemas/Whatsapp_Interactive_Image_Header'
+                    - $ref: '#/components/schemas/Whatsapp_Interactive_Video_Header'
+                    - $ref: '#/components/schemas/Whatsapp_Interactive_Text_Header'
                 body:
                   $ref: '#/components/schemas/Whatsapp_Interactive_Body'
                 action:
