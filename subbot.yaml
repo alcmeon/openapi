@@ -1002,41 +1002,6 @@ components:
     # Whatsapp objects
     ##################################################
 
-    WhatsappOrderObject:
-      type: object
-      properties:
-        type:
-          type: string
-          description: For this use case, type will be set to `order`
-        order:
-          type: object
-          description: >
-            An object containing a catalog identifier and a list of products
-          properties:
-            catalog_id:
-              description: An unique identifier of the Facebook catalog linked to your WhatsApp Business Account
-              type: string
-            product_items:
-              type: array
-              description: >
-                A list of products
-              items:
-                type: object
-                properties:
-                  product_retailer_id:
-                    type: string
-                    description: Unique identifier of the product in a catalog
-                  quantity:
-                    type: string
-                    description: The number of item for this product
-                  item_price:
-                    type: string
-                    description: The unitary price of an item
-                  currency:
-                    type: string
-                    description: The price currency
-
-
     Whatsapp_Media:
       description: >
         a Media object. The data the url points to is cached. The cache key is the url itself.
@@ -1359,6 +1324,65 @@ components:
             body:
               type: string
 
+    Whatsapp_Media_Event:
+      type: object
+      required: [link, mime_type, caption]
+      properties:
+        link:
+          type: string
+          format: uri
+        mime_type:
+          type: string
+        caption:
+          type: string
+
+    Whatsapp_Image_Event:
+      type: object
+      required: [type, image]
+      properties:
+        type:
+          type: string
+          enum: [image]
+        image:
+         $ref: '#/components/schemas/Whatsapp_Media_Event' 
+
+    Whatsapp_Audio_Event:
+      type: object
+      required: [type, audio]
+      properties:
+        type:
+          type: string
+          enum: [audio]
+        audio:
+         $ref: '#/components/schemas/Whatsapp_Media_Event' 
+
+    Whatsapp_Document_Event:
+      type: object
+      required: [type, document]
+      properties:
+        type:
+          type: string
+          enum: [document]
+        document:
+         $ref: '#/components/schemas/Whatsapp_Media_Event'
+
+    Whatsapp_Button_Event:
+      type: object
+      required: [type, button] 
+      properties:
+        type:
+          type: string
+          enum: [button]
+        button:
+          type: object
+          required: [payload, text]
+          properties:
+            payload:
+              description: the payload of the button the user clicked on
+              type: string
+            text:
+              description: the label displayed on the button the user clicked on
+              type: string
  
 
     Whatsapp_Event:
@@ -1366,6 +1390,10 @@ components:
         On Whatsapp, a subset of the [message notifications](https://developers.facebook.com/docs/whatsapp/on-premises/webhooks/inbound)
       oneOf:
         - $ref: '#/components/schemas/Whatsapp_Text_Event'
+        - $ref: '#/components/schemas/Whatsapp_Image_Event'
+        - $ref: '#/components/schemas/Whatsapp_Audio_Event'
+        - $ref: '#/components/schemas/Whatsapp_Document_Event'
+        - $ref: '#/components/schemas/Whatsapp_Button_Event'
 
 
 
