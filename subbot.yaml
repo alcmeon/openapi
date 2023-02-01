@@ -1393,6 +1393,31 @@ components:
                   required: [button]
               required: [type, body, action]
 
+    Whatsapp_Product_Message:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Base'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [product]
+                body:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Body'
+                action:
+                  type: object
+                  properties:
+                    catalog_id:
+                      type: string
+                      description: Unique identifier of the Facebook catalog linked to your WhatsApp Business Account. This ID can be retrieved via Commerce Manager.
+                    product_retailer_id:
+                      type: string
+                      maxLength: 100
+                  required: [catalog_id, product_retailer_id]
+              required: [type, action]
+
     Whatsapp_Button_Message:
       allOf:
         - $ref: '#/components/schemas/Whatsapp_Interactive_Base'
@@ -1466,6 +1491,7 @@ components:
         - $ref: '#/components/schemas/Whatsapp_Video_Message'
         - $ref: '#/components/schemas/Whatsapp_List_Message'
         - $ref: '#/components/schemas/Whatsapp_Button_Message'
+        - $ref: '#/components/schemas/Whatsapp_Product_Message'
 
     WhatsappEvent:
       description: >
