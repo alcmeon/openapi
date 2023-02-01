@@ -1363,9 +1363,72 @@ components:
                   properties:
                     button:
                       type: string
-                      description:  Emojis are supported, markdown is not.
+                      description: Emojis are supported, markdown is not.
                       maxLength: 20
+                    sections:
+                      type: array
+                      minLength: 1
+                      maxLength: 10
+                      items:
+                        type: object
+                        properties:
+                          title:
+                            description: Required if the message has more than one section.
+                            type: string
+                            maxLength: 24
+                          rows:
+                            description: Limited to 10 rows across all sections.
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                ID:
+                                  type: string
+                                  maxLength: 200
+                                title:
+                                  type: string
+                                  maxLength: 24
+                              required: [ID, title]
+                        required: [rows]
                   required: [button]
+              required: [type, body, action]
+
+    Whatsapp_Button_Message:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Base'
+        - type: object
+          properties:
+            interactive:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [button]
+                header:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Header'
+                body:
+                  $ref: '#/components/schemas/Whatsapp_Interactive_Body'
+                action:
+                  type: object
+                  properties:
+                    buttons:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            enum: [reply]
+                          title:
+                            type: string
+                            description:  Button title. It cannot be an empty string and must be unique within the message. Emojis are supported, markdown is not. 
+                            maxLength: 20
+                          id:
+                            type: string
+                            maxLength: 256
+                            description: Unique identifier for your button. This ID is returned in the webhook when the button is clicked by the user. You cannot have leading or trailing spaces.
+                        required: [type, id, title]
+                  required: [buttons]
               required: [type, body, action]
 
     Whatsapp_Text_Message:
@@ -1402,6 +1465,7 @@ components:
         - $ref: '#/components/schemas/Whatsapp_Document_Message'
         - $ref: '#/components/schemas/Whatsapp_Video_Message'
         - $ref: '#/components/schemas/Whatsapp_List_Message'
+        - $ref: '#/components/schemas/Whatsapp_Button_Message'
 
     WhatsappEvent:
       description: >
