@@ -1366,7 +1366,7 @@ components:
         document:
          $ref: '#/components/schemas/Whatsapp_Media_Event'
 
-    Whatsapp_Button_Event:
+    Whatsapp_Interactive_Event:
       type: object
       required: [type, interactive] 
       properties:
@@ -1375,20 +1375,87 @@ components:
           enum: [interactive]
         interactive:
           type: object
-          required: [type, button_reply]
+          required: [type]
           properties:
             type:
               type: string
-              enum: [button_reply]
-            button_reply:
+
+    Whatsapp_Button_Event:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Event'
+        - type: object
+          required: [interactive] 
+          properties:
+            interactive:
               type: object
-              required: [id, title]
+              required: [type, button_reply]
               properties:
-                id:
+                type:
                   type: string
-                title:
+                  enum: [button_reply]
+                button_reply:
+                  type: object
+                  required: [id, title]
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+
+    Whatsapp_List_Event:
+      allOf:
+        - $ref: '#/components/schemas/Whatsapp_Interactive_Event'
+        - type: object
+          required: [interactive] 
+          properties:
+            interactive:
+              type: object
+              required: [type, list_reply]
+              properties:
+                type:
                   type: string
- 
+                  enum: [list_reply]
+                list_reply:
+                  type: object
+                  required: [id, title, description]
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+
+    Whatsapp_Order_Event:
+      type: object
+      required: [type, order]
+      properties:
+        type:
+          type: string
+          enum: [order]
+        order:
+          type: object
+          required: [catalog_id, product_items, text]
+          properties:
+            text:
+              type: string
+            catalog_id:
+              type: string
+            product_items:
+              type: array
+              items:
+                type: object
+                required: [product_retailer_id, quantity, item_price, currency]
+                properties:
+                  product_retailer_id:
+                    type: string
+                  quantity:
+                    type: integer
+                  item_price:
+                    type: number
+                  currency:
+                    type: string
+                    enum: [EUR]
 
     Whatsapp_Event:
       description: >
@@ -1399,6 +1466,8 @@ components:
         - $ref: '#/components/schemas/Whatsapp_Audio_Event'
         - $ref: '#/components/schemas/Whatsapp_Document_Event'
         - $ref: '#/components/schemas/Whatsapp_Button_Event'
+        - $ref: '#/components/schemas/Whatsapp_List_Event'
+        - $ref: '#/components/schemas/Whatsapp_Order_Event'
 
 
 
