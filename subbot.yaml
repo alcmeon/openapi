@@ -537,6 +537,7 @@ components:
             - $ref: '#/components/schemas/GbmEvent'
             - $ref: '#/components/schemas/WebChatEvent'
             - $ref: '#/components/schemas/Apple_Event'
+            - $ref: '#/components/schemas/Instagram_Event'
       required:
         - backend
         - parameters
@@ -562,6 +563,7 @@ components:
             - $ref: '#/components/schemas/GbmMessage'
             - $ref: '#/components/schemas/WebChatMessage'
             - $ref: '#/components/schemas/Apple_Message'
+            - $ref: '#/components/schemas/Instagram_Message'
 
     ##################################################
     # Messenger objects
@@ -3064,6 +3066,58 @@ components:
         - $ref: '#/components/schemas/Apple_Authentication_Message'
         - $ref: '#/components/schemas/Apple_New_Authentication_Message'
         - $ref: '#/components/schemas/Apple_Pay_Message'
+
+
+##################################################
+# Instagram Messages for Business objects
+##################################################
+    Instagram_Text_Event:
+      description: >
+        A message of type [Text](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messages#messaging)
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            text:
+              type: string
+              description: The text message to send
+
+    Instagram_Postback_Event:
+      description: >
+        A trimmed version of the [postback webhook](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_postbacks).
+      type: object
+      properties:
+        payload:
+          description: payload parameter that was defined with the button.
+          type: string
+
+    Instagram_Event:
+      description: A message sent by a brand to a user.
+      oneOf:
+        - $ref: '#/components/schemas/Instagram_Text_Message'
+        - $ref: '#/components/schemas/Instagram_Postback_Message'
+
+    Instagram_Text_Message:
+      description: A text message
+      type: string
+
+    Instagram_Attachment_Message:
+      type: object
+      properties:
+        type:
+          description: the attachment type
+          type: enum[template]
+        payload:
+          description: the payload associated with the template attachment
+          type: string
+
+
+    Instagram_Message:
+      description: A message sent by a brand to a user.
+      oneOf:
+        - $ref: '#/components/schemas/Instagram_Text_Message'
+        - $ref: '#/components/schemas/Instagram_Attachment_Message'
 
 
 security:
