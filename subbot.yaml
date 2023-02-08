@@ -3088,9 +3088,15 @@ components:
         A trimmed version of the [postback webhook](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_postbacks).
       type: object
       properties:
-        payload:
-          description: payload parameter that was defined with the button.
-          type: string
+        type: object
+        properties:
+          postback:
+            type: object
+            properties:
+              payload:
+                description: payload parameter that was defined with the button.
+                type: string
+
 
     Instagram_Event:
       description: A message sent by a brand to a user.
@@ -3102,22 +3108,25 @@ components:
       description: A text message
       type: string
 
-    Instagram_Postback_Message:
+    Instagram_Attachment_Message:
       type: object
       properties:
-        type:
-          type: string
-          enum: [template]
-        payload:
-          description: the payload associated with the template attachment
-          type: string
+        attachment:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [template]
+            payload:
+              description: the payload associated with the template attachment
+              type: string
 
 
     Instagram_Message:
       description: A message sent by a brand to a user.
       oneOf:
         - $ref: '#/components/schemas/Instagram_Text_Message'
-        - $ref: '#/components/schemas/Instagram_Postback_Message'
+        - $ref: '#/components/schemas/Instagram_Attachment_Message'
 
 
 security:
