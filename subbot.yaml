@@ -3095,19 +3095,19 @@ components:
     Instagram_Event:
       description: A message sent by a brand to a user.
       oneOf:
-        - $ref: '#/components/schemas/Instagram_Text_Message'
-        - $ref: '#/components/schemas/Instagram_Postback_Message'
+        - $ref: '#/components/schemas/Instagram_Text_Event'
+        - $ref: '#/components/schemas/Instagram_Postback_Event'
 
     Instagram_Text_Message:
       description: A text message
       type: string
 
-    Instagram_Attachment_Message:
+    Instagram_Postback_Message:
       type: object
       properties:
         type:
-          description: the attachment type
-          type: enum[template]
+          type: string
+          enum: [template]
         payload:
           description: the payload associated with the template attachment
           type: string
@@ -3117,7 +3117,7 @@ components:
       description: A message sent by a brand to a user.
       oneOf:
         - $ref: '#/components/schemas/Instagram_Text_Message'
-        - $ref: '#/components/schemas/Instagram_Attachment_Message'
+        - $ref: '#/components/schemas/Instagram_Postback_Message'
 
 
 security:
