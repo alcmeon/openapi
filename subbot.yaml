@@ -3088,14 +3088,12 @@ components:
         A trimmed version of the [postback webhook](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_postbacks).
       type: object
       properties:
-        type: object
-        properties:
-          postback:
-            type: object
-            properties:
-              payload:
-                description: payload parameter that was defined with the button.
-                type: string
+        postback:
+          type: object
+          properties:
+            payload:
+              description: payload parameter that was defined with the button.
+              type: string
 
 
     Instagram_Event:
