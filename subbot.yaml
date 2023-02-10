@@ -3104,9 +3104,44 @@ components:
 
     Instagram_Text_Message:
       description: A text message
-      type: string
+      type: object
+      required: [text]
+      properties:
+        text:
+          description: the text of the message to send.
+          type: string
 
-    Instagram_Attachment_Message:
+    Instagram_WebUrl_Button:
+      type: object
+      required: [type, url, title]
+      properties:
+        type:
+          type: string
+          enum: [web_url]
+        url:
+          type: string
+          format: uri
+        title:
+          type: string
+
+    Instagram_Postback_Button:
+      type: object
+      required: [type, title, payload]
+      properties:
+        type:
+          type: string
+          enum: [postback]
+        title:
+          type: string
+        payload:
+          type: string
+
+    Instagram_Button:
+      oneOf:
+        - $ref: '#/components/schemas/Instagram_WebUrl_Button'
+        - $ref: '#/components/schemas/Instagram_Postback_Button'
+
+    Instagram_Carousel_Message:
       type: object
       properties:
         attachment:
@@ -3116,15 +3151,40 @@ components:
               type: string
               enum: [template]
             payload:
-              description: the payload associated with the template attachment
-              type: string
+              type: object
+              required: [template_type, elements]
+              properties:
+                template_type:
+                  type: string
+                  enum: [generic]
+                elements:
+                  type: array
+                  items:
+                    type: object
+                    required: [title]
+                    properties:
+                      title:
+                        type: string
+                        description: the title to display
+                        maxLength: 80
+                      subtitle:
+                        type: string
+                        description: the subtitle to display
+                        maxLength: 80
+                      image_url:
+                        type: string
+                        format: uri
+                      buttons:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Instagram_Button'
 
 
     Instagram_Message:
       description: A message sent by a brand to a user.
       oneOf:
         - $ref: '#/components/schemas/Instagram_Text_Message'
-        - $ref: '#/components/schemas/Instagram_Attachment_Message'
+        - $ref: '#/components/schemas/Instagram_Carousel_Message'
 
 
 security:
