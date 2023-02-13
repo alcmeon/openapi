@@ -348,6 +348,9 @@ components:
             file_name:
                 description: File name
                 type: string
+            file_size:
+              description: The size (in bytes) of the file
+              type: string
 
     GetFileMessage:
       description: >
