@@ -1741,40 +1741,6 @@ components:
         - body
 
 
-
-    Apple_Typing_Start_Event:
-      description: >
-        A message of type typing_start
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [typing_start]
-      required:
-        - type
-
-    Apple_Typing_End_Event:
-      description: >
-        A message of type typing_end
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [typing_end]
-      required:
-        - type
-
-    Apple_Close_Event:
-      description: >
-        A message of type [close](https://register.apple.com/resources/messages/msp-rest-api/messages-received#receiving-a-closed-conversation)
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [close]
-      required:
-        - type
-
     AppleInteractiveEvent:
       type: object
       properties:
@@ -2071,9 +2037,6 @@ components:
         - $ref: '#/components/schemas/Apple_List_Picker_Event'
         - $ref: '#/components/schemas/Apple_Time_Picker_Event'
         - $ref: '#/components/schemas/Apple_Form_Event'
-        - $ref: '#/components/schemas/Apple_Typing_Start_Event'
-        - $ref: '#/components/schemas/Apple_Typing_End_Event'
-        - $ref: '#/components/schemas/Apple_Close_Event'
         - $ref: '#/components/schemas/Apple_Authentication_Event'
         - $ref: '#/components/schemas/Apple_New_Authentication_Event'
         - $ref: '#/components/schemas/Apple_Pay_Event'
