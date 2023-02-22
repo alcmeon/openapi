@@ -1718,11 +1718,11 @@ components:
         body:
           description: The text of the message sent by the user
           type: string
-        attachments:
-          description: The list of attachments associated with this message
-          type: array
-          items:
-            $ref: '#/components/schemas/AppleAttachment'
+#        attachments:
+#          description: The list of attachments associated with this message
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/AppleAttachment'
 #        group:
 #          description: [Group](https://register.apple.com/resources/messages/messaging-documentation/message-with-customers) field
 #          type: string
