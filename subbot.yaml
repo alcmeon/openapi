@@ -1895,7 +1895,36 @@ components:
     Apple_Time_Picker_Event:
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv1'
-        - description: XXX. Undocumented.
+        - description: A time slot chosen by the user.
+        - type: object
+          properties:
+            interactiveData:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    event:
+                      type: object
+                      properties:
+                        identifier:
+                          description: The selected identifier of the time slot.
+                          type: string
+                        timezoneOffset:
+                          type: integer
+                        timeslots:
+                          type: array
+                          description: A single-item list containing the time slot selected by the user
+                          items:
+                            $ref: '#/components/schemas/Apple_Timeslot'
+                        title:
+                          type: string
+                        imageIdentifier:
+                          type: string
+                        location:
+                          $ref: '#/components/schemas/Apple_Location'
+                    replyMessage:
+                      $ref: '#/components/schemas/AppleReplyMessage'
 
     Apple_Form_Event:
       allOf:
