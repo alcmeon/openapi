@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: https://inmessage.alcmeon.com/
+  - url: https://inmessage.alcmeon.com/prod/api
 
 info:
   title: InMessage
@@ -10,6 +10,14 @@ x-readme:
   explorer-enabled: false
 
 components:
+  parameters:
+    page_id:
+      in: path
+      name: page_id
+      schema:
+        type: string
+      required: true
+      description: ID of the page. This is not an integer.
   schemas:
     AuthenticatedPage:
       type: object
@@ -497,12 +505,7 @@ paths:
       security:
         - inmessage_authentication_jwt: []
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
       tags: [Authenticate]
       summary: Custom identification
       description: >
@@ -532,12 +535,7 @@ paths:
   /{page_id}/self:
     get:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
       tags: [Authenticate]
       summary: Anonymously
       description: >
@@ -555,12 +553,7 @@ paths:
   /{page_id}/conversation:
     post:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
       tags: [Conversation]
       summary: Send a message
       description: >
@@ -580,12 +573,7 @@ paths:
 
     get:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
         - in: query
           name: max_message_id
           schema:
@@ -626,12 +614,7 @@ paths:
   /{page_id}/media:
     post:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
       tags: [Media]
       summary: Upload
       description: >
@@ -659,12 +642,7 @@ paths:
   /{page_id}/media/{media_uuid}:
     get:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
         - in: path
           name: media_uuid
           schema:
@@ -687,12 +665,7 @@ paths:
   /{page_id}/file:
     post:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
       tags: [File]
       summary: Upload file
       description: >
@@ -726,12 +699,7 @@ paths:
   /{page_id}/file/{uuid}:
     get:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
         - in: path
           name: uuid
           schema:
@@ -754,12 +722,7 @@ paths:
   /{page_id}/media/{uuid}:
     get:
       parameters:
-        - in: path
-          name: page_id
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the page
+        - $ref: '#/components/parameters/page_id'
         - in: path
           name: uuid
           schema:
