@@ -308,6 +308,13 @@ components:
             height:
                 description: Height (pixels) of image
                 type: integer
+            image_name:
+              description: The image name
+              type: string
+            image_size:
+              description: The size (in bytes) of the image
+              type: string
+
 
     GetImageMessage:
       description: >
