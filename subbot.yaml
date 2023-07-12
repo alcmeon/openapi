@@ -3237,14 +3237,16 @@ paths:
           name: X-JWT
           schema:
             type: string
+            description: the JWT received in the /start and /handle-event event `jwt` field.
           required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BotResponse'
       responses:
         "200":
           description: Return a 200 status on success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BotResponse'
   
 
   /description:
