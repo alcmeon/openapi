@@ -3288,7 +3288,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StartEventRequest'
+              $ref: '#/components/schemas/Start_Event_Request'
       responses:
         "200":
           description: >
@@ -3310,7 +3310,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HandleEventRequest'
+              $ref: '#/components/schemas/Handle_Event_Request'
       responses:
         "200":
           description: >
