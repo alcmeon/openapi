@@ -29,29 +29,34 @@ components:
       properties:
         jwt:
           type: string
-          description: The JWT that can be used to call the /continue endpoint within the lext 60 seconds.
+          description: >
+            The JWT that can be used to call the /continue endpoint within the lext 60 seconds.
+            This JWT can be used to /continue an interaction with a specific user for
+            a specific subbot box instance in a scenario. It can be used more than once within
+            its validity delay. You cannot reuse a JWT received for user A 
+            to /continue an interaction with another user B.
 
-    HandleEventRequestV3:
+    Handle_Event_RequestV3:
       allOf:
         - $ref: '#/components/schemas/EventRequestV2'
         - $ref: '#/components/schemas/HandleEventRequestVariables'
         - $ref: '#/components/schemas/JwtEventRequest'
 
-    HandleEventRequestV2:
+    Handle_Event_RequestV2:
       allOf:
         - $ref: '#/components/schemas/EventRequestV2'
         - $ref: '#/components/schemas/HandleEventRequestVariables'
 
-    HandleEventRequestV1:
+    Handle_Event_RequestV1:
       allOf:
         - $ref: '#/components/schemas/EventRequestV1'
         - $ref: '#/components/schemas/HandleEventRequestVariables'
 
-    HandleEventRequest:
+    Handle_Event_Request:
       oneOf:
-        - $ref: '#/components/schemas/HandleEventRequestV1'
-        - $ref: '#/components/schemas/HandleEventRequestV2'
-        - $ref: '#/components/schemas/HandleEventRequestV3'
+        - $ref: '#/components/schemas/Handle_Event_RequestV1'
+        - $ref: '#/components/schemas/Handle_Event_RequestV2'
+        - $ref: '#/components/schemas/Handle_Event_RequestV3'
 
     StartEventRequestGlobalVaribles:
       type: object
@@ -62,26 +67,27 @@ components:
             A set of conversation variables that the bot box can read. 
             Only variables specified in Description.input_variables are available.
 
-    StartEventRequestV3:
+    Start_Event_RequestV3:
       allOf:
         - $ref: '#/components/schemas/EventRequestV2'
         - $ref: '#/components/schemas/StartEventRequestGlobalVaribles'
         - $ref: '#/components/schemas/JwtEventRequest'
 
-    StartEventRequestV2:
+    Start_Event_RequestV2:
       allOf:
         - $ref: '#/components/schemas/EventRequestV2'
         - $ref: '#/components/schemas/StartEventRequestGlobalVaribles'
 
-    StartEventRequestV1:
+    Start_Event_RequestV1:
       allOf:
         - $ref: '#/components/schemas/EventRequestV1'
         - $ref: '#/components/schemas/StartEventRequestGlobalVaribles'
 
-    StartEventRequest:
+    Start_Event_Request:
       oneOf:
-        - $ref: '#/components/schemas/StartEventRequestV1'
-        - $ref: '#/components/schemas/StartEventRequestV2'
+        - $ref: '#/components/schemas/Start_Event_RequestV1'
+        - $ref: '#/components/schemas/Start_Event_RequestV2'
+        - $ref: '#/components/schemas/Start_Event_RequestV3'
 
     BotResponse:
       type: object
