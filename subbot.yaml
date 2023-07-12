@@ -1,8 +1,4 @@
 openapi: 3.0.0
-servers:
-  - url: https://your.server/
-    description: Your webhook server
-
 info:
   title: Subbot API
   version: '1.0'
@@ -19,54 +15,68 @@ components:
 
   schemas:
 
+    HandleEventRequestVariables:
+      type: object
+      properties:
+        variables:
+          type: object
+          description: >
+            The variables which were returned from the last call to
+            the /handle-event or /start endpoint
+
+    JwtEventRequest:
+      type: object
+      properties:
+        jwt:
+          type: string
+          description: The JWT that can be used to call the /continue endpoint within the lext 60 seconds.
+
+    HandleEventRequestV3:
+      allOf:
+        - $ref: '#/components/schemas/EventRequestV2'
+        - $ref: '#/components/schemas/HandleEventRequestVariables'
+        - $ref: '#/components/schemas/JwtEventRequest'
+
     HandleEventRequestV2:
       allOf:
         - $ref: '#/components/schemas/EventRequestV2'
-        - type: object
-          properties:
-            variables:
-              type: object
-              description: >
-                The variables which were returned from the last call to
-                the /handle-event or /start endpoint
+        - $ref: '#/components/schemas/HandleEventRequestVariables'
 
     HandleEventRequestV1:
       allOf:
         - $ref: '#/components/schemas/EventRequestV1'
-        - type: object
-          properties:
-            variables:
-              type: object
-              description: >
-                The variables which were returned from the last call to
-                the /handle-event or /start endpoint
+        - $ref: '#/components/schemas/HandleEventRequestVariables'
 
     HandleEventRequest:
       oneOf:
         - $ref: '#/components/schemas/HandleEventRequestV1'
         - $ref: '#/components/schemas/HandleEventRequestV2'
+        - $ref: '#/components/schemas/HandleEventRequestV3'
+
+    StartEventRequestGlobalVaribles:
+      type: object
+      properties:
+        global_variables:
+          type: object
+          description: >
+            A set of conversation variables that the bot box can read. 
+            Only variables specified in Description.input_variables are available.
+
+    StartEventRequestV3:
+      allOf:
+        - $ref: '#/components/schemas/EventRequestV2'
+        - $ref: '#/components/schemas/StartEventRequestGlobalVaribles'
+        - $ref: '#/components/schemas/JwtEventRequest'
 
     StartEventRequestV2:
       allOf:
         - $ref: '#/components/schemas/EventRequestV2'
-        - type: object
-          properties:
-            global_variables:
-              type: object
-              description: >
-                A set of conversation variables that the bot box can read. 
-                Only variables specified in Description.input_variables are available.
+        - $ref: '#/components/schemas/StartEventRequestGlobalVaribles'
 
     StartEventRequestV1:
       allOf:
         - $ref: '#/components/schemas/EventRequestV1'
-        - type: object
-          properties:
-            global_variables:
-              type: object
-              description: >
-                A set of conversation variables that the bot box can read.
-                Only variables specified in Description.input_variables are available.
+        - $ref: '#/components/schemas/StartEventRequestGlobalVaribles'
 
     StartEventRequest:
       oneOf:
@@ -413,7 +423,7 @@ components:
         version:
           type: string
           description: Which version of the subbot protocol this subbot supports. If this is not specified, we assume the subbot supports the v1 API.
-          enum: [v1, v2]
+          enum: [v1, v2, v3]
           default: v1
         description:
           type: string
