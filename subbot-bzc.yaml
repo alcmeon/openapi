@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Subbot Apple API
+  title: Subbot for Apple Business Chat
   version: '1.0'
 
 components:
