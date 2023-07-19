@@ -1,0 +1,224 @@
+openapi: 3.0.0
+info:
+  title: Subbot for Twitter
+  version: '1.0'
+
+components:
+  schemas:
+    TwitterMessage:
+      title: Twitter Message
+      description: >
+        On Twitter, a [MessageDataObject](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/new-event#message-data-object) object
+      type: object
+      properties:
+        text:
+          type: string
+        quick_reply:
+          description: >
+            [QuickReply](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/quick-replies/api-reference/options) object
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [options]
+            options:
+              type: array
+              items:
+                type: object
+                properties:
+                  label:
+                    type: string
+                    maxLength: 36
+                  description:
+                    type: string
+                    maxLength: 72
+                  metadata:
+                    type: string
+                    maxLength: 1000
+        attachment:
+          $ref: '#/components/schemas/TwitterAttachment'
+
+    TwitterHashtag:
+      type: array
+      items:
+        type: object
+        properties:
+          indices:
+            type: array
+            items:
+              type: integer
+          text:
+            type: string
+
+    TwitterUrl:
+      type: object
+      properties:
+        display_url:
+          type: string
+        expanded_url:
+          type: string
+        indices:
+          type: array
+          items:
+            type: integer
+        url:
+          type: string
+
+    TwitterUserMention:
+      type: object
+      properties:
+        id:
+          type: integer
+        id_str:
+          type: string
+        indices:
+          type: array
+          items:
+            type: integer
+        name:
+          type: string
+        screen_name:
+          type: string
+
+    TwitterSymbol:
+      type: object
+      properties:
+        indices:
+          type: array
+          items:
+            type: integer
+        text:
+          type: string
+
+    TwitterSize:
+      type: object
+      properties:
+        w:
+          type: integer
+        h:
+          type: integer
+        resize:
+          type: string
+          enum: [fit, crop]
+
+    TwitterMedia:
+      type: object
+      properties:
+        display_url:
+          type: string
+        expanded_url:
+          type: string
+        id:
+          type: integer
+        id_str:
+          type: string
+        indices:
+          type: array
+          items:
+            type: integer
+        media_url:
+          type: string
+        media_url_https:
+          type: string
+        sizes:
+          type: object
+          properties:
+            thumb:
+              $ref: '#/components/schemas/TwitterSize'
+            large:
+              $ref: '#/components/schemas/TwitterSize'
+            medium:
+              $ref: '#/components/schemas/TwitterSize'
+            small:
+              $ref: '#/components/schemas/TwitterSize'
+        source_status_id:
+          type: integer
+        source_status_id_str:
+          type: string
+        type:
+          type: string
+          enum: [photo, video, animated_gif]
+        url:
+          type: string
+
+    TwitterEntities:
+      description: >
+        An [Entities](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#hashtags)
+        object as
+      type: object
+      properties:
+        hashtags:
+          description: >
+            A list of [HashTag](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#hashtags) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterHashtag'
+        media:
+          description: >
+            A list of [Media](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#media) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterMedia'
+        urls:
+          description: >
+            A list of [Url](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#urls) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterUrl'
+        user_mentions:
+          description: >
+            A list of [User Mention](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#user_mentions) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterUserMention'
+        symbols:
+          description: >
+            A list of [Symbol](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/entities#symbols) objects
+          type: array
+          items:
+            $ref: '#/components/schemas/TwitterSymbol'
+
+    TwitterEvent:
+      title: Twitter Event
+      description: >
+        On Twitter, a subset of the [message_data](https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/guides/message-create-object) object. The list of supported fields is documented below.
+      type: object
+      properties:
+        text:
+          type: string
+          description: >
+            The Direct Message text.
+#        entities:
+#          $ref: '#/components/schemas/TwitterEntities'
+        quick_reply_response:
+          description: >
+            A [quick_reply_response](https://developer.twitter.com/en/docs/direct-messages/quick-replies/overview) object  
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [options]
+            metadata:
+              type: string
+#        attachment:
+#          $ref: '#/components/schemas/TwitterAttachment'
+
+    TwitterAttachment:
+      description: >
+        An [attachment](https://developer.twitter.com/en/docs/direct-messages/message-attachments/overview) object
+
+
+        Note: this field can be set but will be ignored for now
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [media]
+        media:
+          type: object
+          properties:
+            id:
+              type: string
+
+
+
