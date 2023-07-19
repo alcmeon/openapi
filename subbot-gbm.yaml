@@ -6,7 +6,7 @@ info:
 components:
   schemas:
     GbmMessage:
-      title: GBM Message
+      title: Google Business Messages Message
       description: >
         On Google Business Messages, a subset of the 
         [Message](https://developers.google.com/business-communications/business-messages/reference/rest/v1/conversations.messages#resource:-message) object
@@ -22,7 +22,7 @@ components:
           type: boolean
 
     GbmEvent:
-      title: GBM Event
+      title: Google Business Messages Event
       description: >
         On Google Business Messages, a subset of 
         [Text](https://developers.google.com/business-communications/business-messages/guides/build/receive#text) objects
