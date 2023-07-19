@@ -41,6 +41,7 @@ components:
           format: uri
 
     Apple_Text_Event:
+      title: Text Event
       description: >
         A message of type [Text](https://register.apple.com/resources/messages/msp-rest-api/type-text)
       type: object
@@ -140,6 +141,7 @@ components:
       
 
     Apple_Quick_Reply_Event:
+      title: Quick Reply Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - type: object
@@ -198,6 +200,7 @@ components:
         - title
 
     Apple_List_Picker_Event:
+      title: List Picker Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - type: object
@@ -228,6 +231,7 @@ components:
                     - listPicker
       
     Apple_Time_Picker_Event:
+      title: Time Picker Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - description: A time slot chosen by the user.
@@ -262,6 +266,7 @@ components:
                       $ref: '#/components/schemas/AppleReplyMessage'
 
     Apple_Form_Event:
+      title: Form Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - description: a user's [response](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#response-payload) to a form.
@@ -309,6 +314,7 @@ components:
             - interactiveData
 
     Apple_Authentication_Event:
+      title: Authentication Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv1'
         - type: object
@@ -349,6 +355,7 @@ components:
       
   
     Apple_New_Authentication_Event:
+      title: New Authentication Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv2'
         - type: object
@@ -372,6 +379,7 @@ components:
                         - error_code
 
     Apple_Pay_Event:
+      title: Apple Pay Event
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveEventv2'
         - type: object
