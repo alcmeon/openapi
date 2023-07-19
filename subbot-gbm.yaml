@@ -1,0 +1,40 @@
+openapi: 3.0.0
+info:
+  title: Subbot for Google Business Messages
+  version: '1.0'
+
+components:
+  schemas:
+    GbmMessage:
+      title: GBM Message
+      description: >
+        On Google Business Messages, a subset of the 
+        [Message](https://developers.google.com/business-communications/business-messages/reference/rest/v1/conversations.messages#resource:-message) object
+      type: object
+      properties:
+        text:
+          description: Text message.
+          type: string
+        containsRichText:
+          description:  >
+            If true, indicates that the message contains 
+            [rich text](https://developers.google.com/business-communications/business-messages/guides/build/send#rich_text).
+          type: boolean
+
+    GbmEvent:
+      title: GBM Event
+      description: >
+        On Google Business Messages, a subset of 
+        [Text](https://developers.google.com/business-communications/business-messages/guides/build/receive#text) objects
+      type: object
+      properties:
+        message:
+          description: >
+            A subset of
+            [Message](https://developers.google.com/business-communications/business-messages/reference/rest/v1/Message) objects
+          type: object
+          properties:
+            text:
+              type: string
+
+
