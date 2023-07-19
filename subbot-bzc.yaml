@@ -1381,6 +1381,7 @@ components:
 
 
     Apple_Message:
+      title: Apple Message
       description: A message sent by a brand to a user.
       oneOf:
         - $ref: '#/components/schemas/Apple_Text_Message'
