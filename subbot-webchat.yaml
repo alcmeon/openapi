@@ -1,0 +1,180 @@
+openapi: 3.0.0
+info:
+  title: Subbot for Webchat
+  version: '1.0'
+
+components:
+  schemas:
+
+# Note to self: It should be possible to reuse the data structure definitions from the inmessage.yaml file
+# But the version of readme.io we used initially  did not allow for such split yaml files so, the 
+# current lack of data structure sharing is due to this original limitations rather than a clear decision
+
+    WebchatText:
+      title: Text Event
+      type: object
+      description: Text message
+      properties:
+        type:
+          type: string
+          enum: [text]
+        datetime:
+          type: string
+          description: Datetime of the message
+        text:
+          type: object
+          properties:
+            content:
+              description: Content of message
+              type: string
+              example: Hello
+
+    WebchatImage:
+      title: Image Event
+      type: object
+      description: Image message
+      properties:
+        type:
+          type: string
+          enum: [image]
+        datetime:
+            type: string
+            description: Datetime of the message
+        image:
+          type: object
+          properties:
+            width:
+              description: The width of the image
+              type: integer
+              example: 600
+            height:
+              description: The height of the image
+              type: integer
+              example: 326
+            url:
+              description: >
+                A url which is valid only for a short amount of time (less than 60 seconds).
+                If the callee wishes to access the content of the image, he should download
+                the body of this url right away.
+              type: string
+              format: uri
+              example: https://admin.alcmeon.com/2/temporary-public-files/55edf7a6-65c2-4c45-9aa2-ee206044e5ee?jwt=XXX
+
+    WebchatButton:
+      title: Button Event
+      type: object
+      description: Button clicked event
+      properties:
+        type:
+          type: string
+          enum: [ button ]
+        datetime:
+          type: string
+          description: Datetime of the message
+        button:
+          type: object
+          properties:
+            name:
+              description: Label that is displayed on the button
+              type: string
+              example: This is my store!
+            payload:
+              description: The payload associated with the button
+              type: string
+              example: 3917
+
+    WebchatTextInputResponse:
+      title: TextInput Event
+      type: object
+      description: User phone or email input
+      properties:
+        type:
+          type: string
+          enum: [ text_input_response ]
+        datetime:
+            type: string
+            description: Datetime of the message
+        text_input_response:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [ phone, email ]
+              description: The type field from the matching TextInput object
+            content:
+              type: string
+              description: input value
+              example: aaa@gmail.com
+            payload:
+              type: string
+              description: Payload field from the matching TextInput object
+              example: 3497
+
+    WebchatPostback:
+      title: Postback Event
+      type: object
+      description: User clicked on a postback button
+      properties:
+        type:
+          type: string
+          enum: [ postback ]
+        datetime:
+          type: string
+          description: Datetime of the message
+        postback:
+          type: object
+          properties:
+            payload:
+              type: string
+              description: The payload associated with the postback button displayed in the persistent menu
+
+    WebchatMessage:
+      title: Webchat Message
+      description: >
+        On WebChat, a subset of the
+        [Message](https://docs.google.com/document/d/1cLUiM00Yd4Vw_EWkBmyMlmSfxAeKRJj1_1nRUJirgL0/edit?usp=sharing) object
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        text:
+          type: object
+          description: Send a text message back to the user.
+          properties:
+            type:
+              type: string
+              enum: [ text ]
+            text:
+              type: object
+              properties:
+                content:
+                  description: Content of message
+                  type: string
+                  example: Hello
+        buttons:
+          type: array
+          description: List of buttons displayed under message
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: label of button, displayed on screen
+              payload:
+                type: string
+                description: arbitrary string hidden from the user, associated with button
+
+    WebchatEvent:
+      title: Webchat Event
+      description: >
+        On WebChat, a Message object
+      oneOf:
+        - $ref: '#/components/schemas/WebchatText'
+        - $ref: '#/components/schemas/WebchatImage'
+        - $ref: '#/components/schemas/WebchatButton'
+        - $ref: '#/components/schemas/WebchatTextInputResponse'
+        - $ref: '#/components/schemas/WebchatPostback'
+
+
+
