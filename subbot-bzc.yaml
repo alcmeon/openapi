@@ -393,6 +393,7 @@ components:
   
 
     Apple_Event:
+      title: Apple Business Chat Event
       description: >
         A message sent by a user to a brand.
       oneOf:
@@ -406,6 +407,7 @@ components:
         - $ref: '#/components/schemas/Apple_Pay_Event'
 
     Apple_Text_Message:
+      title: Text Message
       description: A text message
       type: object
       properties:
@@ -455,6 +457,7 @@ components:
   
 
     Apple_Rich_Link_Message:
+      title: Rich Link Message
       description: >
         A [richLink](https://register.apple.com/resources/messages/msp-rest-api/type-richlink#rich-link-messages) message
       type: object
@@ -612,6 +615,7 @@ components:
           - identifier
 
     Apple_New_Authentication_Message:
+      title: New Authentication Message
       description: A [New Authentication](https://register.apple.com/resources/messages/msp-rest-api/new-oauth) message
       type: object
       properties:
@@ -747,6 +751,7 @@ components:
         
 
     Apple_Quick_Reply_Message:
+      title: Quick Reply Message
       allOf:
         - $ref: '#/components/schemas/AppleBasicInteractiveMessage'
         - description: a [QuickReply](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#quick-reply-message) message
@@ -772,6 +777,7 @@ components:
                     - quick-reply
 
     Apple_List_Picker_Message:
+      title: List Picker Message
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
         - type: object
@@ -824,6 +830,7 @@ components:
         - startTime
 
     Apple_Time_Picker_Message:
+      title: Time Picker Message
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
         - type: object
@@ -858,6 +865,7 @@ components:
                     - event
 
     Apple_iMessage_App_Message:
+      title: iMessage App Message
       description: an [iMessage App](https://register.apple.com/resources/messages/msp-rest-api/type-interactive#imessage-app) message
       type: object
       properties:
@@ -1110,6 +1118,7 @@ components:
         - data
 
     Apple_Form_Message:
+      title: Form Message
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
         - type: object
@@ -1127,6 +1136,7 @@ components:
                     - dynamic
 
     Apple_Authentication_Message:
+      title: Authentication Message
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
         - type: object
@@ -1355,6 +1365,7 @@ components:
 
 
     Apple_Pay_Message:
+      title: Apple Pay Message
       allOf:
         - $ref: '#/components/schemas/AppleInteractiveMessage'
         - type: object
@@ -1381,7 +1392,7 @@ components:
 
 
     Apple_Message:
-      title: Apple Message
+      title: Apple Business Chat Message
       description: A message sent by a brand to a user.
       oneOf:
         - $ref: '#/components/schemas/Apple_Text_Message'
