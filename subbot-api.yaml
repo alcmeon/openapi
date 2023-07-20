@@ -99,8 +99,6 @@ paths:
 
   /uploaded-tabular-data:
     get:
-      tags:
-        - Helpers
       summary: Return uploaded data
       description: >
         After a user successfully uploads excel data for a subbot (the data sheet formats
@@ -117,8 +115,6 @@ paths:
 
   /continue:
     post:
-      tags:
-        - Helpers
       summary: Continue interaction with user
       description: >
         If a subbot declares that it supports the v3 API in its
