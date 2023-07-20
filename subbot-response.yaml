@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: Subbot shared data
+  version: '1.0'
+
+x-readme:
+  explorer-enabled: false
+
+components:
+  schemas:
+
+    MessageResponse:
+      type: object
+      properties:
+        delay_ms:
+          type: integer
+          description: >
+            The number of milliseconds until Alcméon executes this response.
+            A convenient way to insert a delay before exiting the box.
+        body:
+          description: >
+            An object that matches the structure of the underlying social media message format.
+          oneOf:
+            - $ref: 'subbot-messenger.yaml#/components/schemas/MessengerMessage'
+            - $ref: 'subbot-twitter.yaml#/components/schemas/TwitterMessage'
+            - $ref: 'subbot-whatsapp.yaml#/components/schemas/Whatsapp_Message'
+            - $ref: 'subbot-gbm.yaml#/components/schemas/GbmMessage'
+            - $ref: 'subbot-webchat.yaml#/components/schemas/WebchatMessage'
+            - $ref: 'subbot-bzc.yaml#/components/schemas/Apple_Message'
+            - $ref: 'subbot-instagram.yaml#/components/schemas/Instagram_Message'
+
+    BotResponse:
+      type: object
+      properties:
+        variables:
+          type: object
+          description: The per-box/per-conversation variables that the bot wishes to store until a later call to URL/start or URL/event
+        messages:
+          description: >
+            A list of MessageResponse which will be sent by Alcmeon on behalf of the subbot.
+            These messages will be sent before the `exit` field is processed.
+            If no messages should be sent, an empty array is expected
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageResponse'
+        exit:
+          description: >
+            A description of the output connector Alcméon should take to exit this bot box. 
+            If null, no exit will be taken and the next messenge/event sent by a user
+            will be forwarded to the same subbot via its handle-event endpoint.
+            This field is processed after any messages from the `messages` field are sent.
+          $ref: '#/components/schemas/ExitResponse'
+
+    ExitResponse:
+      type: object
+      properties:
+        delay_ms:
+          type: integer
+          description: >
+            The number of milliseconds until Alcméon executes this response.
+            A convenient way to insert a delay before exiting the box.
+        global_variables:
+          type: object
+          description: >
+            A set of variables that Alcméon should copy in the per/user 
+            conversation variables. Only variables specified in 
+            Description.output_variables will be taken into account. 
+            All other variables will be ignored.
+        reason:
+          description: The name of the output connector to exit through. This field should match Description.exits.name
+          type: string
+
+

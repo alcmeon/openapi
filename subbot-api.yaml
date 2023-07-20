@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: Subbot API
+  version: '1.0'
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: false
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+
+  schemas:
+
+    TabularArrayCellInteger:
+      type: integer
+      description: A cell which contains a value for a header of type `integer`
+
+    TabularArrayCellFloat:
+      type: number
+      description: A cell which contains a value for a header of type `float`
+
+    TabularArrayCellString:
+      type: string
+      description: A cell which contains a value for a header of type `string`
+
+    TabularArrayCellUrl:
+      type: string
+      format: uri
+      description: A cell which contains a value for a header of type `url`
+
+    TabularArrayCellDatetime:
+      type: string
+      format: datetime
+      description: >
+        A cell which contains a value for a header of type `datetime`.
+        Format is "YYYY-MM-DDTHH:MM:SS+0" (GMT)
+
+    TabularArrayCellShortenedUrl:
+      type: string
+      format: uri
+      description: A cell which contains a value for a header of type `url_to_shorten`. i.e., a shortened url.
+
+    TabularArrayCell:
+      oneOf:
+        - $ref: '#/components/schemas/TabularArrayCellInteger'
+        - $ref: '#/components/schemas/TabularArrayCellFloat'
+        - $ref: '#/components/schemas/TabularArrayCellString'
+        - $ref: '#/components/schemas/TabularArrayCellUrl'
+        - $ref: '#/components/schemas/TabularArrayCellDatetime'
+        - $ref: '#/components/schemas/TabularArrayCellShortenedUrl'
+
+    TabularArrayRow:
+      type: array
+      items:
+        $ref: '#/components/schemas/TabularArrayCell'
+
+    TabularArrayHeader:
+      description: A header for a column
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    
+
+    TabularArray:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabularArrayHeader'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabularArrayRow'
+
+    TabularArrays:
+      type: object
+      description: user data uploaded as excel, converted to a set of tabular arrays, one for each excel sheet.
+      properties:
+        arrays:
+          type: array
+          items:
+            $ref: '#/components/schemas/TabularArray'
+
+
+security:
+  - basic_auth: []
+
+paths:
+
+  /uploaded-tabular-data:
+    get:
+      tags:
+        - Helpers
+      summary: Return uploaded data
+      description: >
+        After a user successfully uploads excel data for a subbot (the data sheet formats
+        have been validated against the format expected by the subbot), the data
+        can be downloaded from the subbot by invoking this endpoint.
+
+      responses:
+        "200":
+          description: Return a 200 status on success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TabularArrays'
+
+  /continue:
+    post:
+      tags:
+        - Helpers
+      summary: Continue interaction with user
+      description: >
+        If a subbot declares that it supports the v3 API in its
+        /description endpoint, it will receive an extra key named
+        jwt in its /start and /handle-event endpoints which can be
+        used to authenticate this endpoint.
+      parameters:
+        - in: header
+          name: X-JWT
+          schema:
+            type: string
+            description: the JWT received in the /start and /handle-event event `jwt` field.
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'subbot-response.yaml#/components/schemas/BotResponse'
+      responses:
+        "200":
+          description: Return a 200 status on success

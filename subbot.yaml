@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Subbot API
+  title: Subbot Webhooks
   version: '1.0'
 
 x-readme:
@@ -88,47 +88,6 @@ components:
         - $ref: '#/components/schemas/Start_Event_RequestV1'
         - $ref: '#/components/schemas/Start_Event_RequestV2'
         - $ref: '#/components/schemas/Start_Event_RequestV3'
-
-    BotResponse:
-      type: object
-      properties:
-        variables:
-          type: object
-          description: The per-box/per-conversation variables that the bot wishes to store until a later call to URL/start or URL/event
-        messages:
-          description: >
-            A list of MessageResponse which will be sent by Alcmeon on behalf of the subbot.
-            These messages will be sent before the `exit` field is processed.
-            If no messages should be sent, an empty array is expected
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageResponse'
-        exit:
-          description: >
-            A description of the output connector Alcméon should take to exit this bot box. 
-            If null, no exit will be taken and the next messenge/event sent by a user
-            will be forwarded to the same subbot via its handle-event endpoint.
-            This field is processed after any messages from the `messages` field are sent.
-          $ref: '#/components/schemas/ExitResponse'
-
-    ExitResponse:
-      type: object
-      properties:
-        delay_ms:
-          type: integer
-          description: >
-            The number of milliseconds until Alcméon executes this response.
-            A convenient way to insert a delay before exiting the box.
-        global_variables:
-          type: object
-          description: >
-            A set of variables that Alcméon should copy in the per/user 
-            conversation variables. Only variables specified in 
-            Description.output_variables will be taken into account. 
-            All other variables will be ignored.
-        reason:
-          description: The name of the output connector to exit through. This field should match Description.exits.name
-          type: string
 
     Exit:
       type: object
@@ -270,80 +229,6 @@ components:
         cache_key:
           type: string
           description: A unique id which can be used as the key to cache the file downloaded from the url. This id is warranted to change if the file is changed by the user.
-
-    TabularArrayCellInteger:
-      type: integer
-      description: A cell which contains a value for a header of type `integer`
-
-    TabularArrayCellFloat:
-      type: number
-      description: A cell which contains a value for a header of type `float`
-
-    TabularArrayCellString:
-      type: string
-      description: A cell which contains a value for a header of type `string`
-
-    TabularArrayCellUrl:
-      type: string
-      format: uri
-      description: A cell which contains a value for a header of type `url`
-
-    TabularArrayCellDatetime:
-      type: string
-      format: datetime
-      description: >
-        A cell which contains a value for a header of type `datetime`.
-        Format is "YYYY-MM-DDTHH:MM:SS+0" (GMT)
-
-    TabularArrayCellShortenedUrl:
-      type: string
-      format: uri
-      description: A cell which contains a value for a header of type `url_to_shorten`. i.e., a shortened url.
-
-    TabularArrayCell:
-      oneOf:
-        - $ref: '#/components/schemas/TabularArrayCellInteger'
-        - $ref: '#/components/schemas/TabularArrayCellFloat'
-        - $ref: '#/components/schemas/TabularArrayCellString'
-        - $ref: '#/components/schemas/TabularArrayCellUrl'
-        - $ref: '#/components/schemas/TabularArrayCellDatetime'
-        - $ref: '#/components/schemas/TabularArrayCellShortenedUrl'
-
-    TabularArrayRow:
-      type: array
-      items:
-        $ref: '#/components/schemas/TabularArrayCell'
-
-    TabularArrayHeader:
-      description: A header for a column
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-    
-
-    TabularArray:
-      type: object
-      properties:
-        headers:
-          type: array
-          items:
-            $ref: '#/components/schemas/TabularArrayHeader'
-        rows:
-          type: array
-          items:
-            $ref: '#/components/schemas/TabularArrayRow'
-
-    TabularArrays:
-      type: object
-      description: user data uploaded as excel, converted to a set of tabular arrays, one for each excel sheet.
-      properties:
-        arrays:
-          type: array
-          items:
-            $ref: '#/components/schemas/TabularArray'
 
     StringParameterValue:
       type: string
@@ -563,81 +448,10 @@ components:
         - user_name
         - event
 
-    MessageResponse:
-      type: object
-      properties:
-        delay_ms:
-          type: integer
-          description: >
-            The number of milliseconds until Alcméon executes this response.
-            A convenient way to insert a delay before exiting the box.
-        body:
-          description: >
-            An object that matches the structure of the underlying social media message format.
-          oneOf:
-            - $ref: 'subbot-messenger.yaml#/components/schemas/MessengerMessage'
-            - $ref: 'subbot-twitter.yaml#/components/schemas/TwitterMessage'
-            - $ref: 'subbot-whatsapp.yaml#/components/schemas/Whatsapp_Message'
-            - $ref: 'subbot-gbm.yaml#/components/schemas/GbmMessage'
-            - $ref: 'subbot-webchat.yaml#/components/schemas/WebchatMessage'
-            - $ref: 'subbot-bzc.yaml#/components/schemas/Apple_Message'
-            - $ref: 'subbot-instagram.yaml#/components/schemas/Instagram_Message'
-
 security:
   - basic_auth: []
 
 paths:
-
-  /uploaded-tabular-data:
-    get:
-      servers:
-        - url: https://api.alcmeon.com
-          description: Host for tabular data
-      tags:
-        - Helpers
-      summary: Return uploaded data
-      description: >
-        After a user successfully uploads excel data for a subbot (the data sheet formats
-        have been validated against the format expected by the subbot), the data
-        can be downloaded from the subbot by invoking this endpoint.
-
-      responses:
-        "200":
-          description: Return a 200 status on success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TabularArrays'
-
-  /continue:
-    post:
-      servers:
-        - url: https://api.alcmeon.com
-          description: Host to continue interactions with users
-      tags:
-        - Helpers
-      summary: Continue interaction with user
-      description: >
-        If a subbot declares that it supports the v3 API in its
-        /description endpoint, it will receive an extra key named
-        jwt in its /start and /handle-event endpoints which can be
-        used to authenticate this endpoint.
-      parameters:
-        - in: header
-          name: X-JWT
-          schema:
-            type: string
-            description: the JWT received in the /start and /handle-event event `jwt` field.
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BotResponse'
-      responses:
-        "200":
-          description: Return a 200 status on success
-  
 
   /description:
     get:
@@ -680,7 +494,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BotResponse'
+                $ref: 'subbot-response.yaml#/components/schemas/BotResponse'
 
   /handle-event:
     post:
@@ -702,7 +516,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BotResponse'
+                $ref: 'subbot-response.yaml#/components/schemas/BotResponse'
 
   /end:
     post:
