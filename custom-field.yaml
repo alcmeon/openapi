@@ -91,7 +91,7 @@ paths:
     put:
       tags:
         - User
-      summary: Set user fields
+      summary: Set user custom fields
       requestBody:
         content:
           application/json:
@@ -103,7 +103,7 @@ paths:
     get:
       tags:
         - User
-      summary: Return user fields
+      summary: Return user custom fields
       responses:
         '200':
           description: Returned upon succes
