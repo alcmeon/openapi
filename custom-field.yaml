@@ -112,6 +112,44 @@ paths:
               schema:
                 $ref: '#/components/schemas/FieldValues'
 
+  /custom-field/accounts/{account_id}/users/{user_external_id}:
+    parameters:
+      - in: path
+        name: account_id
+        description: An id which uniquely identifies a social media account.
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: user_external_id
+        description: An external id which uniquely identifies a social media user.
+        required: true
+        schema:
+          type: integer
+    put:
+      tags:
+        - User
+      summary: Set user custom fields for a social media user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldValues'
+      responses:
+        '200':
+          description: Returned upon succes
+    get:
+      tags:
+        - User
+      summary: Return user custom fields for a social media user
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldValues'
+
   /custom-field/conversations/{conversation_id}:
     parameters:
       - in: path
