@@ -190,10 +190,11 @@ paths:
       tags:
         - User
       summary: >
-        Set fields for a social media user.
+        Set fields for a social media user
       description: >
         Set user custom fields for a given social media user.
-        NB: the social media user is created if not found for this social media account.
+        
+        > NB: the social media user is created if not found for this social media account.
       requestBody:
         content:
           application/json:
