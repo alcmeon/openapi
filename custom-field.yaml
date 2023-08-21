@@ -78,6 +78,22 @@ components:
             type: integer
           field_value:
             $ref: '#/components/schemas/PrimitiveFieldValues'
+  
+    ResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.  
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to 
+            support@alcmeon.com if you wish to obtain more details about the problem.
+
+    ResponseOk:
+      type: string
+      enum: ['ok']
 
 paths:
   /custom-field/users/{custom_field_user_id}:
@@ -105,54 +121,25 @@ paths:
           content:
             application/json:
               schema:
-                title: status
-                type: string
-                enum: ['ok']
+                $ref: '#/components/schemas/ResponseOk'
         '400':
           description: Returned if the request body format is invalid
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: A short string explaining the reason of the error.  
-                  details:
-                    type: string
-                    description: >
-                      A short string which describes what is wrong. Provide this string to 
-                      support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
         '403':
           description: Returned if a field is not editable.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: A short string explaining the reason of the error.  
-                  details:
-                    type: string
-                    description: >
-                      A short string which describes what is wrong. Provide this string to 
-                      support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
         '404':
           description: Returned if the user profile is not found.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: A short string explaining the reason of the error.  
-                  details:
-                    type: string
-                    description: >
-                      A short string which describes what is wrong. Provide this string to 
-                      support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
     get:
       tags:
         - User
@@ -206,39 +193,19 @@ paths:
           content:
             application/json:
               schema:
-                title: status
-                type: string
-                enum: ['ok']
+                $ref: '#/components/schemas/ResponseOk'
         '400':
           description: Returned if the request body format is invalid
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: A short string explaining the reason of the error.  
-                  details:
-                    type: string
-                    description: >
-                      A short string which describes what is wrong. Provide this string to 
-                      support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
         '403':
           description: Returned if a field is not editable.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: A short string explaining the reason of the error.  
-                  details:
-                    type: string
-                    description: >
-                      A short string which describes what is wrong. Provide this string to 
-                      support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
     get:
       tags:
         - User
@@ -257,16 +224,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: A short string explaining the reason of the error.  
-                  details:
-                    type: string
-                    description: >
-                      A short string which describes what is wrong. Provide this string to 
-                      support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
 
   /custom-field/conversations/{conversation_id}:
     parameters:
@@ -288,6 +246,10 @@ paths:
       responses:
         '200':
           description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseOk'
     get:
       tags:
         - Conversation
