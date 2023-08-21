@@ -91,7 +91,9 @@ paths:
     put:
       tags:
         - User
-      summary: Set user custom fields
+      summary: Set fields for a user profile
+      description: >
+        Set user custom fields for a user profile.
       requestBody:
         content:
           application/json:
@@ -103,6 +105,7 @@ paths:
           content:
             application/json:
               schema:
+                title: status
                 type: string
                 enum: ['ok']
         '400':
@@ -136,7 +139,7 @@ paths:
                       A short string which describes what is wrong. Provide this string to 
                       support@alcmeon.com if you wish to obtain more details about the problem.
         '404':
-          description: Returned if the social media user is not found for this social media account.
+          description: Returned if the user profile is not found.
           content:
             application/json:
               schema:
@@ -153,7 +156,9 @@ paths:
     get:
       tags:
         - User
-      summary: Return user custom fields
+      summary: Get fields for a user profile
+      description: >
+        Return user custom fields for a user profile.
       responses:
         '200':
           description: Returned upon succes
@@ -185,7 +190,9 @@ paths:
       tags:
         - User
       summary: >
-        Set user custom fields for a social media user.
+        Set fields for a social media user.
+      description: >
+        Set user custom fields for a given social media user.
         NB: the social media user is created if not found for this social media account.
       requestBody:
         content:
@@ -198,6 +205,7 @@ paths:
           content:
             application/json:
               schema:
+                title: status
                 type: string
                 enum: ['ok']
         '400':
@@ -233,7 +241,9 @@ paths:
     get:
       tags:
         - User
-      summary: Return user custom fields for a social media user
+      summary: Get fields for a social media user
+      description: >
+        Return user custom fields for a social media user.
       responses:
         '200':
           description: Returned upon succes
