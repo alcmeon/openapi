@@ -100,6 +100,56 @@ paths:
       responses:
         '200':
           description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: string
+                enum: ['ok']
+        '400':
+          description: Returned if the request body format is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.  
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
+        '403':
+          description: Returned if a field is not editable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.  
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
+        '404':
+          description: Returned if the social media user is not found for this social media account.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.  
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
     get:
       tags:
         - User
@@ -112,24 +162,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/FieldValues'
 
-  /custom-field/accounts/{account_id}/users/{user_external_id}:
+  /custom-field/accounts/{social_media_account_id}/users/{social_media_user_id}:
     parameters:
       - in: path
-        name: account_id
-        description: An id which uniquely identifies a social media account.
+        name: social_media_account_id
+        description: >
+          An id which uniquely identifies a social media account.
         required: true
         schema:
           type: integer
       - in: path
-        name: user_external_id
-        description: An external id which uniquely identifies a social media user.
+        name: social_media_user_id
+        description: >
+          The id uniquely identifying the user within the social media account.
+          On Whatsapp, this is the user's phone number, in international format, without a leading +.
+          For example a french phone number in this format will look like this 33672422826 
+          (33 is the international prefix).
         required: true
         schema:
-          type: integer
+          type: string
     put:
       tags:
         - User
-      summary: Set user custom fields for a social media user
+      summary: >
+        Set user custom fields for a social media user.
+        NB: the social media user is created if not found for this social media account.
       requestBody:
         content:
           application/json:
@@ -138,6 +195,41 @@ paths:
       responses:
         '200':
           description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: string
+                enum: ['ok']
+        '400':
+          description: Returned if the request body format is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.  
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
+        '403':
+          description: Returned if a field is not editable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.  
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
     get:
       tags:
         - User
@@ -149,6 +241,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FieldValues'
+        '404':
+          description: Returned if the social media user is not found for this social media account.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.  
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
 
   /custom-field/conversations/{conversation_id}:
     parameters:
