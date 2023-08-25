@@ -78,18 +78,56 @@ components:
             type: integer
           field_value:
             $ref: '#/components/schemas/PrimitiveFieldValues'
-  
+
     ResponseError:
       type: object
       properties:
         error:
           type: string
-          description: A short string explaining the reason of the error.  
+          description: A short string explaining the reason of the error.
         details:
           type: string
           description: >
             A short string which describes what is wrong. Provide this string to 
             support@alcmeon.com if you wish to obtain more details about the problem.
+
+    FieldMetadata:
+      description: Metadata for custom fields
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id of the custom field
+        label:
+          type: string
+          description: Label of the custom field
+        description:
+          type: string
+          description: Description of the custom field
+        type:
+          type: string
+        teams:
+          type: array
+          items:
+            type: integer
+        can_set_null:
+          type: boolean
+        allowed:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              label:
+                type: string
+          description: List of allowed values. Only return if the type is 'multipicklist' or 'enum'
+        last_modified_by:
+          type: string
+        last_modified_on:
+          type: string
+          format: date-time
+
 
     ResponseOk:
       type: string
@@ -261,3 +299,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FieldValues'
+
+  /custom-field/users/fields/{custom_field_id}:
+    parameters:
+      - in: path
+        name: custom_field_id
+        description: A custom_field_id which uniquely identifies a custom field.
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - Fields
+      summary: Get metadata for a custom field
+      description: >
+        Return the metadata for the given custom field id
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldMetadata'
+
+  /custom-field/users/fields:
+    get:
+      tags:
+        - Fields
+      summary: Get metadata for all custom fields
+      description: >
+        Return the metadata for all user custom fields
+      responses:
+        '200':
+          description: Returned upon succes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FieldMetadata'
