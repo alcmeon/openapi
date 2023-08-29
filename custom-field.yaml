@@ -106,12 +106,15 @@ components:
           description: Description of the custom field
         type:
           type: string
+          enum: [integer, float, boolean, enum, multipicklist, string, url, phone, email, datetime, date]
         teams:
           type: array
+          description: id of the teams that can view/edit the custom field. See [/teams](#https://developers.alcmeon.com/reference/get_teams)
           items:
             type: integer
-        can_set_null:
+        optional:
           type: boolean
+          description: If true, this custom field is optional
         allowed:
           type: array
           items:
@@ -122,11 +125,14 @@ components:
               label:
                 type: string
           description: List of allowed values. Only return if the type is 'multipicklist' or 'enum'
-        last_modified_by:
+        last_updater_admin_user_email:
           type: string
+          description: Email address of the last modifier
         last_modified_on:
           type: string
           format: date-time
+          description: Last datetime of edition? ISO format in GMT
+
 
 
     ResponseOk:
