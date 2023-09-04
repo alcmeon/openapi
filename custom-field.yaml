@@ -327,7 +327,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FieldMetadata'
-
+        '404':
+          description: Returned if the custom field id is not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
   /custom-field/users/fields:
     get:
       tags:
