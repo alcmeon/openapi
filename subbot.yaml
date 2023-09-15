@@ -30,11 +30,11 @@ components:
         jwt:
           type: string
           description: >
-            The JWT that can be used to call the /continue endpoint within the lext 60 seconds.
-            This JWT can be used to /continue an interaction with a specific user for
+            The JWT that can be used to call the /subbot/continue endpoint within the lext 60 seconds.
+            This JWT can be used to continue an interaction with a specific user for
             a specific subbot box instance in a scenario. It can be used more than once within
             its validity delay. You cannot reuse a JWT received for user A 
-            to /continue an interaction with another user B.
+            to continue an interaction with another user B.
 
     Handle_Event_RequestV3:
       allOf:
