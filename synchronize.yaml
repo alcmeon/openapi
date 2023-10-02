@@ -296,7 +296,7 @@ components:
         author:
           $ref: '#/components/schemas/Author'
         rating_value:
-          type: int
+          type: integer
           description: (optional) An integer referring to the rating value given by the user
 
     CustomFieldPrimitiveFieldValues:
