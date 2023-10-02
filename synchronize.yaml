@@ -295,6 +295,9 @@ components:
             $ref: '#/components/schemas/Attachment'
         author:
           $ref: '#/components/schemas/Author'
+        rating_value:
+          type: int
+          description: (optional) An integer referring to the rating value given by the user
 
     CustomFieldPrimitiveFieldValues:
       oneOf:
