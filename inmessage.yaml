@@ -636,7 +636,7 @@ paths:
             schema:
               type: object
               properties:
-                file_name:
+                media_name:
                   type: string
                 file_content:
                   description: The file bytes
