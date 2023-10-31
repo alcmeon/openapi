@@ -348,7 +348,7 @@ components:
     FileUuid:
       type: object
       properties:
-        media_uuid:
+        uuid:
           description: Id associated with this file
           type: string
 
