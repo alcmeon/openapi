@@ -348,7 +348,7 @@ components:
     FileUuid:
       type: object
       properties:
-        media_uuid:
+        uuid:
           description: Id associated with this file
           type: string
 
@@ -620,20 +620,28 @@ paths:
 
   /{page_id}/media:
     post:
+      deprecated: true
       parameters:
         - $ref: '#/components/parameters/page_id'
       tags: [Media]
       summary: Upload
       description: >
-        Upload media first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint
+        Upload media first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint.
+        This method is deprecated, use file upload instead.
       requestBody:
         description: The media bytes
         required: true
         content:
-          application/octet-stream:
+          multipart/form-data:
             schema:
-              type: string
-              format: binary
+              type: object
+              properties:
+                media_name:
+                  type: string
+                file_content:
+                  description: The file bytes
+                  type: string
+                  format: binary
       responses:
         '200':
           description: returned upon success

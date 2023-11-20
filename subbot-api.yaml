@@ -113,14 +113,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/TabularArrays'
 
-  /continue:
+  /subbot/continue:
     post:
       summary: Continue interaction with user
       description: >
         If a subbot declares that it supports the v3 API in its
         /description endpoint, it will receive an extra key named
         jwt in its /start and /handle-event endpoints which can be
-        used to authenticate this endpoint.
+        used to authenticate this endpoint. In case the call to this 
+        endpoint fails because of an invalid or expired token, the subbot
+        can not interact anymore with the user and the next message 
+        will trigger the Alcmeon scenario as usual.
       parameters:
         - in: header
           name: X-JWT

@@ -15,6 +15,10 @@ components:
 
   schemas:
 
+    AlcmeonWebhookSignatureHeader:
+      type: string
+      description: Optional header for [signature verification](https://developers.alcmeon.com/docs/api-core-concepts#signature-verification) present if an Alcmeon application has been defined for the sub-bot.
+
     HandleEventRequestVariables:
       type: object
       properties:
@@ -30,11 +34,11 @@ components:
         jwt:
           type: string
           description: >
-            The JWT that can be used to call the /continue endpoint within the lext 60 seconds.
-            This JWT can be used to /continue an interaction with a specific user for
+            The JWT that can be used to call the /subbot/continue endpoint within the lext 60 seconds.
+            This JWT can be used to continue an interaction with a specific user for
             a specific subbot box instance in a scenario. It can be used more than once within
             its validity delay. You cannot reuse a JWT received for user A 
-            to /continue an interaction with another user B.
+            to continue an interaction with another user B.
 
     Handle_Event_RequestV3:
       allOf:
@@ -464,6 +468,11 @@ paths:
 
 
         This endpoint can also be invoked at other times during the bot lifecycle. 
+      parameters:
+        - in: header
+          name: X-Alcmeon-Webhook-Signature
+          schema:
+            $ref: '#/components/schemas/AlcmeonWebhookSignatureHeader'
 
       responses:
         "200":
@@ -482,6 +491,11 @@ paths:
       description: >
         Whenever a user enters a box via its input connector, this endpoint will 
         be invoked via `POST URL/start`.
+      parameters:
+        - in: header
+          name: X-Alcmeon-Webhook-Signature
+          schema:
+            $ref: '#/components/schemas/AlcmeonWebhookSignatureHeader'
       requestBody:
         content:
           application/json:
@@ -504,6 +518,11 @@ paths:
       description: >
         Whenever a user interacts with a bot box after entering via input 
         connector, this endpoint will be invoked via `POST URL/handle-event`.
+      parameters:
+        - in: header
+          name: X-Alcmeon-Webhook-Signature
+          schema:
+            $ref: '#/components/schemas/AlcmeonWebhookSignatureHeader'
       requestBody:
         content:
           application/json:
@@ -527,6 +546,11 @@ paths:
         `POST URL/end` is invoked whenever Alcméon thinks the bot box did something 
         wrong and took the “failed” output connector. It is not an error if it is 
         not implemented. Its return value is ignored.
+      parameters:
+      - in: header
+        name: X-Alcmeon-Webhook-Signature
+        schema:
+          $ref: '#/components/schemas/AlcmeonWebhookSignatureHeader'
       requestBody:
         content:
           application/json:
