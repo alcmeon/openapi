@@ -226,6 +226,9 @@ paths:
         Set user custom fields for a given social media user.
         
         > NB: the social media user is created if not found for this social media account.
+        
+        
+        Limitation: This feature is not supported for Apple Messages.
       requestBody:
         content:
           application/json:
@@ -256,6 +259,9 @@ paths:
       summary: Get fields for a social media user
       description: >
         Return user custom fields for a social media user.
+        
+        
+        Limitation: This feature is not supported for Apple Messages.
       responses:
         '200':
           description: Returned upon succes
