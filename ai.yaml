@@ -37,8 +37,11 @@ paths:
             schema:
               properties:
                 message:
-                  type: object
+                  type:
+                  - object
+                  - 'null'
                   description: A dictionary containing information about the generated answer
+                  required: true
                   properties:
                     id:
                       type: string
@@ -49,16 +52,22 @@ paths:
                       description: >
                         The content of the generated response
                 error:
-                  type: object
+                  type:
+                  - object
+                  - 'null'
                   description: A dictionary containing information about the error returned when the AI did not manage
                                to generate a satisfying answer (e.g. contact escalation)
                   properties:
                     code:
-                      type: string
+                      type:
+                      - string
+                      - 'null'
                       description: >
                         A string identifying the type of error of the AI
                     details:
-                      type: string
+                      type:
+                      - string
+                      - 'null'
                       description: >
                         Some more information about the error
       responses:
