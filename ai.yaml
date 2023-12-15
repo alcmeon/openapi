@@ -75,8 +75,9 @@ paths:
               schema:
                 type: string
         '400':
-          description: The token used to call the endpoint is not valid or it is expired
+          description: If the token used to call the endpoint is not valid (or expired) or if the received json
+                        does not match with the expected format
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/ResponseError'
