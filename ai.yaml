@@ -80,4 +80,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      reason:
+                        type: string
+                        description: >
+                          A short string which describes what is wrong. Provide this string to 
+                          support@alcmeon.com if you wish to obtain more details about the problem.
