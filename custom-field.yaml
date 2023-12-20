@@ -228,7 +228,7 @@ paths:
         > NB: the social media user is created if not found for this social media account.
         
         
-        Limitation: This feature is not supported for Apple Messages.
+        Limitation: This feature is not available yet for Apple Messages. If you are considering using it, please contact our support team at support@alcmeon.com
       requestBody:
         content:
           application/json:
@@ -261,7 +261,7 @@ paths:
         Return user custom fields for a social media user.
         
         
-        Limitation: This feature is not supported for Apple Messages.
+        Limitation: This feature is not available yet for Apple Messages. If you are considering using it, please contact our support team at support@alcmeon.com
       responses:
         '200':
           description: Returned upon succes
