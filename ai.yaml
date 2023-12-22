@@ -46,7 +46,7 @@ paths:
           name: X-JWT
           schema:
             type: string
-            description: The JWT received (e.g. the 'jwt' field in the payload of the asynchronous request sent to your AI API). This JWT is valid for 60 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
+            description: The JWT received (e.g. the `jwt` field in the payload of the asynchronous request sent to your AI API). This JWT is valid for 60 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
           required: true
       requestBody:
         content:
@@ -73,8 +73,11 @@ paths:
                       nullable: true
                       description: >
                         An optional short string that can be filled to indicate that:
+                        
                         - the generated answer can be sent but it's suggested to transfer the conversation afterwards to a support agent: `suggestContactEscalation` 
+                        
                         - the generated answer should not be sent and the conversation afterwards should be transferred to a support agent: `mustContactEscalation`
+                        
                         - the scope of the conversation can neither be handled by the AI nor by a support agent: `EndConversation`
                 error:
                   type: object
