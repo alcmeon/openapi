@@ -12,9 +12,25 @@ components:
 
   securitySchemes:
     basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
       type: http
       scheme: basic
 
+schemas:
+    ResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to 
+            support@alcmeon.com if you wish to obtain more details about the problem.
 
 
 paths:
@@ -22,15 +38,16 @@ paths:
     post:
       summary: Send AI generated answer
       description: >
-        Endpoint to call when you want to send an AI generated answer: once your AI server is triggered, it can use the 
-        jwt previously received to forward the generated answer to the end user in social network.
+        Endpoint to call when you want to send an AI generated answer. Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given social network user, 
+        this endpoint can be invoked (with the jwt previously received) to send the generated answer to this specific social network user.
 
       parameters:
         - in: header
           name: X-JWT
           schema:
             type: string
-            description: the JWT received (e.g. the 'jwt' field of the payload sent by the AI-connector box).
+            description: the JWT received (e.g. the 'jwt' field in the payload of the asynchronous request sent to your AI API). 
+            This JWT is valid for 60 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
           required: true
       requestBody:
         content:
@@ -41,32 +58,40 @@ paths:
                 message:
                   type: object
                   nullable: true
-                  description: An object containing information about the generated answer
+                  description: An object containing information about the generated answer.
                   properties:
                     id:
                       type: string
                       description: >
-                        The identifier for a generated response
+                        A unique identifier of the generated response.
                     content:
                       type: string
                       description: >
-                        The content of the generated response
+                        The generated response content to send to the social network user.
+                    code:
+                      type: string
+                      enum: [suggestContactEscalation, mustContactEscalation, EndConversation]
+                      nullable: true
+                      description: >
+                        An optional short string that can be filled to indicate that:
+                        - the generated answer can be sent but it's suggested to transfer the conversation afterwards to a support agent: `suggestContactEscalation` 
+                        - the generated answer should not be sent and the conversation afterwards should be transferred to a support agent: `mustContactEscalation`
+                        - the scope of the conversation can neither be handled by the AI nor by a support agent: `EndConversation`
                 error:
                   type: object
                   nullable: true
-                  description: An object containing information about the error returned when the AI did not manage
-                               to generate a satisfying answer
+                  description: Information on the response generation error when the AI did not manage to generate a satisfying answer.
                   properties:
                     code:
                       type: string
                       nullable: true
                       description: >
-                        A string identifying the type of error of the AI
+                        A short string code of the error.
                     details:
                       type: string
                       nullable: true
                       description: >
-                        Some more information about the error
+                        A short string explaining the reason of the error.
       responses:
         '200':
           description: Success
@@ -76,17 +101,8 @@ paths:
                 type: string
         '400':
           description: If the token used to call the endpoint is not valid (or expired) or if the received json
-                        does not match with the expected format
+                        does not match with the expected format.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: object
-                    properties:
-                      reason:
-                        type: string
-                        description: >
-                          A short string which describes what is wrong. Provide this string to 
-                          support@alcmeon.com if you wish to obtain more details about the problem.
+                $ref: '#/components/schemas/ResponseError'
