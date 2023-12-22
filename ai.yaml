@@ -38,7 +38,9 @@ paths:
     post:
       summary: Send AI generated answer
       description: >
-        Endpoint to call when you want to send an AI generated answer. Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given social network user, 
+        Endpoint to invoke to send an AI generated answer to a social network user. 
+        
+        Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given social network user, 
         this endpoint can be invoked (with the jwt previously received) to send the generated answer to this specific social network user.
 
       parameters:
