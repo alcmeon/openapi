@@ -46,7 +46,8 @@ paths:
           name: X-JWT
           schema:
             type: string
-            description: the JWT received (e.g. the 'jwt' field in the payload of the asynchronous request sent to your AI API). 
+            description: >
+            The JWT received (e.g. the 'jwt' field in the payload of the asynchronous request sent to your AI API). 
             This JWT is valid for 60 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
           required: true
       requestBody:
