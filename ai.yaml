@@ -19,7 +19,7 @@ components:
       type: http
       scheme: basic
 
-schemas:
+  schemas:
     ResponseError:
       type: object
       properties:
