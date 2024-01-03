@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Suggest
+  version: 0.1.0
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: false
+
+components:
+  schemas:
+    HTTPError:
+      properties:
+        detail:
+          type: object
+        message:
+          type: string
+      type: object
+    ValidationError:
+      properties:
+        detail:
+          type: object
+          properties:
+            <location>:
+              type: object
+              properties:
+                <field_name>:
+                  type: array
+                  items:
+                    type: string
+        message:
+          type: string
+      type: object
+    SuggestAnswerOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          enum:
+          - pending
+          - started
+          - finished
+          - failed
+        answer:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - created_at
+      - id
+      - status
+    SuggestAnswerInput:
+      type: object
+      properties:
+        question:
+          type: string
+        context:
+          type: array
+          items:
+            type: string
+      required:
+      - context
+      - question
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+paths:
+  /api/v1/suggest-answer:
+    post:
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestAnswerOutput'
+          description: Successful response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Validation error
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Authentication error
+      tags:
+      - Suggest Answer
+      summary: Create a new suggest answer
+      description: 'creates a new suggested answer '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuggestAnswerInput'
+      security:
+      - BearerAuth: []
