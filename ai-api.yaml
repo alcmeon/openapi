@@ -114,3 +114,92 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+
+  /ai/suggest-answer:
+    post:
+      summary: Send AI generated suggestionn
+      description: >
+        Endpoint to invoke to send an AI generated suggestion to a support agent. 
+        
+        Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given conversion and support agent, 
+        this endpoint can be invoked (with the jwt previously received) to send the generated answer to this specific agent.
+
+      parameters:
+        - in: header
+          name: X-JWT
+          schema:
+            type: string
+            description: The JWT received (e.g. the `jwt` field in the payload of the asynchronous request sent to your AI API). This JWT is valid for 60 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required: [suggest_answer]
+              properties:
+                suggest_answer:
+                  type: object
+                  nullable: true
+                  description: An object containing information about the suggested answer.
+                  properties:
+                    id:
+                      type: string
+                      description: >
+                        A unique identifier of the generated suggestion.
+                    answer:
+                      type: string
+                      nullable: true
+                      description: >
+                        The generated response content to send to the support agent.
+                    status:
+                      type: string
+                      enum: [pending, started, finished, failed]
+                      description: >
+                        Status of the suggestion
+                        - Should be finished if suggestion was found
+                        - Should be failed if suggestion could not be found
+                    created_at:
+                      type: string
+                      format: date-time
+                      nullable: true
+                      description: >
+                        The date of creation of suggestion.
+                    finished_at:
+                      type: string
+                      format: date-time
+                      nullable: true
+                      description: >
+                        The date of resolution of suggestion.
+                error:
+                  type: object
+                  nullable: true
+                  description: Information on the response generation error when the AI did not manage to generate a satisfying answer.
+                  properties:
+                    code:
+                      type: string
+                      nullable: true
+                      description: >
+                        A short string code of the error.
+                    details:
+                      type: string
+                      nullable: true
+                      description: >
+                        A short string explaining the reason of the error.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ['ok']
+        '400':
+          description: If the token used to call the endpoint is not valid (or expired) or if the received json
+                        does not match with the expected format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
