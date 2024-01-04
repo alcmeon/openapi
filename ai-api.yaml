@@ -117,7 +117,7 @@ paths:
 
   /ai/suggest-answer:
     post:
-      summary: Send AI generated suggestionn
+      summary: Send AI generated suggestion
       description: >
         Endpoint to invoke to send an AI generated suggestion to a support agent. 
         
