@@ -98,6 +98,8 @@ components:
 paths:
   /suggest-answer:
     post:
+      tags:
+      - Suggest Answer
       summary: Create a new suggest answer
       description: 'creates a new suggested answer '
       parameters: []
@@ -120,8 +122,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
           description: Authentication error
-      tags:
-      - Suggest Answer
       requestBody:
         content:
           application/json:
@@ -132,6 +132,8 @@ paths:
 
   /suggest-stats:
     post:
+      tags:
+      - Suggest Statistics
       summary: Provide statistics about a suggested answer
       description: 'Provide statistics about a suggested answer'
       parameters: []
