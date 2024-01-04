@@ -66,6 +66,30 @@ components:
       required:
       - context
       - question
+    SuggestStatsInput:
+      type: object
+      properties:
+        question:
+          type: string
+        context:
+          type: array
+          items:
+            type: string
+        suggestion:
+          type: string
+        answer:
+          type: string
+        status:
+          enum:
+          - rejected
+          - accepted
+          - edited
+      required:
+      - context
+      - question
+    ResponseOk:
+      type: string
+      enum: ['ok']
   securitySchemes:
     BearerAuth:
       type: http
@@ -103,5 +127,37 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SuggestAnswerInput'
+      security:
+      - BearerAuth: []
+
+  /suggest-stats:
+    post:
+      summary: Provide statistics about a suggested answer
+      description: 'Provide statistics about a suggested answer'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseOk'
+          description: Successful response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Validation error
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Authentication error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuggestStatsInput'
       security:
       - BearerAuth: []
