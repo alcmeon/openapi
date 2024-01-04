@@ -121,7 +121,7 @@ paths:
       description: >
         Endpoint to invoke to send an AI generated suggestion to a support agent. 
         
-        Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given conversion and support agent, 
+        Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given conversation and support agent, 
         this endpoint can be invoked (with the jwt previously received) to send the generated answer to this specific agent.
 
       parameters:
