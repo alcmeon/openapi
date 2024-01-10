@@ -29,43 +29,6 @@ components:
         message:
           type: string
       type: object
-    SuggestAnswerOutput:
-      type: object
-      properties:
-        id:
-          type: integer
-        status:
-          enum:
-          - pending
-          - started
-          - finished
-          - failed
-        answer:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          nullable: true
-        finished_at:
-          type: string
-          format: date-time
-          nullable: true
-      required:
-      - created_at
-      - id
-      - status
-    SuggestAnswerInput:
-      type: object
-      properties:
-        question:
-          type: string
-        context:
-          type: array
-          items:
-            type: string
-      required:
-      - context
-      - question
     SuggestStatsInput:
       type: object
       properties:
@@ -96,26 +59,41 @@ components:
       scheme: bearer
 
 paths:
-  /suggest-answer:
+  /{company_id}/api/v1/suggest-answer:
+    parameters:
+      - in: path
+        name: company_id
+        description: The company_id of the account used.
+        required: true
+        schema:
+          type: integer
     post:
       tags:
       - Suggest Answer
-      summary: Create a new suggest answer
-      description: 'creates a new suggested answer '
+      summary: Ask for a suggestion answer for a support agent
+      description: >
+        Webhook to implement to send an AI generated suggestion to a support agent.
+        This webhook can be protected by checking the bearer, a jwt that can be decoded with the public key provided when this webhook is declared.
+        The token contains a 'company_id' that must be the same as the parameter. The token has a validity limit of 60 seconds.
       parameters: []
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuggestAnswerOutput'
+                required:
+                - id
+                - status
+                properties:
+                  id:
+                    type: integer
+                  status:
+                    enum:
+                    - pending
+                    - started
+                    - finished
+                    - failed
           description: Successful response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: Validation error
         '401':
           content:
             application/json:
@@ -126,7 +104,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SuggestAnswerInput'
+              required:
+              - question
+              - context
+              - webhook_token
+              properties:
+                question:
+                  type: string
+                context:
+                  type: array
+                  items:
+                    type: string
+                webhook_token:
+                  type: string
       security:
       - BearerAuth: []
 

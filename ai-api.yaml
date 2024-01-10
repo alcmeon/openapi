@@ -121,15 +121,15 @@ paths:
       description: >
         Endpoint to invoke to send an AI generated suggestion to a support agent. 
         
-        Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given conversation and support agent, 
-        this endpoint can be invoked (with the jwt previously received) to send the generated answer to this specific agent.
+        Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
+        this endpoint can be invoked (with the token previously received) to send the generated answer to this specific agent.
 
       parameters:
         - in: header
           name: X-JWT
           schema:
             type: string
-            description: The JWT received (e.g. the `jwt` field in the payload of the asynchronous request sent to your AI API). This JWT is valid for 60 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
+            description: The token received (e.g. the `webhook_token` field in the payload of the request sent to your AI API). This token is valid for 60 seconds and you cannot reuse a token received for user A to send an AI generated answer to another user B.
           required: true
       requestBody:
         content:
@@ -170,21 +170,6 @@ paths:
                       nullable: true
                       description: >
                         The date of resolution of suggestion.
-                error:
-                  type: object
-                  nullable: true
-                  description: Information on the response generation error when the AI did not manage to generate a satisfying answer.
-                  properties:
-                    code:
-                      type: string
-                      nullable: true
-                      description: >
-                        A short string code of the error.
-                    details:
-                      type: string
-                      nullable: true
-                      description: >
-                        A short string explaining the reason of the error.
       responses:
         '200':
           description: Success
