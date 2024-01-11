@@ -31,7 +31,74 @@ components:
           description: >
             A short string which describes what is wrong. Provide this string to 
             support@alcmeon.com if you wish to obtain more details about the problem.
-
+    SuggestionFinished:
+      required: [suggest_answer]
+      properties:
+        suggest_answer:
+          type: object
+          required: [id, answer, status]
+          properties:
+            id:
+              type: string
+              description: >
+                A unique identifier of the generated suggestion.
+            answer:
+              type: string
+              nullable: true
+              description: >
+                The generated response content to send to the support agent.
+            status:
+              type: string
+              enum: [finished]
+              description: >
+                Status of the suggestion
+                - Should be finished if suggestion was found
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of creation of suggestion.
+            finished_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of resolution of suggestion.
+    SuggestionFailed:
+      required: [suggest_answer]
+      properties:
+        suggest_answer:
+          type: object
+          required: [id, error, status]
+          properties:
+            id:
+              type: string
+              description: >
+                A unique identifier of the generated suggestion.
+            error:
+              type: string
+              nullable: true
+              description: >
+                The error to send to the support agent.
+            status:
+              type: string
+              enum: [failed]
+              description: >
+                Status of the suggestion
+                - Should be failed if suggestion could not be found
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of creation of suggestion.
+            finished_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of resolution of suggestion.
 
 paths:
   /ai/answer:
@@ -135,49 +202,9 @@ paths:
         content:
           application/json:
             schema:
-              required: [suggest_answer]
-              properties:
-                suggest_answer:
-                  type: object
-                  nullable: true
-                  description: An object containing information about the suggested answer.
-                  anyOf:
-                    - required: [id, answer, status]
-                    - required: [id, error, status]
-                  properties:
-                    id:
-                      type: string
-                      description: >
-                        A unique identifier of the generated suggestion.
-                    answer:
-                      type: string
-                      nullable: true
-                      description: >
-                        The generated response content to send to the support agent.
-                    error:
-                      type: string
-                      nullable: true
-                      description: >
-                        The error to send to the support agent.
-                    status:
-                      type: string
-                      enum: [pending, started, finished, failed]
-                      description: >
-                        Status of the suggestion
-                        - Should be finished if suggestion was found
-                        - Should be failed if suggestion could not be found
-                    created_at:
-                      type: string
-                      format: date-time
-                      nullable: true
-                      description: >
-                        The date of creation of suggestion.
-                    finished_at:
-                      type: string
-                      format: date-time
-                      nullable: true
-                      description: >
-                        The date of resolution of suggestion.
+              anyOf:
+                - $ref: '#/components/schemas/SuggestionFinished'
+                - $ref: '#/components/schemas/SuggestionFailed'
       responses:
         '200':
           description: Success
