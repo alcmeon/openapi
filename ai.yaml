@@ -59,14 +59,7 @@ components:
       scheme: bearer
 
 paths:
-  /{company_id}/api/v1/suggest-answer:
-    parameters:
-      - in: path
-        name: company_id
-        description: The company_id of the account used.
-        required: true
-        schema:
-          type: integer
+  /suggest-answer:
     post:
       tags:
       - Suggest Answer
@@ -74,8 +67,43 @@ paths:
       description: >
         Webhook to implement to send an AI generated suggestion to a support agent.
         This webhook can be protected by checking the bearer, a jwt that can be decoded with the public key provided when this webhook is declared.
-        The token contains a 'company_id' that must be the same as the parameter. The token has a validity limit of 60 seconds.
+        The token has a validity limit of 60 seconds.
       parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - version
+              - question
+              - context
+              - webhook_token
+              properties:
+                version:
+                  type: string
+                  enum:
+                    - 1.0
+                question:
+                  type: string
+                context:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - role
+                      - content
+                    properties:
+                      role:
+                        type: string
+                        enum:
+                          - bot
+                          - agent
+                          - user
+                          - system
+                      content:
+                        type: string
+                webhook_token:
+                  type: string
       responses:
         '200':
           content:
@@ -100,23 +128,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
           description: Authentication error
-      requestBody:
-        content:
-          application/json:
-            schema:
-              required:
-              - question
-              - context
-              - webhook_token
-              properties:
-                question:
-                  type: string
-                context:
-                  type: array
-                  items:
-                    type: string
-                webhook_token:
-                  type: string
       security:
       - BearerAuth: []
 

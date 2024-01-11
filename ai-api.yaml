@@ -141,6 +141,9 @@ paths:
                   type: object
                   nullable: true
                   description: An object containing information about the suggested answer.
+                  anyOf:
+                    - required: [id, answer, status]
+                    - required: [id, error, status]
                   properties:
                     id:
                       type: string
@@ -151,6 +154,11 @@ paths:
                       nullable: true
                       description: >
                         The generated response content to send to the support agent.
+                    error:
+                      type: string
+                      nullable: true
+                      description: >
+                        The error to send to the support agent.
                     status:
                       type: string
                       enum: [pending, started, finished, failed]
