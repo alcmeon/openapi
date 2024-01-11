@@ -82,7 +82,7 @@ paths:
                 version:
                   type: string
                   enum:
-                    - 1.0
+                    - '1.0'
                 question:
                   type: string
                 context:
