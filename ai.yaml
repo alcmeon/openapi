@@ -102,6 +102,9 @@ paths:
                           - system
                       content:
                         type: string
+                      date:
+                        type: string
+                        format: date-time
                 webhook_token:
                   type: string
       responses:
