@@ -173,7 +173,7 @@ paths:
               - question
               - context
               - suggestion
-              - suggestion-id
+              - suggestion-idc
               - status
               properties:
                 version:
@@ -246,7 +246,7 @@ paths:
 
                     - `accepted`: Accepted by the agent and sent directly
 
-                    - `edited`: Accepteb by the agent and edited before being sent.
+                    - `edited`: Accepted by the agent and edited before being sent.
 
                 answer:
                   description: Answer sent by the agent if the suggestion was not rejected.
