@@ -172,7 +172,9 @@ paths:
               - version
               - question
               - context
-              - answer
+              - suggestion
+              - suggestion-id
+              - status
               properties:
                 version:
                   type: string
@@ -228,6 +230,9 @@ paths:
                 suggestion:
                   type: string
                   description: AI Generated Suggestion
+                suggestion-id:
+                  type: integer
+                  description: id of the generated suggestion
                 status:
                   type: string
                   enum:
@@ -244,7 +249,7 @@ paths:
                     - `edited`: Accepteb by the agent and edited before being sent.
 
                 answer:
-                  description: Answer sent by the agent.
+                  description: Answer sent by the agent if the suggestion was not rejected.
                   type: string
       security:
       - BearerAuth: []
