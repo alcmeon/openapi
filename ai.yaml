@@ -108,16 +108,24 @@ paths:
                         type: string
                         description: >
                           The content of the item.
-                          For `system` item, it's in the form key=value, with one of the following keys:
+                          For `system` item, it's in the form `key=value`, with one of the following keys:
 
                           - `adviser_lang`: Language used by the agent
+
                           - `adviser_user_id`: Agent id
+
                           - `adviser_user_name`: Agent name
+
                           - `user_id`: User id
+
                           - `user_external_id`: External user id (depending on the channel)
+
                           - `user_name`: User name
+
                           - `user_site_id`: Channel id
+
                           - `user_site_name`: Channel name
+                          
                       date:
                         type: string
                         format: date-time
