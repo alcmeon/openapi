@@ -86,6 +86,7 @@ paths:
                 question:
                   type: string
                 context:
+                  description: The context of the conversation. For performance raison, only the last 100 items are returned.
                   type: array
                   items:
                     type: object
@@ -100,11 +101,24 @@ paths:
                           - adviser
                           - user
                           - system
+                        description: Type of context item 
                       content:
                         type: string
+                        description: >
+                          The content of the item.
+                          For `system` item, it's in the form key=value, with one of the following keys:
+                          - `adviser_lang`: Language used by the agent
+                          - `adviser_user_id`: Agent id
+                          - `adviser_user_name`: Agent name
+                          - `user_id`: User id
+                          - `user_external_id`: External user id (depending on the channel)
+                          - `user_name`: User name
+                          - `user_site_id`: Channel id
+                          - `user_site_name`: Channel name
                       date:
                         type: string
                         format: date-time
+                        description: Date of the item creation.
                 webhook_token:
                   type: string
       responses:
