@@ -83,8 +83,10 @@ paths:
                   type: string
                   enum:
                     - '1.0'
+                  description: Version of the API
                 question:
                   type: string
+                  description: Last user question
                 context:
                   description: The context of the conversation. For performance raison, only the last 100 items are returned.
                   type: array
@@ -107,6 +109,7 @@ paths:
                         description: >
                           The content of the item.
                           For `system` item, it's in the form key=value, with one of the following keys:
+
                           - `adviser_lang`: Language used by the agent
                           - `adviser_user_id`: Agent id
                           - `adviser_user_name`: Agent name
