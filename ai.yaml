@@ -173,7 +173,7 @@ paths:
               - question
               - context
               - suggestion
-              - suggestion-idc
+              - suggestion_id
               - status
               properties:
                 version:
@@ -230,7 +230,7 @@ paths:
                 suggestion:
                   type: string
                   description: AI Generated Suggestion
-                suggestion-id:
+                suggestion_id:
                   type: integer
                   description: id of the generated suggestion
                 status:
