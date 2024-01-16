@@ -211,11 +211,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    enum: ['ok']
+                type: string
+                enum: ['ok']
         '400':
           description: If the token used to call the endpoint is not valid (or expired) or if the received json
                         does not match with the expected format.
