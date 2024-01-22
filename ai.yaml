@@ -111,6 +111,17 @@ paths:
                         description: Date of the item creation.
                 webhook_token:
                   type: string
+              example:
+                version: "1.0"
+                question: "The question"
+                context:
+                  - role: "user"
+                    content: "The question"
+                    date: "2024-01-18 08:25:36"
+                  - role: "system"
+                    content: "adviser_lang=en"
+                    date: "2024-01-22 13:05:41"
+                webhook_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDU5Mjg3MzYsImV4cCI6MTcwNTkyODc5NiwiY29tcGFueV9pZCI6NCwidXNlcl9pZCI6NywidGFza19pZCI6MzE1fQ.hxv2p7cUG81bCZ5W4sY5ZeYVMVHZtf"
       responses:
         '200':
           content:
@@ -251,5 +262,22 @@ paths:
                 answer:
                   description: Answer sent by the agent if the suggestion was not rejected.
                   type: string
+              example:
+                version: "1.0"
+                question: "The question"
+                context:
+                  - role: "user"
+                    content: "The question"
+                    date: "2024-01-18 08:25:36"
+                  - role: "adviser"
+                    content: "This is my answer"
+                    date: "2024-01-22 13:05:41"
+                  - role: "system"
+                    content: "adviser_lang=en"
+                    date: "2024-01-22 13:05:41"
+                suggestion: "This is my answer"
+                suggestion_id: "1234"
+                status: "accepted"
+                answer: "This is my answer"
       security:
       - BearerAuth: []
