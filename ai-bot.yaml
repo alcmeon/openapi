@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: AI Webhooks
+  title: AI Bot Webhooks
   version: '1.0'
 x-readme:
   explorer-enabled: false

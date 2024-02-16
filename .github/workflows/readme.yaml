@@ -58,7 +58,7 @@ jobs:
       - name: ai-bot.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./ai-bot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_AI_API_ID }}
+          rdme: openapi ./ai-bot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_AI_BOT_ID }}
       - name: ai-api.yaml
         uses: readmeio/rdme@7.2.0
         with:
