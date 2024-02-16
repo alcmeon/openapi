@@ -113,6 +113,10 @@ components:
           status: "failed"
           created_at: "2024-01-22 13:05:21"
           finished_at: "2024-01-22 13:05:41"
+
+security:
+  - basic_auth: []
+
 paths:
   /ai/answer:
     post:

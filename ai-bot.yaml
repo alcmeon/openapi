@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: AI Webhooks
+  version: '1.0'
+x-readme:
+  explorer-enabled: false
+
+components:
+  schemas:
+    HTTPError:
+      properties:
+        detail:
+          type: object
+        message:
+          type: string
+      type: object
+    ValidationError:
+      properties:
+        detail:
+          type: object
+          properties:
+            <location>:
+              type: object
+              properties:
+                <field_name>:
+                  type: array
+                  items:
+                    type: string
+        message:
+          type: string
+      type: object
+    ResponseOk:
+      type: string
+      enum: ['ok']
+  securitySchemes:
+    api_key:   
+      type: apiKey
+      in: header      
+      name: apiKey
+
+security:
+  - api_key : []
+
+paths:
+  /:
+    post:
+      tags:
+      - Invoke AI Bot
+      summary: Ask for an AI generated answer to sent to a social network user
+      description: >
+        Webhook to implement to send an AI generated answer to a social network user.
+        This webhook can be protected by checking the api key with the value you defined in the bot configuration in Alcméon.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - query
+              - webhook_token
+              properties:
+                query:
+                  type: string
+                  description: User query
+                context:
+                  description: The context of query.
+                  type: string
+                jwt:
+                  type: string
+                  description: Token to send with the answer
+              example:
+                query: "The question"
+                jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDU5Mjg3MzYsImV4cCI6MTcwNTkyODc5NiwiY29tcGFueV9pZCI6NCwidXNlcl9pZCI6NywidGFza19pZCI6MzE1fQ.hxv2p7cUG81bCZ5W4sY5ZeYVMVHZtf"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                - status
+                properties:
+                  id:
+                    type: string
+                  status:
+                    enum:
+                    - Acknowledged
+          description: Query is acknoledged
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Authentication error
+      security:
+      - BearerAuth: []
+
