@@ -42,7 +42,7 @@ components:
       name: apiKey
 
 paths:
-  /:
+  /ai-bot:
     post:
       tags:
       - Invoke AI Bot
