@@ -696,7 +696,7 @@ paths:
                 file_name:
                   type: string
                 file_content:
-                  description: The file bytes
+                  description: The file bytes (Generating code examples for this type is not functional)
                   type: string
                   format: binary
       responses:
