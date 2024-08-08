@@ -32,7 +32,7 @@ components:
           type: string
           format: uri
           description: Brand icon url associated with the `page_id`
-        chat_window_css:
+        override_default_chat_window_css:
           type: string
           description: Css for styling the chat window.
         privacy_link:
