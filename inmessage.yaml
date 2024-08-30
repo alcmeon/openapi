@@ -517,7 +517,7 @@ paths:
       summary: Custom identification
       description: >
         Exchange a jwt token that contains secret per-user authentication information
-        with a jwt that can be used for all other API endpoint invocations.
+        with a jwt that can be used for all other API endpoint invocations. The jwt is valid for 7 days.
 
 
         The input jwt token should be encrypted with the HS256 JWT algorithm and the secret
@@ -626,7 +626,7 @@ paths:
       tags: [Media]
       summary: Upload
       description: >
-        Upload media first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint.
+        Upload media first with this endpoint, then, send it via the [Send message](#post_page-id-conversation) endpoint.
         This method is deprecated, use file upload instead.
       requestBody:
         description: The media bytes
@@ -684,7 +684,7 @@ paths:
       tags: [File]
       summary: Upload file
       description: >
-        Upload file first with this endpoint, then, send it via the [Send message](#post-/-page_id-/conversation) endpoint.
+        Upload file first with this endpoint, then, send it via the [Send message](#post_page-id-conversation) endpoint.
       requestBody:
         description: Multipart form data with file name and file content
         required: true
