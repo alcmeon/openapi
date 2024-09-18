@@ -291,6 +291,8 @@ paths:
                           - `user_site_id`: Channel id
 
                           - `user_site_name`: Channel name
+
+                          - `custom_field_i`: User custom_field_i value, i being the unique id of the custom field.
                           
                       date:
                         type: string
