@@ -65,6 +65,24 @@ components:
               nullable: true
               description: >
                 The date of resolution of suggestion.
+            knowledge_documents:
+              type: array
+              nullable: true
+              description: >
+                The knowledge documents used to generate the suggestion.
+                It can be empty if no documents was used.
+              items:
+                type: object
+                required:
+                  - title
+                properties:
+                  title:
+                    type: string
+                    description: The tile of the knowledge document.
+                  url:
+                    type: string
+                    format: date-time
+                    description: The url of the knowledge document. It can be empty if the document doesn't have a public url (PDF, snippet...).
       example:
         suggest_answer:
           id: "1234"
@@ -105,7 +123,7 @@ components:
               format: date-time
               nullable: true
               description: >
-                The date of resolution of suggestion.
+                The date of resolution of suggestion.            
       example:
         suggest_answer:
           id: "1234"
