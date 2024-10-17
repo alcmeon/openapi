@@ -298,6 +298,7 @@ components:
         - $ref: '#/components/schemas/CarouselMessagePayload'
 
     CarouselMessagePayload:
+      description: 'A carousel message'
       type: object
       required:
         - type
@@ -547,7 +548,6 @@ components:
         - $ref: '#/components/schemas/SendImageMessagePayload'
         - $ref: '#/components/schemas/SendFileMessagePayload'
         - $ref: '#/components/schemas/TextInputResponseMessagePayload'
-        - $ref: '#/components/schemas/CarouselMessagePayload'
 
   securitySchemes:
 
