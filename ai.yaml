@@ -163,7 +163,7 @@ paths:
 
                           - `custom_field_i`: User custom_field_i value, i being the unique id of the custom field.
 
-                          - `gender`: Agent gender as an integer, possible values 0,1,2,3,9. 0: unknown, 1: male, 2: female, 3: prefer not to say, 9: neutral (based on https://en.wikipedia.org/wiki/ISO/IEC_5218)
+                          - `adviser_gender`: Agent gender as an integer, possible values 0,1,2,3,9. 0: unknown, 1: male, 2: female, 3: prefer not to say, 9: neutral (based on https://en.wikipedia.org/wiki/ISO/IEC_5218)
                           
                       date:
                         type: string
@@ -296,7 +296,7 @@ paths:
 
                           - `custom_field_i`: User custom_field_i value, i being the unique id of the custom field.
 
-                          - `gender`: Agent gender as an integer, possible values 0,1,2,3,9. 0: unknown, 1: male, 2: female, 3: prefer not to say, 9: neutral (based on https://en.wikipedia.org/wiki/ISO/IEC_5218)
+                          - `adviser_gender`: Agent gender as an integer, possible values 0,1,2,3,9. 0: unknown, 1: male, 2: female, 3: prefer not to say, 9: neutral (based on https://en.wikipedia.org/wiki/ISO/IEC_5218)
                           
                       date:
                         type: string
