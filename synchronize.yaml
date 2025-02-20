@@ -640,5 +640,4 @@ paths:
             Return a 200 status to indicate that the data was received successfully.
 
 
-            If you do not return a 200 status, we will attempt delivery retries at 1, 2, 4, 8, etc. 
-            (power of two until 2048) minute intervals.
+            If you do not return a 200 status, we will not attempt a new delivery.
