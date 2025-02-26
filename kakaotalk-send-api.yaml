@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: Kakaotalk Send API
+  version: '1.0'
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: false
+
+components:
+
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+  schemas:
+    ResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to 
+            support@alcmeon.com if you wish to obtain more details about the problem.
+    Template:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the template.
+          example: 1
+        name:
+          type: string
+          description: The name of the template.
+          example: "template_abc"
+        language:
+          type: string
+          description: The language of the template.
+          example: "en"
+          enum: ["en", "kr"]
+        body:
+          type: string
+          description: The body content of the template.
+          example: "This is the content of the template using {{variable}} in the body."
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the template.
+          example: "2025-02-17T09:09:58"
+        last_modified_at:
+          type: string
+          format: date-time
+          description: The last modification date of the template.
+          example: "2025-02-17T09:09:58"
+        status:
+          type: string
+          description: The status of the template.
+          example: "approved"
+          enum: ["approved", "rejected", "in_review"]
+security:
+  - basic_auth: []
+
+paths:
+  /kakaotalk/templates:
+    get:
+      summary: Get the list of Kakaotalk templates
+      description: Retrieve a paginated list of Kakaotalk templates for a specific account.
+      parameters:
+        - name: limit
+          in: query
+          description: The number of templates to return per page.
+          required: false
+          schema:
+            type: integer
+            default: 15
+            maximum: 50
+        - name: page
+          in: query
+          description: The page number to retrieve.
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: account_id
+          in: query
+          description: The ID of the account to retrieve templates for.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of Kakaotalk templates.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Template'
+                  next:
+                    type: string
+                    description: The URL for the next page of results, if available.
+        '400':
+          description: If the input parameter are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
