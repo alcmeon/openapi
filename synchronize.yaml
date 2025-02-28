@@ -641,3 +641,5 @@ paths:
 
 
             If you do not return a 200 status, we will not attempt a new delivery.
+
+            The API call will timeout after one second.
