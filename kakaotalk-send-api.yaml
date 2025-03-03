@@ -1,4 +1,4 @@
-openapi: 3.0.0
+ openapi: 3.0.0
 info:
   title: Kakaotalk Send API
   version: '1.0'
@@ -9,7 +9,6 @@ x-readme:
   explorer-enabled: false
 
 components:
-
   securitySchemes:
     basic_auth:
       description: >
@@ -29,7 +28,7 @@ components:
         details:
           type: string
           description: >
-            A short string which describes what is wrong. Provide this string to 
+            A short string which describes what is wrong. Provide this string to
             support@alcmeon.com if you wish to obtain more details about the problem.
     Template:
       type: object
@@ -66,12 +65,47 @@ components:
           description: The status of the template.
           example: "approved"
           enum: ["approved", "rejected", "in_review"]
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the message.
+          example: 1
+        to:
+          type: string
+          description: The recipient of the message.
+          example: "uid_abcdef"
+        account:
+          type: integer
+          description: The account ID associated with the message.
+          example: 123
+        sender:
+          type: integer
+          description: The ID of the sender.
+          example: 456
+        sent_at:
+          type: string
+          format: date-time
+          description: The timestamp when the message was sent.
+          example: "2025-02-17T09:09:58"
+        status:
+          type: string
+          description: The status of the message.
+          example: "delivered"
+          enum: ['sending', 'delivered', 'failed']
+        content:
+          type: string
+          description: The content of the message.
+          example: "This is the content of the message."
+
 security:
   - basic_auth: []
 
 paths:
   /kakaotalk/templates:
     get:
+      tags: [Templates]
       summary: Get the list of Kakaotalk templates
       description: Retrieve a paginated list of Kakaotalk templates for a specific account.
       parameters:
@@ -81,8 +115,8 @@ paths:
           required: false
           schema:
             type: integer
-            default: 15
-            maximum: 50
+            default: 20
+            maximum: 100
         - name: page
           in: query
           description: The page number to retrieve.
@@ -112,7 +146,56 @@ paths:
                     type: string
                     description: The URL for the next page of results, if available.
         '400':
-          description: If the input parameter are not valid
+          description: If the input parameters are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /kakaotalk/messages:
+    get:
+      tags: [Message history]
+      summary: Get the list of Kakaotalk sent messages
+      description: Retrieve a paginated list of Kakaotalk sent messages for a specific account.
+      parameters:
+        - name: limit
+          in: query
+          description: The number of messages to return per page.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: page
+          in: query
+          description: The page number to retrieve.
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: account_id
+          in: query
+          description: The ID of the account to retrieve messages for.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of Kakaotalk messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  next:
+                    type: string
+                    description: The URL for the next page of results, if available.
+        '400':
+          description: If the input parameters are not valid
           content:
             application/json:
               schema:
