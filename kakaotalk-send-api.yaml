@@ -1,4 +1,4 @@
- openapi: 3.0.0
+openapi: 3.0.0
 info:
   title: Kakaotalk Send API
   version: '1.0'
@@ -9,6 +9,7 @@ x-readme:
   explorer-enabled: false
 
 components:
+
   securitySchemes:
     basic_auth:
       description: >
@@ -28,7 +29,7 @@ components:
         details:
           type: string
           description: >
-            A short string which describes what is wrong. Provide this string to
+            A short string which describes what is wrong. Provide this string to 
             support@alcmeon.com if you wish to obtain more details about the problem.
     Template:
       type: object
