@@ -70,9 +70,9 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
           description: The ID of the message.
-          example: 1
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
         to:
           type: string
           description: The recipient of the message.
