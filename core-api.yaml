@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Core API
+  version: '1.0'
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: false
+
+components:
+  securitySchemes:
+    basic_auth:
+      description: >
+        This is the default authentication schema for api.alcmeon.com.
+        The username is your `company_id` (the id of your environment within Alcméon).
+        The password is available from the _Applications_ configuration page within Alcméon.
+      type: http
+      scheme: basic
+
+  schemas:
+    ResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to
+            support@alcmeon.com if you wish to obtain more details about the problem.
+    Site:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the site.
+          example: 1
+        name:
+          type: string
+          description: The name of the site.
+          example: "Site ABC"
+        type:
+          type: string
+          description: The type of the site.
+          example: "facebook"
+          enum:
+            - "twitter"
+            - "facebook"
+            - "instagram"
+            - "wechat"
+            - "gmb"
+            - "whatsapp"
+            - "bzc"
+            - "trustpilot"
+            - "inmessage"
+            - "line"
+            - "kakaotalk"
+            - "linkedin"
+            - "tiktok"
+        enabled:
+          type: boolean
+          description: Indicates if the site is enabled.
+          example: true
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the site.
+          example: "2025-02-17T09:09:58"
+        group_id:
+          type: integer
+          description: The ID of the site group.
+          example: 10
+
+security:
+  - basic_auth: []
+
+paths:
+  /v1/social-accounts/:
+    get:
+      tags: [Social Accounts]
+      summary: Get the list of social accounts
+      description: Retrieve a paginated list of social accounts.
+      parameters:
+        - name: limit
+          in: query
+          description: The number of social accounts to return per page.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: page
+          in: query
+          description: The page number to retrieve.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: A list of social accounts.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Site'
+                  next:
+                    type: string
+                    description: The URL for the next page of results, if available.
+        '400':
+          description: If the input parameters are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
