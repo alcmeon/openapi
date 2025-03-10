@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: core-api.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./core-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CORE_API_ID }}
       - name: application.yaml
         uses: readmeio/rdme@7.2.0
         with:
@@ -63,7 +67,3 @@ jobs:
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./kakaotalk-send-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_KAKAOTALK_SEND_ID }}
-      - name: core-api.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./core-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CORE_API_ID }}
