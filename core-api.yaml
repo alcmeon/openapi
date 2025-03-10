@@ -1,10 +1,12 @@
 openapi: 3.0.0
-info:
-  title: Core API
-  version: '0.1'
 servers:
   - url: https://api.alcmeon.com
     description: Alcmeon production API server
+
+info:
+  title: Core API
+  version: '0.1'
+
 x-readme:
   explorer-enabled: false
 
@@ -30,20 +32,20 @@ components:
           description: >
             A short string which describes what is wrong. Provide this string to
             support@alcmeon.com if you wish to obtain more details about the problem.
-    Site:
+    Account:
       type: object
       properties:
         id:
           type: integer
-          description: The ID of the site.
+          description: The ID of the account.
           example: 1
         name:
           type: string
-          description: The name of the site.
-          example: "Site ABC"
+          description: The name of the account.
+          example: "Facebook test page"
         type:
           type: string
-          description: The type of the site.
+          description: The type of the account.
           example: "facebook"
           enum:
             - "twitter"
@@ -61,16 +63,16 @@ components:
             - "tiktok"
         enabled:
           type: boolean
-          description: Indicates if the site is enabled.
+          description: Indicates if the account is enabled.
           example: true
         created_at:
           type: string
           format: date-time
-          description: The creation date of the site.
+          description: The creation date of the account.
           example: "2025-02-17T09:09:58"
         group_id:
           type: integer
-          description: The ID of the site group.
+          description: The ID of the account group.
           example: 10
 
 security:
@@ -109,7 +111,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Site'
+                      $ref: '#/components/schemas/Account'
                   next:
                     type: string
                     description: The URL for the next page of results, if available.
