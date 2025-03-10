@@ -8,7 +8,7 @@ info:
   version: '1.0'
 
 x-readme:
-  explorer-enabled: false
+  explorer-enabled: true
 
 components:
   securitySchemes:
