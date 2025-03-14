@@ -6,7 +6,7 @@ servers:
   - url: https://api.alcmeon.com
     description: Alcmeon production API server
 x-readme:
-  explorer-enabled: false
+  explorer-enabled: true
 
 components:
 
@@ -99,6 +99,47 @@ components:
           type: string
           description: The content of the message.
           example: "This is the content of the message."
+
+    SendKakaoTalkMessageRequest:
+      type: object
+      properties:
+        to_user_phone_number:
+          type: string
+          description: The phone number of the user to send the message to.
+          example: "+1234567890"
+        account_id:
+          type: integer
+          description: The ID of the account sending the message.
+          example: 1
+        template_id:
+          type: integer
+          description: The ID of the template to use for the message.
+          example: 1
+        variables:
+          type: object
+          description: Optional variables to replace placeholders in the template.
+          additionalProperties:
+            type: string
+          example:
+            user_name: "John Doe"
+            order_id: "12345"
+      required:
+        - to_user_phone_number
+        - account_id
+        - template_id
+
+    SendKakaoTalkMessageResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the message sending operation.
+          example: "ok"
+        message_id:
+          type: string
+          description: The unique ID of the sent message.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+
 
 security:
   - basic_auth: []
@@ -197,6 +238,31 @@ paths:
                     description: The URL for the next page of results, if available.
         '400':
           description: If the input parameters are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+  
+  /v1/kakaotalk/send/:
+    post:
+      tags: [Send a template]
+      summary: Send a KakaoTalk message using a template
+      description: Send a message using a predefined template to a specified user's phone number.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendKakaoTalkMessageRequest'
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendKakaoTalkMessageResponse'
+        '400':
+          description: If the input parameters are not valid or the template is not found
           content:
             application/json:
               schema:
