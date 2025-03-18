@@ -75,7 +75,7 @@ paths:
                     type: string
                     enum: ['ok']
         '400':
-          description: Returned if the request body format is invalid or if an error occured during the scenario.
+          description: Returned if the request body format is invalid.
           content:
             application/json:
               schema:
