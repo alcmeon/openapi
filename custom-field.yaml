@@ -217,49 +217,13 @@ paths:
         required: true
         schema:
           type: string
-    put:
-      tags:
-        - User
-      summary: >
-        Set fields for a social media user
-      description: >
-        Set user custom fields for a given social media user.
-        
-        > NB: the social media user is created if not found for this social media account.
-        
-        
-        Limitation: This feature is not available yet for Apple Messages. If you are considering using it, please contact our support team at support@alcmeon.com
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FieldValues'
-      responses:
-        '200':
-          description: Returned upon succes
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseOk'
-        '400':
-          description: Returned if the request body format is invalid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-        '403':
-          description: Returned if a field is not editable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
+    
     get:
       tags:
         - User
       summary: Get fields for a social media user
       description: >
         Return user custom fields for a social media user.
-        
         
         Limitation: This feature is not available yet for Apple Messages. If you are considering using it, please contact our support team at support@alcmeon.com
       responses:
@@ -271,6 +235,58 @@ paths:
                 $ref: '#/components/schemas/FieldValues'
         '404':
           description: Returned if the social media user is not found for this social media account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /custom-field/accounts/{social_media_account_id}/users:
+    parameters:
+      - in: path
+        name: social_media_account_id
+        description: An ID that uniquely identifies a social media account.
+        required: true
+        schema:
+          type: integer
+    post:
+      tags:
+        - User
+      summary: Set fields for a social media user
+      description: >
+        Set user custom fields for a given social media user.
+
+        > NB: The social media user is created if not found for this social media account.
+
+        Limitation: This feature is not available yet for Apple Messages. If you are considering using it, please contact our support team at support@alcmeon.com
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                fields:
+                  $ref: '#/components/schemas/FieldValues'
+              required:
+                - user_id
+                - fields
+      responses:
+        '200':
+          description: Successfully set custom fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseOk'
+        '400':
+          description: Invalid request body format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+        '403':
+          description: Fields not editable
           content:
             application/json:
               schema:
