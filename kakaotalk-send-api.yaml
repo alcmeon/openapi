@@ -146,32 +146,64 @@ security:
 
 paths:
   /v1/kakaotalk/templates:
-    get:
-      tags: [Templates]
+    post:
       summary: Get the list of Kakaotalk templates
-      description: Retrieve a paginated list of Kakaotalk templates for a specific account.
-      parameters:
-        - name: limit
-          in: query
-          description: The number of templates to return per page.
-          required: false
-          schema:
-            type: integer
-            default: 20
-            maximum: 100
-        - name: page
-          in: query
-          description: The page number to retrieve.
-          required: false
-          schema:
-            type: integer
-            default: 0
-        - name: account_id
-          in: query
-          description: The ID of the account to retrieve templates for.
-          required: true
-          schema:
-            type: integer
+      description: Retrieve a paginated list of Kakaotalk templates for a specific account using filters.
+      tags: [Templates]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_id:
+                  type: integer
+                  description: The ID of the account to retrieve templates for.
+                limit:
+                  type: integer
+                  default: 20
+                  maximum: 100
+                  description: The number of items to return (optional, default is 20).
+                page:
+                  type: integer
+                  default: 0
+                  description: The page number to return (optional, default is 0).
+                status:
+                  type: string
+                  enum:
+                    - "submitted"
+                    - "in_review"
+                    - "rejected"
+                    - "accepted"
+                  description: The status filter (optional).
+                id:
+                  type: integer
+                  description: The ID filter (optional).
+                created_at_range:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                      format: date-time
+                      description: The start date for the creation range filter (optional). Format 2025-04-24 10:30:15
+                    end:
+                      type: string
+                      format: date-time
+                      description: The end date for the creation range filter (optional). Format 2025-04-24 10:30:15
+                last_modified_at_range:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                      format: date-time
+                      description: The start date for the last modified range filter (optional). Format 2025-04-24 10:30:15
+                    end:
+                      type: string
+                      format: date-time
+                      description: The end date for the last modified range filter (optional). Format 2025-04-24 10:30:15
+              required:
+                - account_id
       responses:
         '200':
           description: A list of Kakaotalk templates.
@@ -184,9 +216,9 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Template'
-                  next:
-                    type: string
-                    description: The URL for the next page of results, if available.
+                  next_page:
+                    type: integer
+                    description: The next page number if more data is available.
         '400':
           description: If the input parameters are not valid
           content:
