@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: auth.yaml
+      - name: oauth.yaml
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./auth.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CORE_API_ID }}
+          rdme: openapi ./oauth.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAUTH_ID }}
       - name: core-api.yaml
         uses: readmeio/rdme@7.2.0
         with:
