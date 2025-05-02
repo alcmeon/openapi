@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: OAuth 2.0 Client Credentials Grant
+  version: '1.0'
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: false
+
+components:
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: >
+        Basic authentication using your environment Instance ID as username and Application Secret as password.
+
+  schemas:
+    UnsuccessfulResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to
+            support@alcmeon.com if you wish to obtain more details about the problem.
+    TokenResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+        - expires_in
+        - expires_at
+      properties:
+        access_token:
+          type: string
+          description: The Bearer token to use for subsequent API calls.
+        token_type:
+          type: string
+          enum: ['Bearer']
+          description: The type of token, always 'Bearer'.
+        expires_in:
+          type: integer
+          description: Token validity duration in seconds.
+          example: 3600
+        expires_at:
+          type: string
+          format: datetime
+          description: Token expiration UTC date and time, in ISO-8601 format.
+          example: "2025-04-29T15:26:22.671957+00:00"
+    TokenRequest:
+      type: object
+      required:
+        - grant_type
+        - client_id
+        - client_secret
+      properties:
+        grant_type:
+          type: string
+          enum: ['client_credentials']
+          description: OAuth2 grant type.
+        client_id:
+          type: string
+          description: Your Instance ID.
+        client_secret:
+          type: string
+          description: Your Application Secret.
+
+security:
+  - basic_auth: []
+
+paths:
+  /v1/oauth2/token:
+    post:
+      tags: [Authentication]
+      summary: Get an OAuth2 access token.
+      description: >
+        Obtain a Bearer token using the OAuth2 client credentials flow.
+        The token is valid for one hour and can be used for subsequent API calls.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+            example:
+              grant_type: "client_credentials"
+              client_id: "<your-instance-id>"
+              client_secret: "<your-application-secret>"
+      responses:
+        '200':
+          description: Token successfully obtained.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsuccessfulResponse'
+        '401':
+          description: Invalid credentials (invalid client ID or secret).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsuccessfulResponse'
