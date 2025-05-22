@@ -459,12 +459,12 @@ paths:
   /ai/summary:
     post:
         summary: Send AI generated summary
-    description: >
-          Endpoint to invoke to send an AI generated conversation summary to a support agent. 
-          
-          Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
-          this endpoint can be invoked (with the token previously received) to send the generated summary to this specific agent.
-  
+        description: >
+              Endpoint to invoke to send an AI generated conversation summary to a support agent. 
+              
+              Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
+              this endpoint can be invoked (with the token previously received) to send the generated summary to this specific agent.
+      
         parameters:
           - in: header
             name: X-JWT
@@ -473,34 +473,69 @@ paths:
               description: The token received (e.g. the `webhook_token` field in the payload of the request sent to your AI API). This token is valid for 60 seconds and you cannot reuse a token received for user A to send an AI generated summary to another user B.
             required: true
         requestBody:
-        content:
-          application/json:
-            schema:
-              anyOf:
-                - $ref: '#/components/schemas/SummaryFinished'
-                - $ref: '#/components/schemas/SummaryFailed'
-        
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/SummaryFinished'
+                  - $ref: '#/components/schemas/SummaryFailed'
+        responses:
+            '200':
+              description: Success
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: ['ok']
+            '400':
+              description: If the token used to call the endpoint is not valid (or expired) or if the received json
+                            does not match with the expected format.
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ResponseError'
 
   /ai/translation:
     post:
       summary: Send AI generated translation
-    description: >
-          Endpoint to invoke to send an AI generated translation to a support agent. 
-          
-          Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
-          this endpoint can be invoked (with the token previously received) to send the generated translation to this specific agent.
-  
-        parameters:
-          - in: header
-            name: X-JWT
-            schema:
-              type: string
-              description: The token received (e.g. the `webhook_token` field in the payload of the request sent to your AI API). This token is valid for 60 seconds and you cannot reuse a token received for user A to send an AI generated translation to another user B.
-            required: true
-        requestBody:
+      description: >
+            Endpoint to invoke to send an AI generated translation to a support agent. 
+            
+            Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
+            this endpoint can be invoked (with the token previously received) to send the generated translation to this specific agent.
+    
+      parameters:
+        - in: header
+          name: X-JWT
+          schema:
+            type: string
+            description: The token received (e.g. the `webhook_token` field in the payload of the request sent to your AI API). This token is valid for 60 seconds and you cannot reuse a token received for user A to send an AI generated translation to another user B.
+          required: true
+      requestBody:
         content:
           application/json:
             schema:
               anyOf:
                 - $ref: '#/components/schemas/TranslationFinished'
                 - $ref: '#/components/schemas/TranslationFailed'
+      responses:
+          '200':
+            description: Success
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      enum: ['ok']
+          '400':
+            description: If the token used to call the endpoint is not valid (or expired) or if the received json
+                          does not match with the expected format.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ResponseError'
