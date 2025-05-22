@@ -439,7 +439,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
           description: Authentication error
-
+      security:
+      - BearerAuth: []
+      
   /translate:
     post:
       tags:
@@ -489,3 +491,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
           description: Authentication error
+
+      security:
+      - BearerAuth: []
