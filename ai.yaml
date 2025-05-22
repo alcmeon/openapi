@@ -345,103 +345,104 @@ paths:
                 answer: "This is my answer"
       security:
       - BearerAuth: []
-    /summarize:
+
+  /summarize:
       post:
         summary: Summarize text
         description: Creates a summary of the provided conversation with target length constraints
         tags:
           - Summarization
-        content:
-            application/json:
-              schema:
-                required:
-                  version
-                  context
-                  target_size
-                  propose_hashtags
-                  webhook_token
-              properties:
-                  version:
-                    type: string
-                    enum:
-                      - '1.0'
-                    description: Version of the API
-                  context:
-                    description: The context of the conversation. For performance raison, only the last 100 items are returned.
-                    type: array
-                    items:
-                      type: object
-                      required:
-                        - role
-                        - content
-                      properties:
-                        role:
-                          type: string
-                          enum:
-                            - bot
-                            - adviser
-                            - user
-                            - system
-                          description: Type of context item 
-                        content:
-                          type: string
-                          description: >
-                            The content of the item.
-                            For `system` item, it's in the form `key=value`, with one of the following keys:
-  
-                            - `adviser_lang`: Language used by the agent
-  
-                            - `adviser_user_id`: Agent id
-  
-                            - `adviser_user_name`: Agent name
-  
-                            - `user_id`: User id
-  
-                            - `user_external_id`: External user id (depending on the channel)
-  
-                            - `user_name`: User name
-  
-                            - `user_site_id`: Channel id
-  
-                            - `user_site_name`: Channel name
-  
-                            - `custom_field_i`: User custom_field_i value, i being the unique id of the custom field.
-  
-                            - `adviser_gender`: Agent gender as an integer, possible values 0,1,2,3,9. 0: unknown, 1: male, 2: female, 3: prefer not to say, 9: neutral (based on https://en.wikipedia.org/wiki/ISO/IEC_5218)
-                            
-                        date:
-                          type: string
-                          format: date-time
-                          description: Date of the item creation.
-                  target_size:
-                    type: integer
-                  propose_hashtags:
-                    type: boolean
-                  webhook_token:
-                    type: string
-                  
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseOk'
-          description: Successful response
-        '422':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: Validation error
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Authentication error
-      security:
-      - BearerAuth: []
+        responses:
+            '200':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ResponseOk'
+              description: Successful response
+            '422':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ValidationError'
+              description: Validation error
+            '401':
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/HTTPError'
+              description: Authentication error
+        security:
+          - BearerAuth: []
+        requestBody:
+            content:
+                application/json:
+                  schema:
+                    required:
+                      version
+                      context
+                      target_size
+                      propose_hashtags
+                      webhook_token
+                  properties:
+                      version:
+                        type: string
+                        enum:
+                          - '1.0'
+                        description: Version of the API
+                      context:
+                        description: The context of the conversation. For performance raison, only the last 100 items are returned.
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - role
+                            - content
+                          properties:
+                            role:
+                              type: string
+                              enum:
+                                - bot
+                                - adviser
+                                - user
+                                - system
+                              description: Type of context item 
+                            content:
+                              type: string
+                              description: >
+                                The content of the item.
+                                For `system` item, it's in the form `key=value`, with one of the following keys:
       
+                                - `adviser_lang`: Language used by the agent
+      
+                                - `adviser_user_id`: Agent id
+      
+                                - `adviser_user_name`: Agent name
+      
+                                - `user_id`: User id
+      
+                                - `user_external_id`: External user id (depending on the channel)
+      
+                                - `user_name`: User name
+      
+                                - `user_site_id`: Channel id
+      
+                                - `user_site_name`: Channel name
+      
+                                - `custom_field_i`: User custom_field_i value, i being the unique id of the custom field.
+      
+                                - `adviser_gender`: Agent gender as an integer, possible values 0,1,2,3,9. 0: unknown, 1: male, 2: female, 3: prefer not to say, 9: neutral (based on https://en.wikipedia.org/wiki/ISO/IEC_5218)
+                                
+                            date:
+                              type: string
+                              format: date-time
+                              description: Date of the item creation.
+                      target_size:
+                        type: integer
+                      propose_hashtags:
+                        type: boolean
+                      webhook_token:
+                        type: string
+                            
   /translate:
     post:
       tags:
