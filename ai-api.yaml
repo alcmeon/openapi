@@ -90,6 +90,7 @@ components:
           status: "finished"
           created_at: "2024-01-22 13:05:21"
           finished_at: "2024-01-22 13:05:41"
+
     SuggestionFailed:
       required: [suggest_answer]
       properties:
@@ -131,7 +132,203 @@ components:
           status: "failed"
           created_at: "2024-01-22 13:05:21"
           finished_at: "2024-01-22 13:05:41"
-
+    
+    SummaryFinished:
+      required: [summarize]
+      properties:
+        suggest_answer:
+          type: object
+          required: [id, summary, status]
+          properties:
+            id:
+              type: string
+              description: >
+                A unique identifier of the generated summary.
+            summary:
+              type: string
+              nullable: true
+              description: >
+                The generated summary content to send to the support agent.
+            status:
+              type: string
+              enum: [finished]
+              description: >
+                Status of the summary
+                - Should be finished if summary was found
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of creation of summary.
+            finished_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of resolution of summary.
+            error:
+              type: string
+              nullable: true
+              description: >
+                The error to send to the support agent.
+            user_summary:
+              type: string
+            agent_summary:
+              type: string
+            hashtags:
+              type: string
+            topic:
+              type: string
+            sentiment:
+              type: string
+            original_language:
+              type: string
+            original_language_name:
+              type: string
+            
+        summarize:
+          id: "1234"
+          summary: "The user requested clarifications about opening hours of the shops and now has asked a question about his loyalty card"
+          status: "finished"
+          created_at: "2024-01-22 13:05:21"
+          finished_at: "2024-01-22 13:05:41"
+          
+    SummaryFailed:
+      required: [summarize]
+      properties:
+        summarize:
+          type: object
+          required: [id, error, status]
+          properties:
+            id:
+              type: string
+              description: >
+                A unique identifier of the generated summary.
+            error:
+              type: string
+              nullable: true
+              description: >
+                The error to send to the support agent.
+            status:
+              type: string
+              enum: [failed]
+              description: >
+                Status of the summary
+                - Should be failed if summary could not be generated
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of creation of summary.
+            finished_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of resolution of summary.            
+      example:
+        suggest_answer:
+          id: "1234"
+          error: "Can't generate summary"
+          status: "failed"
+          created_at: "2024-01-22 13:05:21"
+          finished_at: "2024-01-22 13:05:41"
+          
+    TranslationFinished:
+      required: [translate]
+      properties:
+        suggest_answer:
+          type: object
+          required: [id, translation, status]
+          properties:
+            id:
+              type: string
+              description: >
+                A unique identifier of the generated summary.
+            translation:
+              type: string
+              nullable: true
+              description: >
+                The generated translation content to send to the support agent.
+            status:
+              type: string
+              enum: [finished]
+              description: >
+                Status of the translation
+                - Should be finished if translation was found
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of creation of translation.
+            finished_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of resolution of translation.
+            error:
+              type: string
+              nullable: true
+              description: >
+                The error to send to the support agent.
+            original_language:
+              type: string
+            original_language_name:
+              type: string
+            
+        translate:
+          id: "1234"
+          translation: "Je suis là pour vous aider avec votre question complexe. N'hésitez pas à la poser en détail afin que je puisse vous fournir la meilleure réponse possible."
+          status: "finished"
+          created_at: "2024-01-22 13:05:21"
+          finished_at: "2024-01-22 13:05:41"
+          
+    TranslationFailed:
+      required: [translate]
+      properties:
+        summarize:
+          type: object
+          required: [id, error, status]
+          properties:
+            id:
+              type: string
+              description: >
+                A unique identifier of the generated translation.
+            error:
+              type: string
+              nullable: true
+              description: >
+                The error to send to the support agent.
+            status:
+              type: string
+              enum: [failed]
+              description: >
+                Status of the translation
+                - Should be failed if translation could not be generated
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of creation of translation.
+            finished_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: >
+                The date of resolution of translation.            
+      example:
+        suggest_answer:
+          id: "1234"
+          error: "Can't generate translation"
+          status: "failed"
+          created_at: "2024-01-22 13:05:21"
+          finished_at: "2024-01-22 13:05:41"
+          
 security:
   - basic_auth: []
 
@@ -258,3 +455,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+
+  /ai/summary:
+    post:
+        summary: Send AI generated summary
+    description: >
+          Endpoint to invoke to send an AI generated conversation summary to a support agent. 
+          
+          Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
+          this endpoint can be invoked (with the token previously received) to send the generated summary to this specific agent.
+  
+        parameters:
+          - in: header
+            name: X-JWT
+            schema:
+              type: string
+              description: The token received (e.g. the `webhook_token` field in the payload of the request sent to your AI API). This token is valid for 60 seconds and you cannot reuse a token received for user A to send an AI generated summary to another user B.
+            required: true
+        requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/SummaryFinished'
+                - $ref: '#/components/schemas/SummaryFailed'
+        
+
+  /ai/translation:
+    post:
+      summary: Send AI generated translation
+    description: >
+          Endpoint to invoke to send an AI generated translation to a support agent. 
+          
+          Once your AI API has been asynchronously called by Alcméon with a webhook_token specific for a given conversation and support agent, 
+          this endpoint can be invoked (with the token previously received) to send the generated translation to this specific agent.
+  
+        parameters:
+          - in: header
+            name: X-JWT
+            schema:
+              type: string
+              description: The token received (e.g. the `webhook_token` field in the payload of the request sent to your AI API). This token is valid for 60 seconds and you cannot reuse a token received for user A to send an AI generated translation to another user B.
+            required: true
+        requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/TranslationFinished'
+                - $ref: '#/components/schemas/TranslationFailed'
