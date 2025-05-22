@@ -186,7 +186,7 @@ components:
               type: string
             original_language_name:
               type: string
-            
+      example:
         summarize:
           id: "1234"
           summary: "The user requested clarifications about opening hours of the shops and now has asked a question about his loyalty card"
@@ -229,7 +229,7 @@ components:
               description: >
                 The date of resolution of summary.            
       example:
-        suggest_answer:
+        summarize:
           id: "1234"
           error: "Can't generate summary"
           status: "failed"
@@ -279,7 +279,7 @@ components:
               type: string
             original_language_name:
               type: string
-            
+      example:
         translate:
           id: "1234"
           translation: "Je suis là pour vous aider avec votre question complexe. N'hésitez pas à la poser en détail afin que je puisse vous fournir la meilleure réponse possible."
@@ -322,7 +322,7 @@ components:
               description: >
                 The date of resolution of translation.            
       example:
-        suggest_answer:
+        translate:
           id: "1234"
           error: "Can't generate translation"
           status: "failed"
