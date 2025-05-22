@@ -327,7 +327,11 @@ paths:
       tags:
         - Summarization
       summary: Summarize text
-      description: Creates a summary of the provided conversation with target length constraints
+      description: >
+        Creates a summary of the provided conversation with target length constraints.
+        Once your AI API has been associated with a webhook, this endpoint can be invoked
+        to generate summaries of conversations.
+      parameters: []
       requestBody:
         required: true
         content:
@@ -418,7 +422,11 @@ paths:
       tags:
         - Translation
       summary: Ask for a translation of a text to a language for a support agent.
-      description: Translates the provided text from source language to target language
+      description: >
+        Translates the provided text from source language to target language
+        Once your AI API has been associated with a webhook, this endpoint can be invoked
+        to generate translations.
+      parameters: []
       requestBody:
         required: true
         content:
