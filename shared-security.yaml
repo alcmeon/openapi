@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: Shared Security Components
+  version: '1.0'
+  description: >
+    This file contains shared security scheme definitions that can be referenced 
+    by other OpenAPI specification files in the Alcmeon API documentation.
+
+components:
+  securitySchemes:
+    basic_auth:
+      description: >
+        Basic authentication using your environment Instance ID as username and Application Secret as password.
+      type: http
+      scheme: basic
+    bearer_token:
+      description: >
+        OAuth 2.0 Bearer token authentication. 
+        Obtain a token by calling the /v1/oauth2/token endpoint with your credentials.
+        The token is valid for one hour.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

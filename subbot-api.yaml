@@ -12,8 +12,7 @@ components:
 
   securitySchemes:
     basic_auth:
-      type: http
-      scheme: basic
+      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
 
   schemas:
 
