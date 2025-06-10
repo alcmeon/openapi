@@ -615,6 +615,7 @@ paths:
       tags: [Notify]
       servers:
         - url: https://your.server/
+      security: []
       summary: Notify a webhook
       description: >
         This webhook can be configured via the Alcméon administration UI when a new API application
