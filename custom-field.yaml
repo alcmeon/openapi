@@ -11,16 +11,14 @@ x-readme:
 
 security:
   - basic_auth: []
+  - bearer_token: []
 
 components:
   securitySchemes:
     basic_auth:
-      description: >
-        This is the default authentication schema for api.alcmeon.com.
-        The username is your `company_id` (the id of your environment within Alcméon).
-        The password is available from the _Applications_ configuration page within Alcméon.
-      type: http
-      scheme: basic
+      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
+    bearer_token:
+      $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
 
   schemas:
     PrimitiveFieldValues:

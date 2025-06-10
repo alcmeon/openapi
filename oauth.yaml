@@ -11,10 +11,7 @@ x-readme:
 components:
   securitySchemes:
     basic_auth:
-      type: http
-      scheme: basic
-      description: >
-        Basic authentication using your environment Instance ID as username and Application Secret as password.
+      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
 
   schemas:
     UnsuccessfulResponse:
@@ -72,15 +69,18 @@ components:
 
 security:
   - basic_auth: []
+  - {}
 
 paths:
   /v1/oauth2/token:
     post:
       tags: [Authentication]
-      summary: Get an OAuth2 access token.
+      summary: Get an OAuth2 access token
       description: >
         Obtain a Bearer token using the OAuth2 client credentials flow.
         The token is valid for one hour and can be used for subsequent API calls.
+        
+        Note that this endpoint supports both authenticated (Basic Auth) and unauthenticated calls.
       requestBody:
         content:
           application/json:
