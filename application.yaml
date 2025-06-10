@@ -95,6 +95,9 @@ paths:
   /application/errors:
     get:
       tags: [ Errors ]
+      security:
+        - basic_auth: []
+        - bearer_token: []
       summary: List recent errors
       description: Return the list of most recent errors
       responses:
@@ -111,6 +114,9 @@ paths:
   /application/webhook:
     get:
       tags: [ Webhook status ]
+      security:
+        - basic_auth: []
+        - bearer_token: []
       summary: Get webhook status
       description: >
         Return the current status of the webhook.
@@ -127,6 +133,9 @@ paths:
 
     post:
       tags: [ Webhook status ]
+      security:
+        - basic_auth: []
+        - bearer_token: []
       summary: Set webhook status
       description: >
         To set webhook status in order to enable/disable external notifications
