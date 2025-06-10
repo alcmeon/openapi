@@ -68,16 +68,13 @@ components:
           description: Your Application Secret.
 
 security:
-  - basic_auth: []
   - {}
+  - basic_auth: []
 
 paths:
   /v1/oauth2/token:
     post:
       tags: [Authentication]
-      security:
-        - basic_auth: []
-        - {}
       summary: Get an OAuth2 access token
       description: >
         Obtain a Bearer token using the OAuth2 client credentials flow.
