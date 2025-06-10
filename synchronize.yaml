@@ -555,6 +555,7 @@ components:
 
 security:
   - basic_auth: []
+  - bearer_token: []
 
 paths:
   /actions/conversations/{conversation_id}:
@@ -614,10 +615,11 @@ paths:
       tags: [Notify]
       servers:
         - url: https://your.server/
+      security: []
       summary: Notify a webhook
       description: >
         This webhook can be configured via the Alcméon administration UI when a new API application
-        is created.
+        is created (this endpoint should be implemented by your server).
 
       requestBody:
         content:
