@@ -55,22 +55,36 @@ paths:
         content:
           application/json:
             schema:
-              required:
-                - query
-                - webhook_token
               properties:
-                query:
-                  type: string
-                  description: User query
-                context:
-                  description: The context of query.
-                  type: string
-                jwt:
-                  type: string
-                  description: Token to send with the answer
-              example:
-                query: "The question"
-                jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDU5Mjg3MzYsImV4cCI6MTcwNTkyODc5NiwiY29tcGFueV9pZCI6NCwidXNlcl9pZCI6NywidGFza19pZCI6MzE1fQ.hxv2p7cUG81bCZ5W4sY5ZeYVMVHZtf"
+                  type: object
+                  properties:
+                    version:
+                      type: integer
+                      description: version of the webhook
+                    query:
+                      type: string
+                      description: client question as text
+                    context:
+                      type: string
+                      description: optional additional context
+                    jwt:
+                      type: string
+                      description: token to send with the answer
+                    configuration:
+                      type: string
+                      description: name of your AI agent
+                    session:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: session identifier
+                    user:
+                      type: object
+                      properties:
+                        external_id:
+                          type: string
+                          description: user identifier in social network
       responses:
         '200':
           content:
