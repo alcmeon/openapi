@@ -55,7 +55,6 @@ paths:
         content:
           application/json:
             schema:
-              properties:
                   type: object
                   properties:
                     version:
