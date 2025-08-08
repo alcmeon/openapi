@@ -236,19 +236,34 @@ components:
     TranslationFinished:
       required: [translate]
       properties:
-        suggest_answer:
+        translation:
           type: object
           required: [id, translation, status]
           properties:
             id:
               type: string
               description: >
-                A unique identifier of the generated summary.
+                A unique identifier of the generated translation.
             translation:
               type: string
               nullable: true
               description: >
-                The generated translation content to send to the support agent.
+                DEPRECATED, DO NOT USE - The generated translation content to send to the support agent.
+            translation_type:
+              type: string
+              nullable: true
+              description: >
+                TEXT or CONVERSATION
+            translated_conversation:
+              type: string
+              nullable: true
+              description: >
+                The generated translated conversation content to send to the support agent.
+            translated_text:
+              type: string
+              nullable: true
+              description: >
+                The generated translated text content to send to the support agent.
             status:
               type: string
               enum: [finished]
@@ -279,7 +294,9 @@ components:
       example:
         translate:
           id: "1234"
-          translation: "Je suis là pour vous aider avec votre question complexe. N'hésitez pas à la poser en détail afin que je puisse vous fournir la meilleure réponse possible."
+          translated_text: "Je suis là pour vous aider avec votre question complexe. N'hésitez pas à la poser en détail afin que je puisse vous fournir la meilleure réponse possible."
+          translation_type: "TEXT"
+          translated_conversation: ""
           status: "finished"
           created_at: "2024-01-22 13:05:21"
           finished_at: "2024-01-22 13:05:41"
