@@ -448,7 +448,6 @@ paths:
               type: object
               required:
                 - version
-                - text
                 - language
                 - webhook_token
               properties:
@@ -465,6 +464,9 @@ paths:
                   description: The target language code (e.g., 'en', 'es', 'fr')
                 webhook_token:
                   type: string
+                conversation:
+                  type: array
+                  description: Conversation to be translated
       responses:
         '200':
           content:
