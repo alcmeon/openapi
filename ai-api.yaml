@@ -385,7 +385,7 @@ paths:
                         The generated response content to send to the social network user.
                     code:
                       type: string
-                      enum: [suggestContactEscalation, mustContactEscalation, EndConversation]
+                      enum: [suggestContactEscalation, mustContactEscalation, EndConversation, continueConversation, breakConversation]
                       nullable: true
                       description: >
                         An optional short string that can be filled to indicate that:
@@ -395,6 +395,10 @@ paths:
                         - the generated answer should not be sent and the conversation afterwards should be transferred to a support agent: `mustContactEscalation`
                         
                         - the scope of the conversation can neither be handled by the AI nor by a support agent: `EndConversation`
+                        
+                        - the AI needs further information and ask a question to the clients to continue the conversation: `continueConversation`
+                        
+                        - the AI identified the content of the conversation and decided to set a variable to trigger a sub scenario: `breakConversation`
                 error:
                   type: object
                   nullable: true
