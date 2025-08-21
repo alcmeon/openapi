@@ -398,7 +398,7 @@ paths:
                         
                         - the AI needs further information and ask a question to the clients to continue the conversation: `continueConversation`
                         
-                        - the AI identified the content of the conversation and decided to set a variable to trigger a sub scenario: `breakConversation`
+                        - the AI identified the content of the conversation and decided to set a variable to use it later in the scenario: `breakConversation`
                 error:
                   type: object
                   nullable: true
