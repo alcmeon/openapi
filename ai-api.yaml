@@ -388,6 +388,8 @@ paths:
                       enum: [suggestContactEscalation, mustContactEscalation, EndConversation, continueConversation, breakConversation]
                       nullable: true
                       description: >
+                        If no code is provided, the exit taken is the success one (AI Answer - no need for advisor)
+
                         An optional short string that can be filled to indicate that:
                         
                         - the generated answer can be sent but it's suggested to transfer the conversation afterwards to a support agent: `suggestContactEscalation` 
@@ -400,7 +402,6 @@ paths:
                         
                         - the AI identified the content of the conversation and decided to set a variable to use it later in the scenario: `breakConversation`
 
-                        If no code is provided, the exit taken is the success one (AI Answer - no need for advisor)
                     variables:
                       type: object
                       description: >
