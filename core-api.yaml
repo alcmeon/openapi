@@ -71,7 +71,51 @@ components:
           type: integer
           description: The ID of the account group.
           example: 10
+    GlobalVariable:
+      type: object
+      description: A global scenario variable with its name and value
+      properties:
+        name:
+          type: string
+          description: The name/key of the global variable
+          example: "max_retries"
+        value:
+          description: The value of the global variable (can be any JSON-serializable type)
+          oneOf:
+            - type: string
+            - type: integer
+            - type: number
+            - type: boolean
+            - type: object
+            - type: array
+          example: 3
+      required:
+        - name
+        - value
 
+    SetGlobalVariableRequest:
+      type: object
+      description: Request body for setting a global variable
+      properties:
+        name:
+          type: string
+          description: The name/key of the global variable to set
+          minLength: 1
+          maxLength: 100
+          example: "api_timeout"
+        value:
+          description: The value to set for the global variable (can be any JSON-serializable type)
+          oneOf:
+            - type: string
+            - type: integer
+            - type: number
+            - type: boolean
+            - type: object
+            - type: array
+          example: 30.5
+      required:
+        - name
+        - value
 security:
   - basic_auth: []
   - bearer_token: []
@@ -119,3 +163,175 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+
+
+  /v1/global-variables:
+    get:
+      tags: [Global variables]
+      summary: Get global scenario variables
+      description: Retrieve a paginated list of global scenario variables
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of variables to return per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: page
+          in: query
+          description: Page number (0-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Successfully retrieved global variables
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GlobalVariable'
+                  next:
+                    type: string
+                    format: uri
+                    description: URL for the next page of results (only present if there are more results)
+                    example: "https://api.alcmeon.com/v1/global-variables?limit=20&page=1"
+                required:
+                  - data
+              examples:
+                success_with_pagination:
+                  summary: Success response with pagination
+                  value:
+                    data:
+                      - name: "max_retries"
+                        value: 3
+                      - name: "api_timeout"
+                        value: 30.5
+                      - name: "feature_enabled"
+                        value: true
+                      - name: "config"
+                        value:
+                          environment: "production"
+                          debug: false
+                    next: "https://api.alcmeon.com/v1/global-variables?limit=20&page=1"
+                success_without_pagination:
+                  summary: Success response without pagination
+                  value:
+                    data:
+                      - name: "welcome_message"
+                        value: "Hello, welcome to our service!"
+                      - name: "maintenance_mode"
+                        value: false
+        '400':
+          description: Bad request - Invalid pagination parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                invalid_pagination:
+                  summary: Invalid pagination parameters
+                  value:
+                    error: "Invalid pagination parameters"
+                    details: "Page must be a non-negative integer"
+
+    post:
+      tags: [Global variables]
+      summary: Set a global scenario variable
+      description: Create a new global variable or update an existing one with the given name and value
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetGlobalVariableRequest'
+            examples:
+              string_value:
+                summary: Set a string variable
+                value:
+                  name: "welcome_message"
+                  value: "Hello, welcome to our service!"
+              integer_value:
+                summary: Set an integer variable
+                value:
+                  name: "max_retries"
+                  value: 3
+              float_value:
+                summary: Set a float variable
+                value:
+                  name: "api_timeout"
+                  value: 30.5
+              boolean_value:
+                summary: Set a boolean variable
+                value:
+                  name: "feature_enabled"
+                  value: true
+              object_value:
+                summary: Set an object variable
+                value:
+                  name: "config"
+                  value:
+                    environment: "production"
+                    debug: false
+                    settings:
+                      - "option1"
+                      - "option2"
+              array_value:
+                summary: Set an array variable
+                value:
+                  name: "allowed_domains"
+                  value: ["example.com", "test.com", "demo.com"]
+              null_value:
+                summary: Set a null variable
+                value:
+                  name: "optional_setting"
+                  value: null
+      responses:
+        '200':
+          description: Successfully set the global variable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalVariable'
+              examples:
+                created_variable:
+                  summary: Successfully created new variable
+                  value:
+                    name: "new_feature_flag"
+                    value: true
+                updated_variable:
+                  summary: Successfully updated existing variable
+                  value:
+                    name: "max_retries"
+                    value: 5
+        '400':
+          description: Bad request - Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                missing_name:
+                  summary: Missing required name field
+                  value:
+                    error: "Invalid request body"
+                    details: "Missing required field: name"
+                missing_value:
+                  summary: Missing required value field
+                  value:
+                    error: "Invalid request body"
+                    details: "Missing required field: value"
+                invalid_json:
+                  summary: Invalid JSON format
+                  value:
+                    error: "Invalid request body"
+                    details: "Invalid JSON format"
