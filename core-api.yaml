@@ -290,11 +290,6 @@ paths:
                 value:
                   name: "allowed_domains"
                   value: ["example.com", "test.com", "demo.com"]
-              null_value:
-                summary: Set a null variable
-                value:
-                  name: "optional_setting"
-                  value: null
       responses:
         '200':
           description: Successfully set the global variable
