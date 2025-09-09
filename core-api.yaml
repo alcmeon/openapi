@@ -244,7 +244,7 @@ paths:
                     error: "Invalid pagination parameters"
                     details: "Page must be a non-negative integer"
 
-    post:
+    put:
       tags: [Global variables]
       summary: Set a global scenario variable
       description: Create a new global variable or update an existing one with the given name and value
