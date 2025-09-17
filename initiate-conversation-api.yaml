@@ -147,7 +147,7 @@ components:
           example: "1234567890"
         account_id:
           type: integer
-          description: ID of the WhatsApp business account
+          description: ID of the WhatsApp account in Alcmeon
           example: 12345
         template_id:
           type: integer
