@@ -102,8 +102,8 @@ components:
       properties:
         to_user_phone_number:
           type: string
-          description: The phone number of the user to send the message to.
-          example: "1234567890"
+          description: The phone number of the user to send the message to (prefixed by the country code)
+          example: "33123456789"
         account_id:
           type: integer
           description: The ID of the account sending the message.
@@ -351,7 +351,7 @@ paths:
   /v1/whatsapp/send/:
     post:
       tags: [ Send a template ]
-      summary: Send a Whatsapp message to initiate a conversation using a template
+      summary: Send a Whatsapp message using a template
       description: Send a message using a predefined template to a specified user's phone number.
       requestBody:
         required: true
