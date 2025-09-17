@@ -70,4 +70,4 @@ jobs:
       - name: kakaotalk-initiate-conversation-api
         uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./kakaotalk-initiate-conversation-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_KAKAOTALK_SEND_ID }}
+          rdme: openapi ./initiate-conversation-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_KAKAOTALK_SEND_ID }}
