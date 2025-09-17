@@ -1,51 +1,35 @@
 openapi: 3.0.0
 info:
-  title: WhatsApp Template Message API
-  description: API for sending WhatsApp template messages
-  version: 1.0.0
-
+  title: Kakaotalk Send API
+  version: '1.0'
 servers:
   - url: https://api.alcmeon.com
     description: Alcmeon production API server
 x-readme:
   explorer-enabled: true
 
-paths:
-  /whatsapp/template/send:
-    post:
-      summary: Send a WhatsApp template message
-      tags:
-        - WhatsApp
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendWhatsAppTemplateRequest'
-      responses:
-        '200':
-          description: Message sent successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message_id:
-                    type: string
-                    description: Unique identifier for the sent message
-        '400':
-          description: Invalid request
-        '500':
-          description: Internal server error
-
 components:
+
+  securitySchemes:
+    basic_auth:
+      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
+    bearer_token:
+      $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
+
   schemas:
-    SendWhatsAppTemplateRequest:
+    ResponseError:
       type: object
-      required:
-        - to_user_phone_number
-        - account_id
-        - template_id
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to 
+            support@alcmeon.com if you wish to obtain more details about the problem.
+    SendWhatsappMessageRequest:
+      type: object
       properties:
         to_user_phone_number:
           type: string
@@ -78,5 +62,50 @@ components:
                 type: string
               example:
                 "website": "/mysite"
-          required:
-            - body
+      required:
+        - to_user_phone_number
+        - account_id
+        - template_id
+
+    SendWhatsappMessageResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the message sending operation.
+          example: "ok"
+        message_id:
+          type: string
+          description: The unique ID of the sent message.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+
+
+security:
+  - basic_auth: [ ]
+  - bearer_token: [ ]
+
+paths:
+  /v1/whatsapp/send/:
+    post:
+      tags: [ Send a template ]
+      summary: Send a Whatsapp message to initiate a conversation using a template
+      description: Send a message using a predefined template to a specified user's phone number.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendWhatsappMessageRequest'
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendWhatsappMessageResponse'
+        '400':
+          description: If the input parameters are not valid or the template is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
