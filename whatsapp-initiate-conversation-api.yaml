@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: WhatsApp Template Message API
+  description: API for sending WhatsApp template messages
+  version: 1.0.0
+
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: true
+
+paths:
+  /whatsapp/template/send:
+    post:
+      summary: Send a WhatsApp template message
+      tags:
+        - WhatsApp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendWhatsAppTemplateRequest'
+      responses:
+        '200':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message_id:
+                    type: string
+                    description: Unique identifier for the sent message
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    SendWhatsAppTemplateRequest:
+      type: object
+      required:
+        - to_user_phone_number
+        - account_id
+        - template_id
+      properties:
+        to_user_phone_number:
+          type: string
+          description: Recipient's phone number
+          example: "1234567890"
+        account_id:
+          type: integer
+          description: ID of the WhatsApp business account
+          example: 12345
+        template_id:
+          type: integer
+          description: ID of the WhatsApp template to send
+          example: 98765
+        variables:
+          type: object
+          description: Variables to replace in the template
+          properties:
+            body:
+              type: object
+              description: Variables for the message body. The keys are the placeholders labels as defined in the template body and the values are the values to replace them with.
+              additionalProperties:
+                type: string
+              example:
+                "name": "John"
+                "product": "shoes"
+            buttons:
+              type: object
+              description: Variables for template url buttons. The keys are the placeholders labels as defined in the template url button and the values are the values to replace them with.
+              additionalProperties:
+                type: string
+              example:
+                "website": "/mysite"
+          required:
+            - body
