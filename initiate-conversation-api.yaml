@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Kakaotalk Send API
+  title: Initiate a conversation API
   version: '1.0'
 servers:
   - url: https://api.alcmeon.com
@@ -137,6 +137,57 @@ components:
           description: The unique ID of the sent message.
           example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
 
+
+    SendWhatsappMessageRequest:
+      type: object
+      properties:
+        to_user_phone_number:
+          type: string
+          description: Recipient's phone number
+          example: "1234567890"
+        account_id:
+          type: integer
+          description: ID of the WhatsApp business account
+          example: 12345
+        template_id:
+          type: integer
+          description: ID of the WhatsApp template to send
+          example: 98765
+        variables:
+          type: object
+          description: Variables to replace in the template
+          properties:
+            body:
+              type: object
+              description: Variables for the message body. The keys are the placeholders labels as defined in the template body and the values are the values to replace them with.
+              additionalProperties:
+                type: string
+              example:
+                "name": "John"
+                "product": "shoes"
+            buttons:
+              type: object
+              description: Variables for template url buttons. The keys are the placeholders labels as defined in the template url button and the values are the values to replace them with.
+              additionalProperties:
+                type: string
+              example:
+                "website": "/mysite"
+      required:
+        - to_user_phone_number
+        - account_id
+        - template_id
+
+    SendWhatsappMessageResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the message sending operation.
+          example: "ok"
+        message_id:
+          type: string
+          description: The unique ID of the sent message.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
 
 security:
   - basic_auth: []
@@ -291,6 +342,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SendKakaoTalkMessageResponse'
+        '400':
+          description: If the input parameters are not valid or the template is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+  /v1/whatsapp/send/:
+    post:
+      tags: [ Send a template ]
+      summary: Send a Whatsapp message to initiate a conversation using a template
+      description: Send a message using a predefined template to a specified user's phone number.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendWhatsappMessageRequest'
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendWhatsappMessageResponse'
         '400':
           description: If the input parameters are not valid or the template is not found
           content:
