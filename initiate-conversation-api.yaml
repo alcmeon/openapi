@@ -167,7 +167,7 @@ components:
                 "product": "shoes"
             buttons:
               type: object
-              description: Variables for template url buttons. The keys are the placeholders labels as defined in the template url button and the values are the values to replace them with.
+              description: Variables for template url buttons. The keys are the placeholders examples as defined in the template url button and the values are the values to replace them with.
               additionalProperties:
                 type: string
               example:
