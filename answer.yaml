@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+  title: Send Answer API
+  version: '1.0'
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+x-readme:
+  explorer-enabled: true
+
+components:
+  securitySchemes:
+    basic_auth:
+      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
+    bearer_token:
+      $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
+
+  schemas:
+    ResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: Additional details about the error (optional).
+
+    SendAnswerRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The text message to send.
+          maxLength: 10000
+          example: "Hello! How can I help you today?"
+        advisor_id:
+          type: integer
+          description: ID of the advisor sending the answer.
+          example: 123
+        company_id:
+          type: integer
+          description: ID of the company.
+          example: 42
+        task_id:
+          type: integer
+          description: ID of the task to answer to.
+          example: 98765
+        attachment:
+          type: object
+          nullable: true
+          description: Optional attachment token previously obtained from the attachment upload endpoint.
+          properties:
+            access_token:
+              type: string
+              description: Short-lived access token referencing the uploaded media.
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      required:
+        - message
+        - advisor_id
+        - company_id
+        - task_id
+
+    SendAnswerResponse:
+      type: object
+      properties:
+        input_data:
+          $ref: '#/components/schemas/SendAnswerRequest'
+        status:
+          type: string
+          enum: [started]
+          example: started
+
+    AttachmentUploadResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Short-lived token to be used in the send answer call as attachment.access_token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+security:
+  - basic_auth: []
+  - bearer_token: []
+
+paths:
+  /v1/answer/send/:
+    post:
+      tags: [ Answer ]
+      summary: Send an answer message
+      description: >-
+        Send an answer for an existing task. Optionally attach a media previously uploaded
+        through the attachment endpoint using the returned access token. The processing is
+        asynchronous and returns a "started" status when queued.
+      security:
+        - basic_auth: []
+        - bearer_token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendAnswerRequest'
+      responses:
+        '200':
+          description: Request accepted and queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendAnswerResponse'
+        '400':
+          description: Bad request (e.g., empty message, message too long)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                empty_message:
+                  summary: Empty message
+                  value:
+                    error: empty-message
+                message_too_long:
+                  summary: Message too long
+                  value:
+                    error: message-too-long
+        '403':
+          description: Forbidden (insufficient permissions or invalid attachment token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                insufficient_permissions:
+                  value:
+                    error: insufficient-permissions
+                invalid_attachment_token:
+                  value:
+                    error: invalid-attachment-access-token
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                task_not_found:
+                  value:
+                    error: task-not-found
+
+  /v1/answer/attachment/:
+    post:
+      tags: [ Attachment ]
+      summary: Upload an attachment
+      description: >-
+        Upload a picture or a video to be sent later with an answer. The endpoint returns a
+        short-lived access token that must be provided in the send answer payload as
+        `attachment.access_token`.
+      security:
+        - basic_auth: []
+        - bearer_token: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                site_id:
+                  type: integer
+                  description: The site ID where the media belongs.
+                  example: 123
+                file_name:
+                  type: string
+                  description: Original filename including extension.
+                  example: "photo.png"
+                file_content:
+                  type: string
+                  format: binary
+                  description: The file content to upload.
+              required:
+                - site_id
+                - file_name
+                - file_content
+      responses:
+        '200':
+          description: Media uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentUploadResponse'
+        '400':
+          description: Empty file content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                empty_file:
+                  value:
+                    error: empty-file-content
+        '404':
+          description: Site not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                site_not_found:
+                  value:
+                    error: site-not-found
+        '412':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                too_big:
+                  value:
+                    error: "media/upload/too-big. Maximum allowed size is 10485760 bytes"
+        '415':
+          description: Unsupported media type (by extension or content)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                unsupported_extension:
+                  value:
+                    error: "Unsupported file extension. Allowed extensions are: .jpg, .png, ..."
+                unsupported_from_content:
+                  value:
+                    error: "Unsupported extension from file content, allowed extensions are ['.jpg', '.png', ...]"
