@@ -227,7 +227,7 @@ paths:
               examples:
                 unsupported_extension:
                   value:
-                    error: "Unsupported file extension. Allowed extensions are: .jpg, .png, ..."
+                    error: "Unsupported file extension. Allowed extensions are: avif, bmp, dng, gif, heic, jfif, jpeg, jpg, png, psd, svg, tiff, webp, avi, mov, mp4, mp"
                 unsupported_from_content:
                   value:
-                    error: "Unsupported extension from file content, allowed extensions are ['.jpg', '.png', ...]"
+                    error: "Unsupported extension from file content, allowed extensions are ['.avif', '.bmp', '.dng', '.gif', '.heic', '.jfif', '.jpeg', '.jpg', '.png', '.psd', '.svg', '.tiff', '.webp', '.avi', '.mov', '.mp4', '.mp']"
