@@ -54,7 +54,7 @@ components:
             access_token:
               type: string
               description: Short-lived access token referencing the uploaded media.
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              example: "abC123..."
       required:
         - message
         - advisor_id
@@ -77,7 +77,7 @@ components:
         access_token:
           type: string
           description: Short-lived token to be used in the send answer call as attachment.access_token
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          example: "abC123..."
 
 security:
   - basic_auth: []
