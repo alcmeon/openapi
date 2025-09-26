@@ -70,7 +70,7 @@ jobs:
       - name: answer.yaml
         uses: readmeio/rdme@v10.5.2
         with:
-          rdme: openapi ./answer.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_ANSWER_ID }}
+          rdme: openapi upload ./answer.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_ANSWER_ID }}
       - name: kakaotalk-initiate-conversation-api
         uses: readmeio/rdme@7.2.0
         with:
