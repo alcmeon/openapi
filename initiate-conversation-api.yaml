@@ -277,7 +277,7 @@ paths:
 
   /v1/kakaotalk/messages:
     get:
-      tags: [Message history]
+      tags: [Messages]
       summary: Get the list of Kakaotalk sent messages
       description: Retrieve a paginated list of Kakaotalk sent messages for a specific account.
       parameters:
@@ -326,7 +326,7 @@ paths:
   
   /v1/kakaotalk/send/:
     post:
-      tags: [Send a template]
+      tags: [Templates]
       summary: Send a KakaoTalk message using a template
       description: Send a message using a predefined template to a specified user's phone number.
       requestBody:
@@ -350,7 +350,7 @@ paths:
                 $ref: '#/components/schemas/ResponseError'
   /v1/whatsapp/send/:
     post:
-      tags: [ Send a template ]
+      tags: [Templates]
       summary: Send a Whatsapp message using a template
       description: Send a message using a predefined template to a specified user's phone number.
       requestBody:
