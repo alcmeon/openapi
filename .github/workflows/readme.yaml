@@ -11,26 +11,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: ai-api.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./ai-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_AI_API_ID }}
+      - name: ai.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./ai.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_AI_ID }}
       - name: answer.yaml
         uses: readmeio/rdme@v10.5.2
         with:
           rdme: openapi upload ./answer.yaml --key=${{ secrets.README_API_KEY }} --slug=${{ secrets.README_ANSWER_ID }}
-      - name: oauth.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./oauth.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAUTH_ID }}
-      - name: core-api.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./core-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CORE_API_ID }}
       - name: application.yaml
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./application.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_APPLICATION_ID }}
+      - name: core-api.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./core-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CORE_API_ID }}
       - name: custom-field.yaml
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./custom-field.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_CUSTOM_FIELD_DEFINITION_ID }}
+      - name: embed.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./embed.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_EMBED_ID }}
       - name: exports.yaml
         uses: readmeio/rdme@7.2.0
         with:
@@ -39,18 +47,26 @@ jobs:
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./inmessage.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_INMESSAGE_ID }}
+      - name: kakaotalk-initiate-conversation-api
+        uses: readmeio/rdme@v10.5.2
+        with:
+          rdme: openapi upload ./initiate-conversation-api.yaml --key=${{ secrets.README_API_KEY }} --slug=${{ secrets.README_KAKAOTALK_SEND_ID }}
+      - name: oauth.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./oauth.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_OAUTH_ID }}
       - name: scenarios.yaml
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./scenarios.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SCENARIOS_DEFINITION_ID }}
-      - name: subbot.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./subbot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SUBBOT_ID }}
       - name: subbot-api.yaml
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./subbot-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SUBBOT_API_ID }}
+      - name: subbot.yaml
+        uses: readmeio/rdme@7.2.0
+        with:
+          rdme: openapi ./subbot.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_SUBBOT_ID }}
       - name: synchronize.yaml
         uses: readmeio/rdme@7.2.0
         with:
@@ -59,19 +75,3 @@ jobs:
         uses: readmeio/rdme@7.2.0
         with:
           rdme: openapi ./user.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_USER_ID }}
-      - name: embed.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./embed.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_EMBED_ID }}
-      - name: ai.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./ai.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_AI_ID }}
-      - name: ai-api.yaml
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./ai-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_AI_API_ID }}      
-      - name: kakaotalk-initiate-conversation-api
-        uses: readmeio/rdme@7.2.0
-        with:
-          rdme: openapi ./initiate-conversation-api.yaml --key=${{ secrets.README_API_KEY }} --id=${{ secrets.README_KAKAOTALK_SEND_ID }}
