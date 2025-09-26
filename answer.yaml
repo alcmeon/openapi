@@ -6,7 +6,7 @@ servers:
   - url: https://api.alcmeon.com
     description: Alcmeon production API server
 x-readme:
-  explorer-enabled: true
+  explorer-enabled: false
 
 components:
   securitySchemes:
@@ -84,7 +84,7 @@ security:
   - bearer_token: []
 
 paths:
-  /v1/answer/send/:
+  /v1/answer/send:
     post:
       tags: [ Answer ]
       summary: Send an answer message
@@ -147,7 +147,7 @@ paths:
                   value:
                     error: task-not-found
 
-  /v1/answer/attachment/:
+  /v1/answer/attachment:
     post:
       tags: [ Attachment ]
       summary: Upload an attachment
