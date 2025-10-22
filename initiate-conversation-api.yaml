@@ -734,6 +734,14 @@ paths:
                 $ref: '#/components/schemas/ResponseError'
 
   /v1/rcs/bulk/{bulk_id}:
+    parameters:
+      - in: path
+        name: bulk_id
+        description: The ID of the bulk you want retrieve information about
+        required: true
+        schema:
+          type: string
+          format: uuid
     get:
       summary: Retrieve information about a bulk
       description: Returns the status of a bulk. The status (completed, failed or in_progress) and how many messages have been already sent,
