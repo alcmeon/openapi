@@ -378,7 +378,7 @@ paths:
     post:
       summary: Get the list of Kakaotalk templates
       description: Retrieve a paginated list of Kakaotalk templates for a specific account using filters.
-      tags: [Templates]
+      tags: [Kakaotalk]
       requestBody:
         required: true
         content:
@@ -457,7 +457,7 @@ paths:
 
   /v1/kakaotalk/messages:
     get:
-      tags: [Messages]
+      tags: [Kakaotalk]
       summary: Get the list of Kakaotalk sent messages
       description: Retrieve a paginated list of Kakaotalk sent messages for a specific account.
       parameters:
@@ -506,7 +506,7 @@ paths:
   
   /v1/kakaotalk/send/:
     post:
-      tags: [Templates]
+      tags: [Kakaotalk]
       summary: Send a KakaoTalk message using a template
       description: Send a message using a predefined template to a specified user's phone number.
       requestBody:
@@ -530,7 +530,7 @@ paths:
                 $ref: '#/components/schemas/ResponseError'
   /v1/whatsapp/send/:
     post:
-      tags: [Templates]
+      tags: [Whatsapp]
       summary: Send a Whatsapp message using a template
       description: Send a message using a predefined template to a specified user's phone number.
       requestBody:
@@ -555,7 +555,7 @@ paths:
 
   /v1/rcs/send/:
     post:
-      tags: [ Templates ]
+      tags: [ RCS ]
       summary: Send a RCS message using a template
       description: Send a message using a predefined template to a specified user's phone number.
       requestBody:
@@ -582,7 +582,7 @@ paths:
     post:
       summary: Get the list of RCS templates
       description: Retrieve a paginated list of RCS templates for a specific account using filters.
-      tags: [ Templates ]
+      tags: [ RCS ]
       requestBody:
         required: true
         content:
@@ -653,7 +653,7 @@ paths:
 
   /v1/rcs/messages:
     get:
-      tags: [ Messages ]
+      tags: [ RCS ]
       summary: Get the list of RCS sent messages
       description: Retrieve a paginated list of RCS sent messages for a specific account.
       parameters:
@@ -710,7 +710,7 @@ paths:
 
   /v1/rcs/send/bulk:
     post:
-      tags: [ Templates ]
+      tags: [ RCS ]
       summary: Send a RCS message to multiple users using a template
       description: Send a message using a predefined template to a list of user's phone number.
       requestBody:
@@ -743,6 +743,7 @@ paths:
           type: string
           format: uuid
     get:
+      tags: [ RCS ]
       summary: Retrieve information about a bulk
       description: Returns the status of a bulk. The status (completed, failed or in_progress) and how many messages have been already sent,
       requestBody:
