@@ -373,6 +373,11 @@ security:
   - basic_auth: []
   - bearer_token: []
 
+tags:
+  - name: Kakaotalk
+  - name: Whatsapp
+  - name: RCS
+
 paths:
   /v1/kakaotalk/templates:
     post:
