@@ -567,7 +567,7 @@ paths:
       tags:
         - RCS
       summary: Send a RCS message using a template
-      description: Send a message using a predefined template to a specified user's phone number.
+      description: Send a message using a predefined template to a specified user's phone number .
       requestBody:
         required: true
         content:
@@ -591,7 +591,7 @@ paths:
   /v1/rcs/templates:
     post:
       summary: Get the list of RCS templates
-      description: Retrieve a paginated list of RCS templates for a specific account using filters.
+      description: Retrieve a paginated list of RCS templates for a specific account using filters .
       tags:
         - RCS
       requestBody:
@@ -667,7 +667,7 @@ paths:
       tags:
         - RCS
       summary: Get the list of RCS sent messages
-      description: Retrieve a paginated list of RCS sent messages for a specific account.
+      description: Retrieve a paginated list of RCS sent messages for a specific account .
       parameters:
         - name: limit
           in: query
@@ -725,7 +725,7 @@ paths:
       tags:
         - RCS
       summary: Send a RCS message to multiple users using a template
-      description: Send a message using a predefined template to a list of user's phone number.
+      description: Send a message using a predefined template to a list of user's phone number .
       requestBody:
         required: true
         content:
