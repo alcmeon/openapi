@@ -28,7 +28,65 @@ components:
           description: >
             A short string which describes what is wrong. Provide this string to 
             support@alcmeon.com if you wish to obtain more details about the problem.
-    Template:
+    RCSTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the template.
+          example: 1
+        name:
+          type: string
+          description: The name of the template.
+          example: "template_abc"
+        language:
+          type: string
+          description: The language of the template.
+          example: "en"
+          enum: ["en", "fr"]
+        title:
+          type: string
+          description: The title of the template.
+          example: "This is the title of the template."
+        body:
+          type: string
+          description: The body content of the template.
+          example: "This is the content of the template."
+        created_at:
+          type: string
+          format: date-time
+          description: The creation date of the template.
+          example: "2025-02-17T09:09:58"
+        last_modified_at:
+          type: string
+          format: date-time
+          description: The last modification date of the template.
+          example: "2025-02-17T09:09:58"
+        buttons:
+          type: array
+          description: The list of buttons of the template.
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The type of the button.
+                example: "url"
+                enum: ["url", "quick-reply"]
+              label:
+                type: string
+                description: The label of the button.
+                example: "Button 1"
+              quick-reply:
+                type: string
+                description: The quick reply of the button.
+                example: "Button 1"
+              url:
+                type: string
+                description: The URL of the button.
+                example: "https://example.com"
+
+    KKTTemplate:
       type: object
       properties:
         id:
@@ -189,6 +247,128 @@ components:
           description: The unique ID of the sent message.
           example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
 
+    SendRCSMessageRequest:
+      type: object
+      properties:
+        to_user_phone_number:
+          type: string
+          description: Recipient's phone number
+          example: "1234567890"
+        account_id:
+          type: integer
+          description: ID of the WhatsApp account in Alcmeon
+          example: 12345
+        template_id:
+          type: integer
+          description: ID of the RCS template to send
+          example: 98765
+      required:
+        - to_user_phone_number
+        - account_id
+        - template_id
+
+    SendRCSMessageResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the message sending operation.
+          example: "ok"
+        message_id:
+          type: string
+          description: The unique ID of the sent message.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+
+    SendRCSBulkRequest:
+      type: object
+      description: To send a bulk of RCS messages. We limit the number of sent to 1000 per bulk. 
+          If you need to send more you can call this route as many time as you need by specifying the bulk_id returned as response; 
+          in this way you will be able to group the users provided via different API calls to same bulk.
+      properties:
+        to_user_phone_numbers:
+          type: array
+          items:
+            type: string
+          description: Recipient phone numbers. Max 1000 users are allowed.
+          example: ["12345678", "875654321"]
+        account_id:
+          type: integer
+          description: ID of the WhatsApp account in Alcmeon
+          example: 12345
+        template_id:
+          type: integer
+          description: ID of the RCS template to send
+          example: 98765
+        total_number_of_users:
+          type: integer
+          description: Total number of users to send the message to, it is used to calculate the progress of the bulk.
+            If multiple bulk will be used (because the total number of users is greater than 1000), the total is the sum of the users in each bulk.
+          example: 1234
+        bulk_id:
+          type: string
+          description: ID of the bulk. If provided, it will attach the users to the ID given. 
+            Do not pass it if this is the first API call of many for the same bulk.
+            In this case we will generate it and return it to you as response of the call, you will have to use it for the following calls
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+      required:
+        - to_user_phone_number
+        - account_id
+        - template_id
+
+    SendRCSBulkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the bulk sending operation.
+          example: "ok"
+        bulk_id:
+          type: string
+          description: The unique ID of the bulk.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+
+    GetRCSBulkRequest:
+      type: object
+      properties:
+        bulk_id:
+          type: string
+          description: ID of the bulk to retrieve.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+      required:
+        - bulk_id
+
+    GetRCSBulkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the bulk.
+          example: "completed"
+          enum:
+            - "completed"
+            - "in_progress"
+            - "failed"
+        bulk_id:
+          type: string
+          description: The unique ID of the bulk.
+          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+        total_number_of_users:
+          type: integer
+          description: Total number of users to send the message to, it is used to calculate the progress of the bulk.
+            If multiple bulk have been used (because the total number of users is greater than 1000), the total is the sum of the users in each bulk.
+          example: 1234
+        progress:
+          type: string
+          description: Progress (percentage) of the bulk.
+          example: "100%"
+        sent_message_ids:
+          type: array
+          items:
+            type: string
+          description: List of message IDs which have been sent (no matter their status).
+          example: [ "12345678", "875654321" ]
+
+
 security:
   - basic_auth: []
   - bearer_token: []
@@ -264,7 +444,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Template'
+                      $ref: '#/components/schemas/KKTTemplate'
                   next_page:
                     type: integer
                     description: The next page number if more data is available.
@@ -366,6 +546,210 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SendWhatsappMessageResponse'
+        '400':
+          description: If the input parameters are not valid or the template is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /v1/rcs/send/:
+    post:
+      tags: [ Templates ]
+      summary: Send a RCS message using a template
+      description: Send a message using a predefined template to a specified user's phone number.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendRCSMessageRequest'
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendRCSMessageResponse'
+        '400':
+          description: If the input parameters are not valid or the template is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /v1/rcs/templates:
+    post:
+      summary: Get the list of RCS templates
+      description: Retrieve a paginated list of RCS templates for a specific account using filters.
+      tags: [ Templates ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_id:
+                  type: integer
+                  description: The ID of the account to retrieve templates for.
+                limit:
+                  type: integer
+                  default: 20
+                  maximum: 100
+                  description: The number of items to return (optional, default is 20).
+                page:
+                  type: integer
+                  default: 0
+                  description: The page number to return (optional, default is 0).
+                id:
+                  type: integer
+                  description: The ID filter (optional).
+                created_at_range:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                      format: date-time
+                      description: The start date for the creation range filter (optional). Format 2025-04-24 10:30:15
+                    end:
+                      type: string
+                      format: date-time
+                      description: The end date for the creation range filter (optional). Format 2025-04-24 10:30:15
+                last_modified_at_range:
+                  type: object
+                  properties:
+                    start:
+                      type: string
+                      format: date-time
+                      description: The start date for the last modified range filter (optional). Format 2025-04-24 10:30:15
+                    end:
+                      type: string
+                      format: date-time
+                      description: The end date for the last modified range filter (optional). Format 2025-04-24 10:30:15
+              required:
+                - account_id
+      responses:
+        '200':
+          description: A list of RCS templates.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RCSTemplate'
+                  next_page:
+                    type: integer
+                    description: The next page number if more data is available.
+        '400':
+          description: If the input parameters are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /v1/rcs/messages:
+    get:
+      tags: [ Messages ]
+      summary: Get the list of RCS sent messages
+      description: Retrieve a paginated list of RCS sent messages for a specific account.
+      parameters:
+        - name: limit
+          in: query
+          description: The number of messages to return per page.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: page
+          in: query
+          description: The page number to retrieve.
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: account_id
+          in: query
+          description: The ID of the account to retrieve messages for.
+          required: true
+          schema:
+            type: integer
+        - name: bulk_id
+          in: query
+          description: The ID of the bulk to retrieve messages for.
+          required: false
+          schema:
+            type: string
+            format: uuid
+
+      responses:
+        '200':
+          description: A list of RCS messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  next:
+                    type: string
+                    description: The URL for the next page of results, if available.
+        '400':
+          description: If the input parameters are not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /v1/rcs/send/bulk:
+    post:
+      tags: [ Templates ]
+      summary: Send a RCS message to multiple users using a template
+      description: Send a message using a predefined template to a list of user's phone number.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendRCSBulkRequest'
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendRCSBulkResponse'
+        '400':
+          description: If the input parameters are not valid or the template is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+
+  /v1/rcs/bulk/{bulk_id}:
+    get:
+      summary: Retrieve information about a bulk
+      description: Returns the status of a bulk. The status (completed, failed or in_progress) and how many messages have been already sent,
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetRCSBulkRequest'
+      responses:
+        '200':
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRCSBulkResponse'
         '400':
           description: If the input parameters are not valid or the template is not found
           content:
