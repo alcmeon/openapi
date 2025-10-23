@@ -760,12 +760,6 @@ paths:
         - RCS
       summary: Retrieve information about a bulk
       description: Returns the status of a bulk. The status (completed, failed or in_progress) and how many messages have been already sent,
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetRCSBulkRequest'
       responses:
         '200':
           description: Message sent successfully.
