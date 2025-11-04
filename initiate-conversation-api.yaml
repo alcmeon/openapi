@@ -28,6 +28,19 @@ components:
           description: >
             A short string which describes what is wrong. Provide this string to 
             support@alcmeon.com if you wish to obtain more details about the problem.
+
+    RateLimitResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Rate limit reached
+        details:
+          type: string
+          description: >
+            A string showing the time when the rate limit will be reset. Example:
+            {'rate_limited_until': '2024-01-22T13:05:41Z'}
+
     RCSTemplate:
       type: object
       properties:
@@ -460,6 +473,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/kakaotalk/messages:
     get:
@@ -510,6 +529,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
   
   /v1/kakaotalk/send/:
     post:
@@ -536,6 +561,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
   /v1/whatsapp/send/:
     post:
       tags:
@@ -561,6 +592,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/rcs/send/:
     post:
@@ -587,6 +624,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/rcs/templates:
     post:
@@ -661,6 +704,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/rcs/messages:
     get:
@@ -719,6 +768,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/rcs/send/bulk:
     post:
@@ -745,6 +800,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/rcs/bulk/{bulk_id}:
     parameters:
@@ -773,3 +834,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'

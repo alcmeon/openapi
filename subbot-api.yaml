@@ -90,6 +90,18 @@ components:
           items:
             $ref: '#/components/schemas/TabularArray'
 
+    RateLimitResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Rate limit reached
+        details:
+          type: string
+          description: >
+            A string showing the time when the rate limit will be reset. Example:
+            {'rate_limited_until': '2024-01-22T13:05:41Z'}
+
 
 security:
   - basic_auth: []
@@ -111,6 +123,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TabularArrays'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /subbot/continue:
     post:
@@ -138,3 +156,9 @@ paths:
       responses:
         "200":
           description: Return a 200 status on success
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'

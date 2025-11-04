@@ -86,6 +86,18 @@ components:
             For outgoing requests, when the error is not internal, the first 100 
             bytes of the body of the response.
 
+    RateLimitResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Rate limit reached
+        details:
+          type: string
+          description: >
+            A string showing the time when the rate limit will be reset. Example:
+            {'rate_limited_until': '2024-01-22T13:05:41Z'}
+
 security:
   - basic_auth: []
   - bearer_token: []
@@ -109,6 +121,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
       
 
   /application/webhook:
@@ -129,6 +147,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/WebhookStatus'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
 
     post:
@@ -156,4 +180,10 @@ paths:
             application/json:
               schema:
                 type: string
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 

@@ -79,6 +79,18 @@ components:
           description: Short-lived token to be used in the send answer call as attachment.access_token
           example: "abC123..."
 
+    RateLimitResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Rate limit reached
+        details:
+          type: string
+          description: >
+            A string showing the time when the rate limit will be reset. Example:
+            {'rate_limited_until': '2024-01-22T13:05:41Z'}
+
 security:
   - basic_auth: []
   - bearer_token: []
@@ -146,6 +158,12 @@ paths:
                 task_not_found:
                   value:
                     error: task-not-found
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /v1/answer/attachment:
     post:
@@ -231,3 +249,9 @@ paths:
                 unsupported_from_content:
                   value:
                     error: "Unsupported extension from file content, allowed extensions are ['.avif', '.bmp', '.dng', '.gif', '.heic', '.jfif', '.jpeg', '.jpg', '.png', '.psd', '.svg', '.tiff', '.webp', '.avi', '.mov', '.mp4', '.mp']"
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'

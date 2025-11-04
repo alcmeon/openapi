@@ -137,6 +137,18 @@ components:
       type: string
       enum: ['ok']
 
+    RateLimitResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Rate limit reached
+        details:
+          type: string
+          description: >
+            A string showing the time when the rate limit will be reset. Example:
+            {'rate_limited_until': '2024-01-22T13:05:41Z'}
+
 paths:
   /custom-field/users/{custom_field_user_id}:
     parameters:
@@ -182,6 +194,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
     get:
       tags:
         - User
@@ -195,6 +213,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FieldValues'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /custom-field/accounts/{social_media_account_id}/users/{social_media_user_id}:
     parameters:
@@ -237,6 +261,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /custom-field/accounts/{social_media_account_id}/users:
     parameters:
@@ -289,6 +319,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /custom-field/conversations/{conversation_id}:
     parameters:
@@ -314,6 +350,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseOk'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
     get:
       tags:
         - Conversation
@@ -325,6 +367,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FieldValues'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
 
   /custom-field/users/fields/{custom_field_id}:
     parameters:
@@ -353,6 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
   /custom-field/users/fields:
     get:
       tags:
@@ -369,3 +423,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FieldMetadata'
+        '429':
+          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
