@@ -18,6 +18,19 @@ components:
     bearer_token:
       $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
 
+  schemas:
+    RateLimitResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Rate limit reached
+        details:
+          type: string
+          description: >
+            A string showing the time when the rate limit will be reset. Example:
+            {'rate_limited_until': '2024-01-22T13:05:41Z'}
+  
 
 security:
   - basic_auth: []
@@ -87,4 +100,9 @@ paths:
                         description: >
                           A short string which describes what is wrong. Provide this string to 
                           support@alcmeon.com if you wish to obtain more details about the problem.
-                          
+        '429':
+          description: Rate limit reached. For this route limit is 2000 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
