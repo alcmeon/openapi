@@ -298,12 +298,27 @@ components:
           If you need to send more you can call this route as many time as you need by specifying the bulk_id returned as response; 
           in this way you will be able to group the users provided via different API calls to same bulk.
       properties:
-        to_user_phone_numbers:
+        to_users:
           type: array
           items:
-            type: string
-          description: Recipient phone numbers. Max 1000 users are allowed.
-          example: ["12345678", "875654321"]
+            type: object
+            properties:
+              phone_number:
+                type: string
+                description: The phone number of the user to send the message to (prefixed by the country code)
+                example: "33123456789"
+              variables:
+                type: object
+                description: Optional variables to replace placeholders in the template.
+                additionalProperties:
+                  type: string
+                example:
+                  user_name: "John Doe"
+                  order_id: "12345"
+            required:
+              - phone_number
+          description: Recipient phone numbers with optional variables. Max 1000 users are allowed.
+          example: [{"phone_number": "53123456789", "variables": {"user_name": "John Doe", "order_id": "12345"}}, {"phone_number": "3387654321"}]
         account_id:
           type: integer
           description: ID of the WhatsApp account in Alcmeon
@@ -312,19 +327,13 @@ components:
           type: integer
           description: ID of the RCS template to send
           example: 98765
-        total_number_of_users:
-          type: integer
-          description: Total number of users to send the message to, it is used to calculate the progress of the bulk.
-            If multiple bulk will be used (because the total number of users is greater than 1000), the total is the sum of the users in each bulk.
-          example: 1234
-        bulk_id:
+        send_date:
           type: string
-          description: ID of the bulk. If provided, it will attach the users to the ID given. 
-            Do not pass it if this is the first API call of many for the same bulk.
-            In this case we will generate it and return it to you as response of the call, you will have to use it for the following calls
-          example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
+          format: date-time
+          description: The date and time when the message should be sent.
+          example: "2025-02-17T09:09:58"
       required:
-        - to_user_phone_number
+        - to_users
         - account_id
         - template_id
 
