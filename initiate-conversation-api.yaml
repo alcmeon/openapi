@@ -269,12 +269,20 @@ components:
           example: "1234567890"
         account_id:
           type: integer
-          description: ID of the WhatsApp account in Alcmeon
+          description: ID of the RCS account in Alcmeon
           example: 12345
         template_id:
           type: integer
           description: ID of the RCS template to send
           example: 98765
+        variables:
+          type: object
+          description: Variables to replace placeholders in the template (applies to any placeholder in title, body, or buttons).
+          additionalProperties:
+            type: string
+          example:
+            user_name: "John Doe"
+            order_id: "12345"
       required:
         - to_user_phone_number
         - account_id
@@ -292,11 +300,11 @@ components:
           description: The unique ID of the sent message.
           example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
 
-    SendRCSBulkRequest:
+    SendRCSCampaignRequest:
       type: object
-      description: To send a bulk of RCS messages. We limit the number of sent to 1000 per bulk. 
-          If you need to send more you can call this route as many time as you need by specifying the bulk_id returned as response; 
-          in this way you will be able to group the users provided via different API calls to same bulk.
+      description: To send a campaign of RCS messages. We limit the number of sent to 10000 per campaign. 
+          If you need to send more you can call this route as many time as you need by specifying the campaign_id returned as response; 
+          in this way you will be able to group the users provided via different API calls to the same campaign.
       properties:
         to_users:
           type: array
@@ -309,7 +317,7 @@ components:
                 example: "33123456789"
               variables:
                 type: object
-                description: Optional variables to replace placeholders in the template.
+                description: Variables to replace placeholders in the template (applies to any placeholder in title, body, or buttons). If the template defines placeholders, each entry must provide values for all of them.
                 additionalProperties:
                   type: string
                 example:
@@ -317,11 +325,11 @@ components:
                   order_id: "12345"
             required:
               - phone_number
-          description: Recipient phone numbers with optional variables. Max 1000 users are allowed.
-          example: [{"phone_number": "53123456789", "variables": {"user_name": "John Doe", "order_id": "12345"}}, {"phone_number": "3387654321"}]
+          description: Recipient phone numbers with variables for the template placeholders. Each entry should provide the full set of variables expected by the template. Max 10000 users are allowed per campaign.
+          example: [{"phone_number": "53123456789", "variables": {"user_name": "John Doe", "order_id": "12345"}}, {"phone_number": "3387654321", "variables": {"user_name": "Jane Doe", "order_id": "98765"}}]
         account_id:
           type: integer
-          description: ID of the WhatsApp account in Alcmeon
+          description: ID of the RCS account in Alcmeon
           example: 12345
         template_id:
           type: integer
@@ -337,51 +345,51 @@ components:
         - account_id
         - template_id
 
-    SendRCSBulkResponse:
+    SendRCSCampaignResponse:
       type: object
       properties:
         status:
           type: string
-          description: The status of the bulk sending operation.
+          description: The status of the campaign sending operation.
           example: "ok"
-        bulk_id:
+        campaign_id:
           type: string
-          description: The unique ID of the bulk.
+          description: The unique ID of the campaign.
           example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
 
-    GetRCSBulkRequest:
+    GetRCSCampaignRequest:
       type: object
       properties:
-        bulk_id:
+        campaign_id:
           type: string
-          description: ID of the bulk to retrieve.
+          description: ID of the campaign to retrieve.
           example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
       required:
-        - bulk_id
+        - campaign_id
 
-    GetRCSBulkResponse:
+    GetRCSCampaignResponse:
       type: object
       properties:
         status:
           type: string
-          description: The status of the bulk.
+          description: The status of the campaign.
           example: "completed"
           enum:
             - "completed"
             - "in_progress"
             - "failed"
-        bulk_id:
+        campaign_id:
           type: string
-          description: The unique ID of the bulk.
+          description: The unique ID of the campaign.
           example: "5739d1c3-1897-4a92-a704-1a4fbd0b9da7"
         total_number_of_users:
           type: integer
-          description: Total number of users to send the message to, it is used to calculate the progress of the bulk.
-            If multiple bulk have been used (because the total number of users is greater than 1000), the total is the sum of the users in each bulk.
+          description: Total number of users to send the message to, it is used to calculate the progress of the campaign.
+            If multiple campaigns have been used (because the total number of users is greater than 10000), the total is the sum of the users in each campaign.
           example: 1234
         progress:
           type: string
-          description: Progress (percentage) of the bulk.
+          description: Progress (percentage) of the campaign.
           example: "100%"
         sent_message_ids:
           type: array
@@ -704,9 +712,9 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/RCSTemplate'
-                  next_page:
-                    type: integer
-                    description: The next page number if more data is available.
+                  next:
+                    type: string
+                    description: The URL for the next page of results, if available.
         '400':
           description: If the input parameters are not valid
           content:
@@ -748,9 +756,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: bulk_id
+        - name: campaign_id
           in: query
-          description: The ID of the bulk to retrieve messages for.
+          description: The ID of the campaign to retrieve messages for.
           required: false
           schema:
             type: string
@@ -784,7 +792,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RateLimitResponseError'
 
-  /v1/rcs/send/bulk:
+  /v1/rcs/send/campaign:
     post:
       tags:
         - RCS
@@ -795,14 +803,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SendRCSBulkRequest'
+              $ref: '#/components/schemas/SendRCSCampaignRequest'
       responses:
         '200':
           description: Message sent successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SendRCSBulkResponse'
+                $ref: '#/components/schemas/SendRCSCampaignResponse'
         '400':
           description: If the input parameters are not valid or the template is not found
           content:
@@ -816,11 +824,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/RateLimitResponseError'
 
-  /v1/rcs/bulk/{bulk_id}:
+  /v1/rcs/campaigns/{campaign_id}:
     parameters:
       - in: path
-        name: bulk_id
-        description: The ID of the bulk you want retrieve information about
+        name: campaign_id
+        description: The ID of the campaign you want to retrieve information about
         required: true
         schema:
           type: string
@@ -828,15 +836,15 @@ paths:
     get:
       tags:
         - RCS
-      summary: Retrieve information about a bulk
-      description: Returns the status of a bulk. The status (completed, failed or in_progress) and how many messages have been already sent,
+      summary: Retrieve information about a campaign
+      description: Returns the status of a campaign. The status (completed, failed or in_progress) and how many messages have been already sent,
       responses:
         '200':
           description: Message sent successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetRCSBulkResponse'
+                $ref: '#/components/schemas/GetRCSCampaignResponse'
         '400':
           description: If the input parameters are not valid or the template is not found
           content:
