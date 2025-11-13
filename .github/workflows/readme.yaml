@@ -51,6 +51,10 @@ jobs:
         uses: readmeio/rdme@10.5.2
         with:
           rdme: openapi upload ./initiate-conversation-api.yaml --key=${{ secrets.README_API_KEY }} --slug=${{ secrets.README_KAKAOTALK_SEND_ID }}
+      - name: optin-api.yaml
+        uses: readmeio/rdme@10.5.2
+        with:
+          rdme: openapi upload ./optin-api.yaml --key=${{ secrets.README_API_KEY }} --slug=${{ secrets.README_OPTIN_API_ID }}
       - name: oauth.yaml
         uses: readmeio/rdme@7.2.0
         with:

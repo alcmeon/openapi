@@ -1,0 +1,325 @@
+openapi: 3.0.0
+info:
+  title: Alcmeon Optin CRUD API
+  description: API for managing optins (opt-in configurations)
+  version: '1.0'
+
+servers:
+  - url: https://api.alcmeon.com
+    description: Alcmeon production API server
+
+x-readme:
+  explorer-enabled: true
+
+paths:
+  /v1/optins:
+    get:
+      summary: List all optins
+      description: Retrieve a list of all optins
+      operationId: listOptins
+      tags:
+        - Optins
+      responses:
+        '200':
+          description: Successfully retrieved list of optins
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Optin'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: internal-error
+                details: An unexpected error occurred
+
+    post:
+      summary: Create a new optin
+      description: Create a new optin configuration
+      operationId: createOptin
+      tags:
+        - Optins
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOptinRequest'
+      responses:
+        '200':
+          description: Optin successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Optin'
+        '400':
+          description: Bad request - Invalid input or duplicate name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                invalidRequestBody:
+                  summary: Invalid request body
+                  value:
+                    error: invalid-request-body
+                    details: Invalid JSON structure
+                duplicateName:
+                  summary: Duplicate optin name
+                  value:
+                    error: optin-name-already-exists
+                    details: An optin with this name already exists
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: internal-error
+                details: An unexpected error occurred
+
+  /v1/optins/{optin_id}:
+    get:
+      summary: Get a specific optin
+      description: Retrieve details of a specific optin by ID
+      operationId: getOptin
+      tags:
+        - Optins
+      parameters:
+        - name: optin_id
+          in: path
+          required: true
+          description: The ID of the optin to retrieve
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved optin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Optin'
+        '404':
+          description: Optin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: optin-not-found
+                details: Optin not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: internal-error
+                details: An unexpected error occurred
+
+    patch:
+      summary: Update an optin
+      description: Update the name of an existing optin
+      operationId: updateOptin
+      tags:
+        - Optins
+      parameters:
+        - name: optin_id
+          in: path
+          required: true
+          description: The ID of the optin to update
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOptinRequest'
+      responses:
+        '200':
+          description: Optin successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Optin'
+        '400':
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+        '404':
+          description: Optin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: optin-not-found
+                details: Optin not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: internal-error
+                details: An unexpected error occurred
+
+    delete:
+      summary: Delete an optin
+      description: Delete an optin and all associated user optins, optouts, and events
+      operationId: deleteOptin
+      tags:
+        - Optins
+      parameters:
+        - name: optin_id
+          in: path
+          required: true
+          description: The ID of the optin to delete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Optin successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Optin deleted successfully
+        '404':
+          description: Optin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: optin-not-found
+                details: Optin not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: internal-error
+                details: An unexpected error occurred
+
+components:
+  securitySchemes:
+    basic_auth:
+      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
+    bearer_token:
+      $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
+  schemas:
+    Optin:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the optin
+          example: 200
+        name:
+          type: string
+          description: Name of the optin
+          example: "Newsletter Subscription"
+        type:
+          type: string
+          description: Type of the optin
+          enum:
+            - default
+            - recurring_notification_messenger
+            - recurring_notification_instagram
+          example: default
+        creator_admin_user_email:
+          type: string
+          format: email
+          nullable: true
+          description: Email of the admin user who created the optin
+          example: admin@example.com
+        updater_admin_user_email:
+          type: string
+          format: email
+          nullable: true
+          description: Email of the admin user who last updated the optin
+          example: admin@example.com
+        update_time:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp of the last update
+          example: "2025-11-12T10:30:00Z"
+      required:
+        - id
+        - name
+        - type
+
+    CreateOptinRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the optin
+          example: "Newsletter Subscription"
+        type:
+          type: string
+          description: Type of the optin
+          enum:
+            - default
+            - recurring_notification_messenger
+            - recurring_notification_instagram
+          example: default
+      required:
+        - name
+        - type
+
+    UpdateOptinRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: New name for the optin
+          example: "Updated Newsletter Subscription"
+      required:
+        - name
+
+    ResponseError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+          example: optin-not-found
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to
+            support@alcmeon.com if you wish to obtain more details about the problem.
+          example: Optin not found
+      required:
+        - error
+
+security:
+  - basic_auth: []
+  - bearer_token: []
+
+tags:
+  - name: Optins
+    description: Operations related to optin management
