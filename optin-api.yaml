@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Alcmeon Optin CRUD API
-  description: API for managing optins (opt-in configurations)
+  title: Optins
+  description: API for managing optins and user in the optins
   version: '1.0'
 
 servers:
