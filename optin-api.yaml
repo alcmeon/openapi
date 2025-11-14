@@ -31,15 +31,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Optin'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
+
 
 
     post:
@@ -78,15 +70,6 @@ paths:
                   value:
                     error: optin-name-already-exists
                     details: An optin with this name already exists
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
   /v1/optins/{optin_id}:
@@ -119,67 +102,6 @@ paths:
               example:
                 error: optin-not-found
                 details: Optin not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
-
-
-    patch:
-      summary: Update an optin
-      description: Update the name of an existing optin
-      operationId: updateOptin
-      tags:
-        - Optins
-      parameters:
-        - name: optin_id
-          in: path
-          required: true
-          description: The ID of the optin to update
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateOptinRequest'
-      responses:
-        '200':
-          description: Optin successfully updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Optin'
-        '400':
-          description: Bad request - Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-        '404':
-          description: Optin not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: optin-not-found
-                details: Optin not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
     delete:
@@ -215,15 +137,6 @@ paths:
               example:
                 error: optin-not-found
                 details: Optin not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
   /v1/optins/{optin_id}/user-optins:
@@ -282,15 +195,6 @@ paths:
               example:
                 error: optin-not-found
                 details: Optin not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
     post:
@@ -350,15 +254,6 @@ paths:
               example:
                 error: optin-not-found
                 details: Optin not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
   /v1/optins/{optin_id}/user-optins/{user_optin_id}:
@@ -405,15 +300,6 @@ paths:
                   value:
                     error: user-optin-not-found
                     details: The user does not exist
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
   /v1/optins/{optin_id}/user-optouts:
@@ -472,15 +358,6 @@ paths:
               example:
                 error: optin-not-found
                 details: Optin not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
   /v1/optins/{optin_id}/user-optouts/{user_optout_id}:
@@ -527,15 +404,6 @@ paths:
                   value:
                     error: user-optout-not-found
                     details: The user optout does not exist
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseError'
-              example:
-                error: internal-error
-                details: An unexpected error occurred
 
 
 components:
@@ -606,17 +474,6 @@ components:
       required:
         - name
         - type
-
-
-    UpdateOptinRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: New name for the optin
-          example: "Updated Newsletter Subscription"
-      required:
-        - name
 
 
     UserOptin:
