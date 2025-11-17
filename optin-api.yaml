@@ -406,6 +406,73 @@ paths:
                     details: The user optout does not exist
 
 
+  /v1/optins/{optin_id}/optout:
+    post:
+      summary: Delete user-optins and create optouts
+      description: |
+        Delete one or more user-optins for a specific optin and create corresponding optouts. 
+        Phone numbers must be in E.164 format (with or without + prefix).
+      operationId: deleteUserOptins
+      tags:
+        - User Optouts
+      parameters:
+        - name: optin_id
+          in: path
+          required: true
+          description: The ID of the optin
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUserOptinsRequest'
+      responses:
+        '200':
+          description: User-optins successfully deleted and optouts created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteUserOptinsResponse'
+        '400':
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              examples:
+                invalidPhoneNumber:
+                  summary: Invalid phone number
+                  value:
+                    error: invalid-phone-number
+                    details: "Invalid phone number: 123"
+                invalidPhoneNumberFormat:
+                  summary: Invalid phone number format
+                  value:
+                    error: invalid-phone-number-format
+                    details: "Invalid phone number format: abc123"
+                emptyList:
+                  summary: Empty phone number list
+                  value:
+                    error: empty-phone-number-list
+                    details: Phone number list cannot be empty
+                invalidRequestBody:
+                  summary: Invalid request body
+                  value:
+                    error: invalid-request-body
+                    details: Invalid JSON structure
+        '404':
+          description: Optin not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+              example:
+                error: optin-not-found
+                details: Optin not found
+
+
 components:
   securitySchemes:
     basic_auth:
@@ -648,6 +715,46 @@ components:
         - total
         - limit
         - page
+
+
+    DeleteUserOptinsRequest:
+      type: object
+      properties:
+        account_id:
+          type: integer
+          description: ID of the account/site
+          example: 100
+        user_phone_numbers:
+          type: array
+          items:
+            type: string
+          description: Array of phone numbers in E.164 format (with or without + prefix) to opt out
+          example: ["+33612345678", "33698765432"]
+          minItems: 1
+      required:
+        - account_id
+        - user_phone_numbers
+
+
+    DeleteUserOptinsResponse:
+      type: object
+      properties:
+        deleted:
+          type: integer
+          description: Number of user-optins successfully deleted and converted to optouts
+          example: 2
+        not_found:
+          type: integer
+          description: Number of phone numbers that were not found in the optin
+          example: 1
+        total_requested:
+          type: integer
+          description: Total number of phone numbers in the request
+          example: 3
+      required:
+        - deleted
+        - not_found
+        - total_requested
 
 
     ResponseError:
