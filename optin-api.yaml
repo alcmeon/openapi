@@ -141,7 +141,7 @@ paths:
 
   /v1/optins/{optin_id}/user-optins:
     get:
-      summary: List user-optins for an optin
+      summary: List users for an optin
       description: Retrieve a paginated list of all users who have opted in to a specific optin
       operationId: listUserOptins
       tags:
@@ -198,7 +198,7 @@ paths:
 
 
     post:
-      summary: Create user-optins
+      summary: Add users in an optin
       description: Add one or more users to an optin by their phone numbers. Phone numbers must be in E.164 format (with or without + prefix). Duplicate entries are ignored.
       operationId: createUserOptins
       tags:
@@ -258,7 +258,7 @@ paths:
 
   /v1/optins/{optin_id}/user-optins/{user_optin_id}:
     get:
-      summary: Get a specific user-optin
+      summary: Get the details of a user in an optin
       description: Retrieve details of a specific user-optin by ID
       operationId: getUserOptin
       tags:
@@ -304,7 +304,7 @@ paths:
 
   /v1/optins/{optin_id}/user-optouts:
     get:
-      summary: List user-optouts for an optin
+      summary: List users that have opted-out of an optin
       description: Retrieve a paginated list of all users who have opted out of a specific optin
       operationId: listUserOptouts
       tags:
@@ -362,7 +362,7 @@ paths:
 
   /v1/optins/{optin_id}/user-optouts/{user_optout_id}:
     get:
-      summary: Get a specific user-optout
+      summary: Get the details of a specific user that has opted out of an optin
       description: Retrieve details of a specific user-optout by ID
       operationId: getUserOptout
       tags:
@@ -408,7 +408,7 @@ paths:
 
   /v1/optins/{optin_id}/optout:
     post:
-      summary: Delete user-optins and create optouts
+      summary: Opt-out a user from an optin
       description: |
         Delete one or more user-optins for a specific optin and create corresponding optouts. 
         Phone numbers must be in E.164 format (with or without + prefix).
