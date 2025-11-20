@@ -610,7 +610,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseError'
         '429':
-          description: Rate limit reached. Default limit is set to 15 requests per minute.
+          description: Rate limit reached. Default limit is set to 3000 requests per minute.
           content:
             application/json:
               schema:
