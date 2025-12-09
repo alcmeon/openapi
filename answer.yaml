@@ -172,7 +172,12 @@ paths:
       description: >-
         Upload a picture or a video to be sent later with an answer. The endpoint returns a
         short-lived access token that must be provided in the send answer payload as
-        `attachment.access_token`.
+        `attachment.access_token`. 
+        Allowed extensions are: 'aac', 'amr', 'aspx', 'avi', 'avif', 'bmp', 'c', 
+        'css', 'dng', 'doc', 'docx', 'eml', 'gif', 'heic', 'html', 'ics', 'jfif',
+        'jpeg', 'jpg', 'keynote', 'm4a', 'mag', 'mhtml', 'mov', 'mp', 'mp3', 'mp4', 
+        'msg', 'numbers', 'odt', 'ods', 'ogg', 'opus', 'pages', 'pdf', 'php', 'png', 
+        'ppt', 'pptx', 'psd', 'rtf', 'sdocx', 'svg', 'tiff', 'txt', 'vcf', 'wav', 'webp', 'xls', 'xlsx', 'xml' .
       security:
         - basic_auth: []
         - bearer_token: []
@@ -245,10 +250,10 @@ paths:
               examples:
                 unsupported_extension:
                   value:
-                    error: "Unsupported file extension. Allowed extensions are: avif, bmp, dng, gif, heic, jfif, jpeg, jpg, png, psd, svg, tiff, webp, avi, mov, mp4, mp"
+                    error: "Unsupported file extension. Allowed extensions are: 'aac', 'amr', 'aspx', 'avi', 'avif', 'bmp', 'c', 'css', 'dng', 'doc', 'docx', 'eml', 'gif', 'heic', 'html', 'ics', 'jfif', 'jpeg', 'jpg', 'keynote', 'm4a', 'mag', 'mhtml', 'mov', 'mp', 'mp3', 'mp4', 'msg', 'numbers', 'odt', 'ods', 'ogg', 'opus', 'pages', 'pdf', 'php', 'png', 'ppt', 'pptx', 'psd', 'rtf', 'sdocx', 'svg', 'tiff', 'txt', 'vcf', 'wav', 'webp', 'xls', 'xlsx', 'xml'"
                 unsupported_from_content:
                   value:
-                    error: "Unsupported extension from file content, allowed extensions are ['.avif', '.bmp', '.dng', '.gif', '.heic', '.jfif', '.jpeg', '.jpg', '.png', '.psd', '.svg', '.tiff', '.webp', '.avi', '.mov', '.mp4', '.mp']"
+                    error: "Unsupported extension from file content, allowed extensions are ['aac', 'amr', 'aspx', 'avi', 'avif', 'bmp', 'c', 'css', 'dng', 'doc', 'docx', 'eml', 'gif', 'heic', 'html', 'ics', 'jfif', 'jpeg', 'jpg', 'keynote', 'm4a', 'mag', 'mhtml', 'mov', 'mp', 'mp3', 'mp4', 'msg', 'numbers', 'odt', 'ods', 'ogg', 'opus', 'pages', 'pdf', 'php', 'png', 'ppt', 'pptx', 'psd', 'rtf', 'sdocx', 'svg', 'tiff', 'txt', 'vcf', 'wav', 'webp', 'xls', 'xlsx', 'xml']"
         '429':
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
