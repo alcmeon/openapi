@@ -124,6 +124,88 @@ paths:
       security:
         - ApiKey: []
 
+  /ai-v2-bot:
+    post:
+      tags:
+        - Invoke AI Bot V2
+      summary: Ask for an AI generated answer to send to a social network user (V2)
+      description: >
+        V2 webhook to implement to send an AI generated answer to a social network user.
+        This version supports custom exits and enhanced variable handling.
+        This webhook can be protected by checking the api key with the value you defined in the bot configuration in Alcméon.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jwt
+                - query
+                - session
+                - user
+              properties:
+                jwt:
+                  type: string
+                  description: JWT token to send with the answer
+                query:
+                  type: string
+                  description: Client question as text
+                context:
+                  type: string
+                  nullable: true
+                  description: Optional additional context
+                session:
+                  type: object
+                  required:
+                    - id
+                  properties:
+                    id:
+                      type: string
+                      description: Session identifier
+                user:
+                  type: object
+                  required:
+                    - external_id
+                    - site_id
+                  properties:
+                    external_id:
+                      type: string
+                      description: User identifier in social network
+                    site_id:
+                      type: integer
+                      description: Site identifier
+                agent_id:
+                  type: string
+                  description: AI agent identifier
+                custom_exits:
+                  type: array
+                  description: List of custom exits for the bot scenario
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - description
+                    properties:
+                      name:
+                        type: string
+                        description: Exit code name
+                      description:
+                        type: string
+                        description: Exit description
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    enum:
+                      - Acknowledged
+          description: Query is acknowledged
+      security:
+        - ApiKey: []
+        
   /suggest-answer:
     post:
       tags:
