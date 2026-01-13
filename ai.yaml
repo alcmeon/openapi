@@ -144,6 +144,8 @@ paths:
                 - query
                 - session
                 - user
+                - agent_id
+                - custom_exits
               properties:
                 jwt:
                   type: string
