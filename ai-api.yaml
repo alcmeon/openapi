@@ -458,6 +458,71 @@ paths:
               schema:
                 $ref: '#/components/schemas/RateLimitResponseError'
 
+  /ai/v2/answer:
+    post:
+      summary: Send AI generated answer (V2)
+      description: >
+        V2 endpoint to invoke to send an AI generated answer to a social network user via bot scenario. 
+        
+        This version supports custom exit codes and enhanced variable handling for bot scenarios.
+        Once your AI API has been asynchronously called by Alcméon with a jwt specific for a given social network user, 
+        this endpoint can be invoked (with the jwt previously received) to send the generated answer and trigger the appropriate scenario exit.
+
+      parameters:
+        - in: header
+          name: X-JWT
+          schema:
+            type: string
+            description: The JWT received (e.g. the `jwt` field in the payload of the asynchronous request sent to your AI API). This JWT is valid for 600 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required: [code]
+              properties:
+                code:
+                  type: string
+                  nullable: true
+                  description: >
+                    Exit code to determine which scenario path to take. Can be one of the standard exit codes 
+                    (endDiscussion, continueConversation, escalateToHuman, error) or a custom exit code 
+                    defined in the bot scenario configuration.
+                content:
+                  type: string
+                  nullable: true
+                  description: >
+                    The generated response content to send to the social network user. Can be null if no message should be sent.
+                variables:
+                  type: object
+                  description: >
+                    A dictionary of variables to be stored in the bot context and used later in the scenario.
+                    Can include sentiment and other custom data.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ['ok']
+        '400':
+          description: If the token used to call the endpoint is not valid (or expired) or if the received json
+                        does not match with the expected format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseError'
+        '429':
+          description: Rate limit reached. For this route limit is 150 requests per minute.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
+
   /ai/suggest-answer:
     post:
       summary: Send AI generated suggestion
