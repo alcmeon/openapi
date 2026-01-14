@@ -479,7 +479,7 @@ paths:
         content:
           application/json:
             schema:
-              required: [code, content, variables]
+              required: [code, message, variables]
               properties:
                 code:
                   type: string
@@ -488,7 +488,7 @@ paths:
                     Exit code to determine which scenario path to take. Can be one of the standard exit codes 
                     (endDiscussion, continueConversation, escalateToHuman, error) or a custom exit code 
                     defined in the bot scenario configuration.
-                content:
+                message:
                   type: string
                   nullable: true
                   description: >
