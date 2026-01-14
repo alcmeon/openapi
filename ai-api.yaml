@@ -479,7 +479,7 @@ paths:
         content:
           application/json:
             schema:
-              required: [code]
+              required: [code, content, variables]
               properties:
                 code:
                   type: string
