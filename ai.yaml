@@ -142,6 +142,7 @@ paths:
               required:
                 - jwt
                 - query
+                - context
                 - session
                 - user
                 - agent_id
