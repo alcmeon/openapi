@@ -146,7 +146,7 @@ paths:
                 - session
                 - user
                 - agent_id
-                - custom_exits
+                - exits
               properties:
                 jwt:
                   type: string
@@ -181,21 +181,24 @@ paths:
                 agent_id:
                   type: string
                   description: AI agent identifier
-                custom_exits:
+                exits:
                   type: array
-                  description: List of custom exits for the bot scenario
+                  description: List of exits for the bot scenario
                   items:
                     type: object
                     required:
                       - name
                       - description
                     properties:
-                      name:
+                      code:
                         type: string
-                        description: Exit code name
+                        description: Exit code
                       description:
                         type: string
                         description: Exit description
+                      is_custom:
+                        type: boolean
+                        description: Indicates whether the exit was customly created or not
       responses:
         '200':
           content:
