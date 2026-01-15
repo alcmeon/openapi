@@ -486,8 +486,8 @@ paths:
                   nullable: true
                   description: >
                     Exit code to determine which scenario path to take. Can be one of the standard exit codes 
-                    (endDiscussion, continueConversation, escalateToHuman, error) or a custom exit code 
-                    defined in the bot scenario configuration.
+                    (endDiscussion, continueDiscussion, escalateToHuman, error) or a custom exit code 
+                    defined in the AI Agent settings.
                 message:
                   type: string
                   nullable: true
