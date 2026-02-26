@@ -4,7 +4,7 @@ servers:
     description: Production api server
 info:
   title: Custom Fields
-  version: '1.0'
+  version: "1.0"
 
 x-readme:
   explorer-enabled: false
@@ -16,9 +16,9 @@ security:
 components:
   securitySchemes:
     basic_auth:
-      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
+      $ref: "shared-security.yaml#/components/securitySchemes/basic_auth"
     bearer_token:
-      $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
+      $ref: "shared-security.yaml#/components/securitySchemes/bearer_token"
 
   schemas:
     PrimitiveFieldValues:
@@ -46,8 +46,8 @@ components:
         - type: string
           format: uuid
           description: When the field is of type enum
-        - $ref: '#/components/schemas/MultiPickListFieldValue'
-        - $ref: '#/components/schemas/PhoneFieldValue'
+        - $ref: "#/components/schemas/MultiPickListFieldValue"
+        - $ref: "#/components/schemas/PhoneFieldValue"
 
     PhoneFieldValue:
       description: When the field is of type Phone
@@ -75,7 +75,7 @@ components:
           field_id:
             type: integer
           field_value:
-            $ref: '#/components/schemas/PrimitiveFieldValues'
+            $ref: "#/components/schemas/PrimitiveFieldValues"
 
     ResponseError:
       type: object
@@ -104,7 +104,20 @@ components:
           description: Description of the custom field
         type:
           type: string
-          enum: [integer, float, boolean, enum, multipicklist, string, url, phone, email, datetime, date]
+          enum:
+            [
+              integer,
+              float,
+              boolean,
+              enum,
+              multipicklist,
+              string,
+              url,
+              phone,
+              email,
+              datetime,
+              date,
+            ]
         teams:
           type: array
           description: id of the teams that can view/edit the custom field. See [/teams](#https://developers.alcmeon.com/reference/get_teams)
@@ -131,11 +144,9 @@ components:
           format: date-time
           description: Last datetime of edition? ISO format in GMT
 
-
-
     ResponseOk:
       type: string
-      enum: ['ok']
+      enum: ["ok"]
 
     RateLimitResponseError:
       type: object
@@ -168,38 +179,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FieldValues'
+              $ref: "#/components/schemas/FieldValues"
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseOk'
-        '400':
+                $ref: "#/components/schemas/ResponseOk"
+        "400":
           description: Returned if the request body format is invalid
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '403':
+                $ref: "#/components/schemas/ResponseError"
+        "403":
           description: Returned if a field is not editable.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '404':
+                $ref: "#/components/schemas/ResponseError"
+        "404":
           description: Returned if the user profile is not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '429':
+                $ref: "#/components/schemas/ResponseError"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
     get:
       tags:
         - User
@@ -207,18 +218,18 @@ paths:
       description: >
         Return user custom fields for a user profile.
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FieldValues'
-        '429':
+                $ref: "#/components/schemas/FieldValues"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
 
   /custom-field/accounts/{social_media_account_id}/users/{social_media_user_id}:
     parameters:
@@ -236,37 +247,38 @@ paths:
           On Whatsapp, this is the user's phone number, in international format, without a leading +.
           For example a french phone number in this format will look like this 33672422826 
           (33 is the international prefix).
+          The same format applies for Kakaotalk.
         required: true
         schema:
           type: string
-    
+
     get:
       tags:
         - User
       summary: Get fields for a social media user
       description: >
         Return user custom fields for a social media user.
-        
+
         Limitation: This feature is not available yet for Apple Messages. If you are considering using it, please contact our support team at support@alcmeon.com
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FieldValues'
-        '404':
+                $ref: "#/components/schemas/FieldValues"
+        "404":
           description: Returned if the social media user is not found for this social media account.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '429':
+                $ref: "#/components/schemas/ResponseError"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
 
   /custom-field/accounts/{social_media_account_id}/users:
     parameters:
@@ -295,36 +307,42 @@ paths:
               properties:
                 user_id:
                   type: string
+                  description: >
+                    The id uniquely identifying the user within the social media account.
+                    On Whatsapp, this is the user's phone number, in international format, without a leading +.
+                    For example a french phone number in this format will look like this 33672422826 
+                    (33 is the international prefix).
+                    The same format applies for Kakaotalk.
                 fields:
-                  $ref: '#/components/schemas/FieldValues'
+                  $ref: "#/components/schemas/FieldValues"
               required:
                 - user_id
                 - fields
       responses:
-        '200':
+        "200":
           description: Successfully set custom fields
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseOk'
-        '400':
+                $ref: "#/components/schemas/ResponseOk"
+        "400":
           description: Invalid request body format
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '403':
+                $ref: "#/components/schemas/ResponseError"
+        "403":
           description: Fields not editable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '429':
+                $ref: "#/components/schemas/ResponseError"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
 
   /custom-field/conversations/{conversation_id}:
     parameters:
@@ -342,37 +360,37 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FieldValues'
+              $ref: "#/components/schemas/FieldValues"
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseOk'
-        '429':
+                $ref: "#/components/schemas/ResponseOk"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
     get:
       tags:
         - Conversation
       summary: Return conversation fields
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FieldValues'
-        '429':
+                $ref: "#/components/schemas/FieldValues"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
 
   /custom-field/users/fields/{custom_field_id}:
     parameters:
@@ -389,24 +407,24 @@ paths:
       description: >
         Return the metadata for the given custom field id
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FieldMetadata'
-        '404':
+                $ref: "#/components/schemas/FieldMetadata"
+        "404":
           description: Returned if the custom field id is not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseError'
-        '429':
+                $ref: "#/components/schemas/ResponseError"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
   /custom-field/users/fields:
     get:
       tags:
@@ -415,17 +433,17 @@ paths:
       description: >
         Return the metadata for all user custom fields
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FieldMetadata'
-        '429':
+                  $ref: "#/components/schemas/FieldMetadata"
+        "429":
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
