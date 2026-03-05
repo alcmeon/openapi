@@ -133,6 +133,7 @@ paths:
         V2 webhook to implement to send an AI generated answer to a social network user.
         This version supports custom exits and enhanced variable handling.
         This webhook can be protected by checking the api key with the value you defined in the bot configuration in Alcméon.
+        The JWT token is valid for 60 seconds and allows only 1 API call.
       parameters: []
       requestBody:
         content:
@@ -142,22 +143,33 @@ paths:
               required:
                 - jwt
                 - query
-                - context
                 - session
-                - user
-                - agent_id
                 - exits
               properties:
                 jwt:
-                  type: string
-                  description: JWT token to send with the answer
+                  type: object
+                  description: JWT token object to authenticate the callback and send the AI-generated answer back to Alcméon
+                  required:
+                    - token
+                    - exp
+                    - remaining_api_calls
+                  properties:
+                    token:
+                      type: string
+                      description: The JWT token string to use in the X-JWT header when calling back the /ai/v2/answer endpoint. Valid for 60 seconds.
+                    exp:
+                      type: integer
+                      description: Token expiration timestamp (Unix timestamp)
+                    remaining_api_calls:
+                      type: integer
+                      description: Number of remaining API calls allowed with this token (currently always 1)
                 query:
                   type: string
-                  description: Client question as text
+                  description: The user's message content that the AI should respond to
                 context:
                   type: string
                   nullable: true
-                  description: Optional additional context
+                  description: Optional additional context that can be set via bot variables (variable name 'message_context') to provide extra information to the AI
                 session:
                   type: object
                   required:
@@ -165,50 +177,96 @@ paths:
                   properties:
                     id:
                       type: string
-                      description: Session identifier
-                user:
+                      description: Correlation identifier for the AI agent to scope the conversation and maintain context across multiple messages (variable name 'session_id')
+                social_media_user:
                   type: object
-                  required:
-                    - external_id
-                    - site_id
+                  nullable: true
+                  description: Information about the social media user who sent the message
                   properties:
-                    external_id:
+                    id:
                       type: string
-                      description: User identifier in social network
-                    site_id:
+                      description: The external user identifier in the social network (e.g., Twitter user ID, Facebook user ID)
+                    name:
+                      type: string
+                      nullable: true
+                      description: The display name of the user on the social network
+                social_media_account:
+                  type: object
+                  nullable: true
+                  description: Information about the social media channel/account where the conversation is happening
+                  properties:
+                    id:
                       type: integer
-                      description: Site identifier
-                agent_id:
-                  type: string
-                  description: AI agent identifier
+                      description: The site/channel identifier in Alcméon
+                    type:
+                      type: string
+                      description: The social media platform type (e.g., 'twitter', 'facebook', 'instagram', 'whatsapp')
+                    max_message_content_length:
+                      type: integer
+                      description: Maximum character length allowed for a single message on this channel (varies by platform)
+                    supported_message_types:
+                      type: array
+                      description: List of message content types supported by this channel. Currently only 'text' is supported.
+                      items:
+                        type: string
+                        enum: [text]
+                    supported_attachment_types:
+                      type: array
+                      description: List of attachment types supported by this channel (e.g., images, files). Currently empty - may be extended in the future.
+                      items:
+                        type: string
                 exits:
                   type: array
-                  description: List of exits for the bot scenario
+                  description: List of available exits that the AI can choose from to determine the next step in the bot scenario
                   items:
                     type: object
                     required:
-                      - name
+                      - code
                       - description
+                      - is_custom
                     properties:
                       code:
                         type: string
-                        description: Exit code
+                        description: The exit code identifier (e.g., 'endDiscussion', 'continueDiscussion', 'escalateToHuman', 'error', or custom codes)
                       description:
                         type: string
-                        description: Exit description
+                        description: Human-readable description of what this exit represents
                       is_custom:
                         type: boolean
-                        description: Indicates whether the exit was customly created or not
+                        description: True if this is a custom exit defined in the AI Agent configuration, false for standard exits
       responses:
         '200':
+          description: Request acknowledged successfully
           content:
             application/json:
               schema:
+                type: object
+                required:
+                  - status
                 properties:
                   status:
+                    type: string
                     enum:
                       - Acknowledged
-          description: Query is acknowledged
+                    description: Indicates the request was received and is being processed
+        '400':
+          description: Bad request - invalid input or authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '401':
+          description: Unauthorized - invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+        '429':
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponseError'
       security:
         - ApiKey: []
         
