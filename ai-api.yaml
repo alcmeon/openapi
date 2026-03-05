@@ -492,9 +492,8 @@ paths:
                     The message to send to the social network user. 
                     Set to null if no message should be sent (e.g., when only setting variables or choosing an exit without a response).
                     Otherwise, provide a message object with the content to send.
+                  nullable: true
                   oneOf:
-                    - type: 'null'
-                      description: No message to send
                     - type: object
                       description: Text message to send to the user
                       required:
