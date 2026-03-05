@@ -473,7 +473,7 @@ paths:
           name: X-JWT
           schema:
             type: string
-            description: The JWT received (e.g. the `jwt` field in the payload of the asynchronous request sent to your AI API). This JWT is valid for 600 seconds and you cannot reuse a JWT received for user A to send an AI generated answer to another user B.
+            description: The JWT token string received in the `jwt.token` field from the webhook payload. This JWT is valid for 60 seconds and can only be used once. You cannot reuse a JWT received for user A to send an AI generated answer to another user B.
           required: true
       requestBody:
         content:
@@ -483,39 +483,83 @@ paths:
               properties:
                 code:
                   type: string
-                  nullable: true
                   description: >
-                    Exit code to determine which scenario path to take. Can be one of the standard exit codes 
-                    (endDiscussion, continueDiscussion, escalateToHuman, error) or a custom exit code 
-                    defined in the AI Agent settings.
+                    Exit code to determine which scenario path to take. Must match one of the exit codes provided in the webhook request.
+                    Can be one of the standard exit codes (endDiscussion, continueDiscussion, escalateToHuman, error) 
+                    or a custom exit code defined in the AI Agent settings.
                 message:
-                  type: string
-                  nullable: true
                   description: >
-                    The generated response content to send to the social network user. Can be null if no message should be sent.
+                    The message to send to the social network user. 
+                    Set to null if no message should be sent (e.g., when only setting variables or choosing an exit without a response).
+                    Otherwise, provide a message object with the content to send.
+                  oneOf:
+                    - type: 'null'
+                      description: No message to send
+                    - type: object
+                      description: Text message to send to the user
+                      required:
+                        - type
+                        - text
+                      properties:
+                        type:
+                          type: string
+                          enum: [text]
+                          description: The type of message content. Currently only 'text' is supported.
+                        text:
+                          type: string
+                          description: The generated response content to send to the social network user. Must respect the max_message_content_length from the webhook request.
                 variables:
                   type: object
                   description: >
-                    A dictionary of variables to be stored in the bot context and used later in the scenario.
-                    Can include sentiment and other custom data.
+                    A dictionary of custom variables to be stored in the bot context and used later in the scenario.
+                    Can include any data such as sentiment analysis, extracted entities, or other metadata.
       responses:
         '200':
-          description: Success
+          description: Success - Answer processed successfully
           content:
             application/json:
               schema:
                 type: object
+                required:
+                  - status
                 properties:
                   status:
                     type: string
-                    enum: ['ok']
+                    enum: ['ok', 'canceled']
+                    description: >
+                      'ok' - The answer was successfully processed and the bot scenario will continue with the chosen exit.
+                      'canceled' - The token was canceled because the user sent a new message before the AI could respond. The answer is ignored.
+              examples:
+                success:
+                  value:
+                    status: ok
+                  summary: Answer processed successfully
+                canceled:
+                  value:
+                    status: canceled
+                  summary: Token canceled by new user message
         '400':
-          description: If the token used to call the endpoint is not valid (or expired) or if the received json
-                        does not match with the expected format.
+          description: Bad request - Invalid or expired token, or malformed JSON payload
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+              examples:
+                invalid_token:
+                  value:
+                    error: Invalid token
+                    details: Token not found or already consumed
+                  summary: Invalid token
+                expired_token:
+                  value:
+                    error: Invalid token
+                    details: Token has expired (60 second limit)
+                  summary: Expired token
+                invalid_state:
+                  value:
+                    error: Invalid token
+                    details: Token state is not pending
+                  summary: Token already used or in invalid state
         '429':
           description: Rate limit reached. For this route limit is 150 requests per minute.
           content:
