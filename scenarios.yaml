@@ -5,18 +5,17 @@ servers:
 
 info:
   title: Scenarios
-  version: '1.0'
+  version: "1.0"
 
 x-readme:
   explorer-enabled: true
 
 components:
-
   securitySchemes:
     basic_auth:
-      $ref: 'shared-security.yaml#/components/securitySchemes/basic_auth'
+      $ref: "shared-security.yaml#/components/securitySchemes/basic_auth"
     bearer_token:
-      $ref: 'shared-security.yaml#/components/securitySchemes/bearer_token'
+      $ref: "shared-security.yaml#/components/securitySchemes/bearer_token"
 
   schemas:
     RateLimitResponseError:
@@ -30,14 +29,12 @@ components:
           description: >
             A string showing the time when the rate limit will be reset. Example:
             {'rate_limited_until': '2024-01-22T13:05:41Z'}
-  
 
 security:
   - basic_auth: []
   - bearer_token: []
 
 paths:
-
   /start-scenario:
     post:
       summary: Start Scenario
@@ -55,7 +52,7 @@ paths:
                     The format of this value is opaque and subject to change for new scenarios without notice. 
                     The proper value can be found in the scenario editor
                     by clicking in the top-right corner of a box and selecting the "Copy identifier" entry 
-                    in the menu. 
+                    in the menu.
                   type: string
                 variables:
                   type: object
@@ -74,8 +71,13 @@ paths:
                         For example a french phone number in this format will look like this 33672422826 
                         (33 is the international prefix). Failure to provide an id in the correct format will be
                         silently ignored and return a 200 status.
+                  required: 
+                    - social_media_user_id
+              required:
+                - starting_box
+                - user
       responses:
-        '200':
+        "200":
           description: Returned upon succes
           content:
             application/json:
@@ -84,8 +86,8 @@ paths:
                 properties:
                   status:
                     type: string
-                    enum: ['ok']
-        '400':
+                    enum: ["ok"]
+        "400":
           description: Returned if the request body format is invalid.
           content:
             application/json:
@@ -93,16 +95,17 @@ paths:
                 type: object
                 properties:
                   error:
-                    type: object
-                    properties:
-                      reason:
-                        type: string
-                        description: >
-                          A short string which describes what is wrong. Provide this string to 
-                          support@alcmeon.com if you wish to obtain more details about the problem.
-        '429':
+                    type: string
+                    description: A short string explaining the reason of the error.
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
+
+        "429":
           description: Rate limit reached. For this route limit is 2000 requests per minute.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateLimitResponseError'
+                $ref: "#/components/schemas/RateLimitResponseError"
