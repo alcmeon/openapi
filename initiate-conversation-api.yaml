@@ -29,6 +29,19 @@ components:
             A short string which describes what is wrong. Provide this string to 
             support@alcmeon.com if you wish to obtain more details about the problem.
 
+    OngoingConversationError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: A short string explaining the reason of the error.
+        details:
+          type: string
+          description: >
+            A short string which describes what is wrong. Provide this string to 
+            support@alcmeon.com if you wish to obtain more details about the problem.
+
+
     RateLimitResponseError:
       type: object
       properties:
@@ -578,6 +591,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '403':
+          description: If the user you are trying to reach is not accessible due to an ongoing conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OngoingConversationError'
         '429':
           description: Rate limit reached. Default limit is set to 15 requests per minute.
           content:
@@ -609,6 +628,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseError'
+        '403':
+          description: If the user you are trying to reach is not accessible due to an ongoing conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OngoingConversationError'
         '429':
           description: Rate limit reached. Default limit is set to 3000 requests per minute.
           content:

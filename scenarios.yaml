@@ -103,6 +103,23 @@ paths:
                       A short string which describes what is wrong. Provide this string to 
                       support@alcmeon.com if you wish to obtain more details about the problem.
 
+        "403":
+          description: Returned if the user you are trying to reach is not accessible due to an ongoing conversation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A short string explaining the reason of the error.
+                  details:
+                    type: string
+                    description: >
+                      A short string which describes what is wrong. Provide this string to 
+                      support@alcmeon.com if you wish to obtain more details about the problem.
+
+
         "429":
           description: Rate limit reached. For this route limit is 2000 requests per minute.
           content:
