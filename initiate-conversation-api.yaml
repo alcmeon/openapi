@@ -204,6 +204,10 @@ components:
           example:
             user_name: "John Doe"
             order_id: "12345"
+        interrupt_ongoing_conversation:
+          type: boolean
+          description: "If you want to force the message even if the user already has an ongoing conversation with the brand. For more details about blocking message when a user has an ongoing conversation, [check our documentation](https://help.alcmeon.ai/)"
+          default: False
       required:
         - to_user_phone_number
         - account_id
@@ -256,6 +260,10 @@ components:
                 type: string
               example:
                 "website": "/mysite"
+        interrupt_ongoing_conversation:
+          type: boolean
+          description: "If you want to force the message even if the user already has an ongoing conversation with the brand. For more details about blocking message when a user has an ongoing conversation, [check our documentation](https://help.alcmeon.ai/)"
+          default: False
       required:
         - to_user_phone_number
         - account_id

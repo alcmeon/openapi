@@ -73,6 +73,10 @@ paths:
                         silently ignored and return a 200 status.
                   required: 
                     - social_media_user_id
+                interrupt_ongoing_conversation:
+                  type: boolean
+                  description: "If you want to force the message even if the user already has an ongoing conversation with the brand. For more details about blocking message when a user has an ongoing conversation, [check our documentation](https://help.alcmeon.ai/)"
+                  default: False
               required:
                 - starting_box
                 - user
