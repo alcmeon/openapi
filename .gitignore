@@ -1,2 +1,5 @@
 node_modules/
 .idea/
+.dev
+CLAUDE.md
+.claude/skills/

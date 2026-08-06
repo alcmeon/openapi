@@ -204,6 +204,18 @@ components:
           example:
             user_name: "John Doe"
             order_id: "12345"
+        custom_fields:
+          type: object
+          description: >
+            Optional custom field values to set on the recipient's user profile. They are applied
+            only once the message has been sent successfully. Keys are custom field IDs (as
+            strings); values must match the type of the corresponding custom field (string,
+            number, boolean, or a list of option IDs for multi-select fields). Unknown or invalid
+            field IDs cause the request to fail with a 400 error.
+          additionalProperties: true
+          example:
+            "12": "gold"
+            "34": 42
         interrupt_ongoing_conversation:
           type: boolean
           description: "If you want to force the message even if the user already has an ongoing conversation with the brand. For more details about blocking message when a user has an ongoing conversation, [check our documentation](https://help.alcmeon.ai/)"
