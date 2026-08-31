@@ -70,6 +70,13 @@ components:
           description: The language of the template.
           example: "en"
           enum: ["en", "fr"]
+        category:
+          type: string
+          description: >
+            The category of the template. Determines which SMS sender ID is used if a message
+            using this template ever falls back to SMS - see `sms_fallback` on `POST /v1/rcs/send/`.
+          example: "transactional"
+          enum: ["marketing", "transactional"]
         title:
           type: string
           description: The title of the template.
@@ -180,6 +187,18 @@ components:
           type: string
           description: The content of the message.
           example: "This is the content of the message."
+
+    RCSMessage:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - type: object
+          properties:
+            sms_fallback_used:
+              type: boolean
+              description: >
+                True if the RCS message could not be delivered to the recipient's device and was
+                automatically retried via SMS instead - see `sms_fallback` on `POST /v1/rcs/send/`.
+              example: false
 
     SendKakaoTalkMessageRequest:
       type: object
@@ -316,6 +335,15 @@ components:
           example:
             user_name: "John Doe"
             order_id: "12345"
+        sms_fallback:
+          type: boolean
+          description: >
+            If true and the RCS message can't be delivered (device not RCS-capable, message
+            rejected), an SMS is automatically sent instead, using the sender ID configured for the
+            template's category (marketing or transactional). If no sender ID is configured for
+            that category, the fallback is silently skipped and the original RCS delivery failure
+            is reported as usual.
+          default: false
       required:
         - to_user_phone_number
         - account_id
@@ -820,7 +848,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Message'
+                      $ref: '#/components/schemas/RCSMessage'
                   next:
                     type: string
                     description: The URL for the next page of results, if available.
