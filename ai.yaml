@@ -234,6 +234,29 @@ paths:
                       is_custom:
                         type: boolean
                         description: True if this is a custom exit defined in the AI Agent configuration, false for standard exits
+                history:
+                  type: array
+                  description: Messages exchanged in the conversation before the current query, in chronological order
+                  items:
+                    type: object
+                    required:
+                      - role
+                      - content
+                      - date
+                    properties:
+                      role:
+                        type: string
+                        enum:
+                          - user
+                          - bot
+                          - ai
+                        description: Author of the message - 'user' for the social network user, 'bot' for a bot scenario message, 'ai' for an AI generated answer
+                      content:
+                        type: string
+                        description: Text content of the message
+                      date:
+                        type: string
+                        description: Date the message was sent, format 'YYYY-MM-DD HH:MM:SS'
       responses:
         '200':
           description: Request acknowledged successfully
